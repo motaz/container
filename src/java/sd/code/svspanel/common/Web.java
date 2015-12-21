@@ -20,7 +20,7 @@ public class Web {
             String selectedPage){
         String user = getCookieValue(request, "user");
 
-        String version  = "1.0.0";
+        String version  = "1.0.1";
         
         if (user == null){
             user = "";
@@ -31,7 +31,7 @@ public class Web {
         if (displayTabs) {
               String fileName = getCookieValue(request, "file");
               if (fileName != null) {
-                 String title = General.getConfigurationParameter("title", "", "/etc/code/pbxs/" + fileName);
+                 String title = General.getConfigurationParameter("title", "", General.getPBXsDir() + fileName);
                  selectedPBX = "<font color=lime><b>" + title + "</b></font>";
               }
             

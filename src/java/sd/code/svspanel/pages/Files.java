@@ -40,7 +40,7 @@ public class Files extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             String user = Web.getCookieValue(request, "user");
-            String pbxfile = "/etc/code/pbxs/" + Web.getCookieValue(request, "file");
+            String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
             try {
               if (Web.checkSession(request, user)) {
                 Web.setHeader(true, request, response, out, "files");
