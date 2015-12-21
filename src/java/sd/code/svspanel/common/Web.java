@@ -20,6 +20,8 @@ public class Web {
             String selectedPage){
         String user = getCookieValue(request, "user");
 
+        String version  = "1.0.0";
+        
         if (user == null){
             user = "";
         }
@@ -55,15 +57,16 @@ public class Web {
             "	<body>\n" +
             "	<div class=header>\n" +
             "	<div class=container>\n" +
-            "<table ><tr bgcolor=#888888><td class=titletd><img src='img/title.png' /> </td>" + 
+            "<table ><tr bgcolor=#888888><td class=titletd><img src='img/title.jpg' /> </td>" + 
             "<td class=titletd><table class=titletable><tr  bgcolor=#888888><td class=titletd>" +
-            "<td class=titletd>" + logoutText + "&emsp;</td></tr><tr  bgcolor=#888888><td>" + 
-                selectedPBX + "</td><td></td></tr></table>" +
-            "</td></tr></table>	</div>\n" +
+            "&emsp;" + logoutText + "&emsp;</td></tr><tr  bgcolor=#888888><td>" + 
+                selectedPBX + "</td></tr></table>" +
+            "</td><td bgcolor=#777777 style=vertical-align:bottom>Version " +
+                version + "</td></tr></table>	</div>\n" +
             "	</div>\n" +
             "	<div class=\"nav-bar\">\n" +
             "	<div class=\"container\">\n" +
-            "	<ul class=\"nav\">");
+            "	<ul class=\"nav\"> ");
 
          // Tabs
          if (displayTabs) {

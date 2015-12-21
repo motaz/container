@@ -141,6 +141,16 @@ td
 	border-bottom: 0;
         border-top: 0;
 }
+
+.lefttitletd
+{
+	padding: 0 0;
+	vertical-align: top;
+	text-align: left;
+	border-bottom: 0;
+        border-top: 0;
+}
+
 a:link { color: royalblue; }
 a:visited { color: purple; }
 a:focus { color: black; }

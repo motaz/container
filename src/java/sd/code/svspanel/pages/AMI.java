@@ -42,7 +42,7 @@ public class AMI extends HttpServlet {
               String pbxfile = "/etc/code/pbxs/" + Web.getCookieValue(request, "file");
               if (Web.checkSession(request, user)) {
                   Web.setHeader(true, request, response, out, "ami");
-                  out.println("<h2>AMI commands</h2>");
+                  out.println("<h2>AMI command</h2>");
 
                   String command = request.getParameter("command"); 
                   out.println("<form method=post>");
@@ -57,8 +57,10 @@ public class AMI extends HttpServlet {
                   if ( request.getParameter("execute") != null) {
                       String url = General.getConfigurationParameter("url", "", pbxfile);
                       JSONObject obj = new JSONObject();
-                      obj.put("username", "admin");
-                      obj.put("secret", "pass22");
+                      String username = General.getConfigurationParameter("amiuser", "admin", "");
+                      String secret = General.getConfigurationParameter("amisecret", "", "");
+                      obj.put("username", username);
+                      obj.put("secret", secret);
                       obj.put("command", request.getParameter("command"));
                       
                       String requestText = obj.toJSONString();
@@ -69,7 +71,9 @@ public class AMI extends HttpServlet {
 
                       String content = resObj.get("message").toString();
                       Date now = new Date();
-                      out.println("<pre>" + now.toString() + "\n" + content + "</pre>");
+                      if (content != null){
+                          out.println("<pre>" + now.toString() + "\n" + content + "</pre>");
+                      }
 
                   }
               }
