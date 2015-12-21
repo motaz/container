@@ -68,26 +68,27 @@ public class EditPBX extends HttpServlet {
             if ((title.trim().isEmpty()) || (url.trim().isEmpty()) || (fileName.trim().isEmpty())) {
                 out.println("<p class=errormessage>Empty parameter</p>");
             }
-            else { // Create new file
+            else {                 
+                String dir = General.getPBXsDir();
                 
-                File theDir = new File("/etc/code/pbxs");
+                File theDir = new File(dir);
                 
                 if (! theDir.exists()) {
                     boolean added = theDir.mkdir();
                     
                     if (! added) {
-                        out.println("<p class=errormessage>Unable to create /etc/code/pbxs</p>");
+                        out.println("<p class=errormessage>Unable to create " + dir + "</p>");
                     }
                     
                 }
                 
-                File oldFile = new File("/etc/code/pbxs/" + selectedFileName);
+                File oldFile = new File(dir + selectedFileName);
                 oldFile.delete();
                 
                 if (!fileName.contains(".")) {
                     fileName = fileName + ".stc";
                 }
-                fileName = "/etc/code/pbxs/" + fileName;
+                fileName = dir + fileName;
                 File configFile = new File(fileName);
                 configFile.createNewFile();
                 
@@ -107,9 +108,11 @@ public class EditPBX extends HttpServlet {
         }
     }
 
+
+
     private void displayEdit(final PrintWriter out, String fileName) {
         
-        String pbxFileName = "/etc/code/pbxs/" + fileName;
+        String pbxFileName = General.getPBXsDir() + fileName;
         String title = General.getConfigurationParameter("title", "", pbxFileName);
         String url = General.getConfigurationParameter("url", "", pbxFileName);
        

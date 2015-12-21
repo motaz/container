@@ -188,7 +188,7 @@ public class Web {
         
         String spices = getCookieValue(request, "spices");
         String userAgent = request.getHeader("user-agent");
-        String password = General.getConfigurationParameter("password", "", null);
+        String password = General.getConfigurationParameter("pass", "", null);
         String remoteAddress = request.getRemoteAddr();
         
         String currentSpices;

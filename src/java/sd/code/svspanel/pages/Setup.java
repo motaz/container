@@ -5,9 +5,6 @@
  */
 package sd.code.svspanel.pages;
 
-import sd.code.svspanel.common.General;
-import sd.code.svspanel.common.Web;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -15,13 +12,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sd.code.svspanel.common.General;
+import sd.code.svspanel.common.Web;
 
 /**
  *
  * @author motaz
  */
-@WebServlet(name = "Home", urlPatterns = {"/Home"})
-public class Home extends HttpServlet {
+@WebServlet(name = "Setup", urlPatterns = {"/Setup"})
+public class Setup extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,69 +34,34 @@ public class Home extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            try{
-            Web.setHeader(true, request, response, out, "home");
-            
-            String user = Web.getCookieValue(request, "user");
+            Web.setHeader(false, request, response, out, "");
+            String currentLogin = General.getConfigurationParameter("login", null, null);
+            if (request.getParameter("login") != null){
+                try {
+                    General.setConfigurationParameter("login", request.getParameter("login"), "");
+                    String pass = General.getMD5(request.getParameter("pass"));
+                    General.setConfigurationParameter("pass", pass, "");
+                    response.sendRedirect("Login");
+                }
+                catch (Exception ex){
+                    out.println("<p class=errormessage>" + ex.toString() + "</p>");
+                }
+                
+            }
+            if (currentLogin == null){
+                out.println("<h3>SimpleTrunk Panel setup");
+                out.println("<h3><font color=blue>Create New Admin Login</font></h3>");
+                out.println("<form method=POST>");
+                out.println("<table><tr>");
+                out.println("<td>Login </td><td><input type=text name=login id=login /></td></tr>");
+                out.println("<tr><td>Password </td><td><input type=password name=pass /></td></tr>");
+                out.println("<tr><td><input type=submit name=log value=Login /></td></tr>");
+                out.println("</table></form>");
+                out.println("<script>document.getElementById('login').focus();</script>");            
+            }
+            Web.setFooter(out);
 
-            if (Web.checkSession(request, user)){
-                
-                out.println("<h3>Select PBX</h3>");
-                
-                out.println("<a href='AddPBX'>Insert new PBX</a>");
-                
-                displayFiles(out);
-              
-            }
-            else
-            {
-                response.sendRedirect("Login");
-            }
-                  
-              
-           Web.setFooter(out);
         }
-            catch (Exception ex){
-                out.println("<p class=errormessage>" + ex.toString() + "</p>");
-            }
-        }
-            
-    }
-
-    private void displayFiles(PrintWriter out) {
-        File folder = new File(General.getPBXsDir());
-        File[] listOfFiles = folder.listFiles();
-        out.println("<table><tr>");
-        int counter = 0;
-        if (listOfFiles != null){
-        for (File listOfFile : listOfFiles) {
-            if (listOfFile.isFile()) {
-                String fileName = listOfFile.getName();
-                String title = General.getConfigurationParameter("title", "", listOfFile.getAbsolutePath());
-                
-                if (counter % 5 == 0){
-                    out.println("</tr><tr>");
-                }
-                String color;
-                if (counter % 2 == 0) {
-                    color = "#aaddaa";
-                }
-                else
-                {
-                    color = "#77AAAA";
-                }
-                String link = "<a href='SelectPBX?pbx=" + fileName + "'>" + title + "</a>";
-                String editLink = "<font >" + 
-                        "<a style='font-size:57%'  href='EditPBX?pbx=" + fileName + "'>Edit" +
-                        "</a></font>";
-                out.println("<td width=20% bgcolor=" + color  + 
-                            "><b>" + link + "</b><br/>" + fileName + "<br/" + editLink + "</td>");
-                }
-                counter++;
-        }
-            
-        }
-        out.println("</tr></table>");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

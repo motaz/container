@@ -41,8 +41,8 @@ public class Login extends HttpServlet {
                 
                 String password = request.getParameter("pass");
                 
-                String configUser = General.getConfigurationParameter("user", "", null);
-                String configPass = General.getConfigurationParameter("password", "", null);
+                String configUser = General.getConfigurationParameter("login", "", null);
+                String configPass = General.getConfigurationParameter("pass", "", null);
                 
                 boolean valid = configUser.toLowerCase().equals(request.getParameter("login").toLowerCase());
                 
@@ -71,10 +71,10 @@ public class Login extends HttpServlet {
                 }
             }
             
-            String user = General.getConfigurationParameter("user", null, null);
+            String user = General.getConfigurationParameter("login", null, null);
             if (user == null) {
-                out.println("<p class=warnmessage>Configuration file is missing<br/>" + 
-                        "/etc/code/simpletrunk.ini</p>");  
+                out.println("<p class=warnmessage>Configuration file is missing<br/>");  
+                response.sendRedirect("Setup");
             }
             else {
                 out.println("<h2>Login</h2>");

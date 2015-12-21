@@ -36,7 +36,7 @@ final public class General {
         writeEvent(eventText, null);
     }
         /**
-     * write event text in /var/log/myportal/myportalws- day number
+     * write event text in /var/log/simpletrunk/simpletrunk- day number
      * it recycles day numbers
      * @param eventText 
      * @param logname 
@@ -54,19 +54,24 @@ final public class General {
             
             // Get today file name
             String fileName;
-            File dir = new File("log");
+ 
+            String logdir = "log";
+            if (System.getProperty("os.name").toLowerCase().contains("linux")){
+              logdir = "/var/log/simpletrunk";
+            }
+            if ((logname == null) || (logname.isEmpty())) {
+                fileName = logdir + "/simpletrunk-" + day + ".log";
+            }
+            else {
+                fileName = logdir + "/" + logname + "-" + day + ".log";
+            }
+            
+            // Check log directory existance
+            File dir = new File(logdir);
             
             if (!dir.exists()){
                 dir.mkdir();
-            }
-            String logdir = "log";
-            if (System.getProperty("os.name").toLowerCase().contains("linux")){
-              logdir = "/var/log/code";
-            }
-            if ((logname == null) || (logname.isEmpty()))
-                fileName = logdir + "/simpletrunk-" + day + ".log";
-            else
-                fileName = logdir + "/" + logname + "-" + day + ".log";
+            }            
             
             File file = new File(fileName);
             
@@ -103,17 +108,24 @@ final public class General {
        try
 
        {
+         String dir = "";
+         if (System.getProperty("os.name").toLowerCase().contains("linux")){
+              dir = "/etc/simpletrunk/";
+         } 
          if ((aFile == null) || (aFile.isEmpty())){
-           aFile = "simpletrunk.ini";
+             
+           aFile = dir + "simpletrunk.ini";
+         }
+         else
+         {
+            if (!aFile.contains("/")){
+                 aFile = dir + aFile;
+            }
+             
          }
          
-         String fileName = aFile;
-         File confFile = new File(fileName); 
-         if (!confFile.exists()){
-             fileName = "/etc/code/simpletrunk.ini";
-         }
          String text;
-           try (FileInputStream stream = new FileInputStream(fileName)) {
+           try (FileInputStream stream = new FileInputStream(aFile)) {
                prop.load(stream);
                text = prop.getProperty(parameterName, defaultValue);
            }
@@ -134,27 +146,36 @@ final public class General {
        try
        {
            
+         String dir = "";
+         if (System.getProperty("os.name").toLowerCase().contains("linux")){
+              dir = "/etc/simpletrunk/";
+         } 
+         File directory = new File(dir);
+         if (!directory.exists()){
+             directory.mkdir();
+         }
          if ((aFile == null) || (aFile.isEmpty())){
-            aFile = "simpletrunk.ini";
+             
+           aFile = dir + "simpletrunk.ini";
          }
          else
          {
-           String fileName = aFile;
-           File iniFile = new File(fileName); 
-           iniFile.createNewFile();
-             
+             if (!aFile.contains("/")){
+                 aFile = dir + aFile;
+             }
          }
          
-         String fileName = aFile;
-         File confFile = new File(fileName); 
-         if (!confFile.exists()){
-             fileName = "/etc/code/simpletrunk.ini";
+         File confFile = new File(aFile);
+         if (! confFile.exists()){
+             confFile.createNewFile();
          }
          
-           try (FileInputStream stream = new FileInputStream(fileName)) {
+           try (FileInputStream stream = new FileInputStream(aFile)) {
                prop.load(stream);
                prop.setProperty(parameterName, aValue);
-               prop.store(new FileOutputStream(fileName), "Simple Trunk");
+             try (FileOutputStream output = new FileOutputStream(aFile)) {
+                 prop.store(output, "STPanel");
+             }
            }
          return(true);
          
@@ -166,7 +187,22 @@ final public class General {
      
     }  
     
+    public static String getPBXsDir() {
+        // Create new file
+        
+        String dir = "pbxs/";
+        if (System.getProperty("os.name").toLowerCase().contains("linux")){
+            dir = "/etc/simpletrunk/pbxs/";
+        }
+        File directory = new File(dir);
+        if (! directory.exists()){
+            directory.mkdirs();
+        }
+        return dir;
+    }  
+    
    public static String getMD5(String pass) {
+       
     try {
           MessageDigest m = MessageDigest.getInstance("MD5");
           byte[] data = pass.getBytes();
