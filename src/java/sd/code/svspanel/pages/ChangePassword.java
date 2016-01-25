@@ -84,13 +84,13 @@ public class ChangePassword extends HttpServlet {
             else // Change password
             {
                  
-                 String configPass = General.getConfigurationParameter("password", "", null);
+                 String configPass = General.getConfigurationParameter("pass", "", null);
                  
                  if (! configPass.equals(General.getMD5(request.getParameter("oldpassword")))) {
                      out.println("<p class=errormessage>Invalid password</p>");
                  }
                  else {
-                     boolean res = General.setConfigurationParameter("password", General.getMD5(request.getParameter("newpassword")), null);
+                     boolean res = General.setConfigurationParameter("pass", General.getMD5(request.getParameter("newpassword")), null);
                      
                      if (res){
                          out.println("<p class=infomessage>Password has been changed, you need to relogin</p>");
