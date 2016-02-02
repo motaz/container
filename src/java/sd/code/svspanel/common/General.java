@@ -11,10 +11,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,6 +26,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import sd.code.svspanel.types.Operation;
 
 /**
  *
@@ -269,5 +276,74 @@ final public class General {
         return outputText;
     }     
 
+   public static Operation downloadFile(String fileURL, String urlParameters, OutputStream outputStream)
+            throws IOException, ParseException {
+        
+        Operation op = new Operation();
+        URL url = new URL(fileURL);
+        HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+        httpConn.setRequestProperty("Content-Type", "application/zip");
+        httpConn.setDoOutput(true);
+        
 
+        try (OutputStreamWriter writer = new OutputStreamWriter(httpConn.getOutputStream())) {
+            writer.write(urlParameters);
+        
+            writer.flush();        
+        }
+        int responseCode = httpConn.getResponseCode();
+ 
+        String result = "";
+        // always check HTTP response code first
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+          
+            // opens input stream from the HTTP connection
+            InputStream inputStream = httpConn.getInputStream();
+            //String saveFilePath = filePath;
+             
+            // opens an output stream to save into file
+           // outputStream = new FileOutputStream(saveFilePath);
+ 
+            long size = 0;
+            int bytesRead = -1;
+            byte[] buffer = new byte[1024];
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+                size = size + bytesRead;
+                if (size < 2048) {
+                    byte[] text = new byte[(int)size];
+                    System.arraycopy(buffer, 0, text, 0, (int)size);
+                    String str = new String(text);
+                    result = result + str;
+                    
+                }
+            }
+ 
+            outputStream.close();
+            inputStream.close();
+ 
+            op.success = size > 2048;
+            op.size = size;
+            
+            if (!op.success) {
+                try {
+                JSONParser parser = new JSONParser();
+                JSONObject obj = (JSONObject)parser.parse(result);
+                op.message = obj.get("message").toString();
+                }
+                catch (Exception ex){
+                    op.success = false;
+                    op.errorCode = 5;
+                    op.message = "Error while parsing result: " + ex.toString() ;
+                }
+            }
+        } else {
+            op.success = false;
+            op.errorCode = 5;
+            op.message = "HTTP download Error";
+        }
+        httpConn.disconnect();
+        return op;
+    } 
+    
 }

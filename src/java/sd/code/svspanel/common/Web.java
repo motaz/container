@@ -88,6 +88,8 @@ public class Web {
               String logEnd = "";
               String amiFont = "";
               String amiEnd = "";
+              String toolsFont = "";
+              String toolsEnd = "";
               
               if (selectedPage.equals("home")) {
                   homeFont = "<b><font color=lime>";
@@ -132,6 +134,11 @@ public class Web {
                   logFont = "<b><font color=lime>";
                   logEnd = "</font></b>";
               }              
+
+              if (selectedPage.equals("tools")) {
+                  toolsFont = "<b><font color=lime>";
+                  toolsEnd = "</font></b>";
+              }              
               
               out.println(
                      "	<li><a href=Home>" + homeFont + "Home" + homeEnd + "</a></li>\n" +
@@ -142,6 +149,7 @@ public class Web {
                      "	<li><a href=Commands>" + commandFont + "Commands" + commandEnd + "</a></li>\n" +
                      "	<li><a href=AMI>" + amiFont + "AMI" + amiEnd + "</a></li>\n" +
                      "	<li><a href=Logs>" + logFont + "Logs" + logEnd + "</a></li>\n" +
+                     "	<li><a href=Tools>" + toolsFont + "Tools" + toolsEnd + "</a></li>\n" +
                      "	<li><a href=ChangePassword>" + myFont + "My Admin" + myEnd + "</a></li>\n"
              );
          }
