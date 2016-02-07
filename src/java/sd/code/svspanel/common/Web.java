@@ -20,7 +20,7 @@ public class Web {
             String selectedPage){
         String user = getCookieValue(request, "user");
 
-        String version  = "1.0.1";
+        String version  = "1.0.2";
         
         if (user == null){
             user = "";
