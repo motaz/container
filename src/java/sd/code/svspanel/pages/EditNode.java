@@ -46,7 +46,7 @@ public class EditNode extends HttpServlet {
                    tabName = "dialplan";
                 }
                 if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, tabName);
+                    Web.setHeader(true, request, response, out, "advanced", tabName);
                     String url = General.getConfigurationParameter("url", "", pbxfile);
 
                     String nodename = request.getParameter("nodename");

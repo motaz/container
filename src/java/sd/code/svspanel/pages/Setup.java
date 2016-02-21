@@ -34,7 +34,7 @@ public class Setup extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            Web.setHeader(false, request, response, out, "");
+            Web.setHeader(false, request, response, out, "", "");
             String currentLogin = General.getConfigurationParameter("login", null, null);
             if (request.getParameter("login") != null){
                 try {

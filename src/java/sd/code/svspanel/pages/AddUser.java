@@ -8,7 +8,6 @@ package sd.code.svspanel.pages;
 import sd.code.svspanel.common.Web;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,9 +36,9 @@ public class AddUser extends HttpServlet {
             String user = Web.getCookieValue(request, "user");
             
             if (Web.checkSession(request, user)) {
-                Web.setHeader(true, request, response, out, "");
+                Web.setHeader(true, request, response, out, "", "");
 
-                out.println("<h1>Users Management</h1>");
+                out.println("<h2>Users Management</h2>");
                 
                 Web.setFooter(out);
                 

@@ -42,7 +42,7 @@ public class Dialplan extends HttpServlet {
               String user = Web.getCookieValue(request, "user");
               String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
               if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "dialplan");
+                  Web.setHeader(true, request, response, out, "advanced", "dialplan");
 
                   out.println("<h2>Dial-plans</h2>");
                   String url = General.getConfigurationParameter("url", "", pbxfile);

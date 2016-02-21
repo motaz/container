@@ -40,9 +40,9 @@ public class Status extends HttpServlet {
           String pbxfile = General.getPBXsDir() + Web.getCookieValue(request, "file");
             try {
                 if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, "status");
+                    Web.setHeader(true, request, response, out, "advanced", "status");
 
-                    out.println("<h1>Status</h1>");
+                    out.println("<h2>Status</h2>");
 
                     String command = request.getParameter("command");
                     

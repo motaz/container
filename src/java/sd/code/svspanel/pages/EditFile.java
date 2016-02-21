@@ -41,7 +41,7 @@ public class EditFile extends HttpServlet {
             try {
                 String fileName = request.getParameter("filename");
                 if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, "files");
+                    Web.setHeader(true, request, response, out, "advanced", "files");
                     String url = General.getConfigurationParameter("url", "", pbxfile);
 
                     out.println("<h4>Edit file: <b>[" + fileName + "]</b> </h4>");

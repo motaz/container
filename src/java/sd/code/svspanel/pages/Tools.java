@@ -12,9 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import sd.code.svspanel.common.General;
 import sd.code.svspanel.common.Web;
 
 /**
@@ -39,9 +36,9 @@ public class Tools extends HttpServlet {
           String user = Web.getCookieValue(request, "user");
             try {
                 if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, "tools");
+                    Web.setHeader(true, request, response, out, "advanced", "tools");
 
-                    out.println("<h1>Tools</h1>");
+                    out.println("<h2>Tools</h2>");
 
                     out.println("<a href=Backup>Backup all config files</a>");
                     

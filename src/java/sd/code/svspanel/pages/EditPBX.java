@@ -35,7 +35,7 @@ public class EditPBX extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            Web.setHeader(true, request, response, out, "");
+            Web.setHeader(true, request, response, out, "", "");
             
             String user = Web.getCookieValue(request, "user");
 

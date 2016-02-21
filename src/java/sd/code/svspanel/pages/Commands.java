@@ -40,9 +40,9 @@ public class Commands extends HttpServlet {
           String pbxfile = General.getPBXsDir() + Web.getCookieValue(request, "file");
             try {
                 if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, "commands");
+                    Web.setHeader(true, request, response, out, "advanced", "commands");
 
-                    out.println("<h1>Commands</h1>");
+                    out.println("<h2>CLI Commands</h2>");
 
                     String command = request.getParameter("command");
                     

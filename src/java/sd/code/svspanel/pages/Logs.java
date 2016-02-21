@@ -41,9 +41,9 @@ public class Logs extends HttpServlet {
           String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
             try {
                 if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, "logs");
+                    Web.setHeader(true, request, response, out, "advanced", "logs");
 
-                    out.println("<h1>Logs</h1>");
+                    out.println("<h2>Logs</h2>");
 
                     String file = request.getParameter("file");
                     out.println("<table><tr>");

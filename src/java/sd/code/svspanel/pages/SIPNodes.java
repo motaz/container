@@ -40,8 +40,9 @@ public class SIPNodes extends HttpServlet {
           String user = Web.getCookieValue(request, "user");
           String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
           if (Web.checkSession(request, user)) {
-              Web.setHeader(true, request, response, out, "sip");
-              out.println("<h2>SIP Objects</h2>");
+              
+              Web.setHeader(true, request, response, out, "advanced", "sip");
+              out.println("<h2>SIP Nodes</h2>");
               
               out.println("<a href='EditNode?filename=sip.conf'>Add new SIP node</a>");
               

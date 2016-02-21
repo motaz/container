@@ -41,7 +41,7 @@ public class AMI extends HttpServlet {
               String user = Web.getCookieValue(request, "user");
               String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
               if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "ami");
+                  Web.setHeader(true, request, response, out, "advanced", "ami");
                   out.println("<h2>AMI command</h2>");
 
                   String command = request.getParameter("command"); 

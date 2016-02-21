@@ -50,14 +50,13 @@ public class Backup extends HttpServlet {
             obj.put("name", pbxfile);
             String requestText = obj.toJSONString();
             OutputStream output = response.getOutputStream();
-            OutputStreamWriter writer = new OutputStreamWriter(output);
-            File file = new File(pbxfile);
-
-            response.setHeader("Content-Disposition", "attachment;filename=" + file.getName() + ".zip");                 
-            Operation op = General.downloadFile(url + "BackupFiles", requestText, output);
-            response.setContentLength((int)op.size);          
-           
-            writer.close();
+            try (OutputStreamWriter writer = new OutputStreamWriter(output)) {
+                File file = new File(pbxfile);
+                
+                response.setHeader("Content-Disposition", "attachment;filename=" + file.getName() + ".zip");
+                Operation op = General.downloadFile(url + "BackupFiles", requestText, output);
+                response.setContentLength((int)op.size);
+            }
         }
         catch (Exception ex){
           PrintWriter out = response.getWriter();

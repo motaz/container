@@ -17,10 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 public class Web {
     
     public static void setHeader(boolean displayTabs, HttpServletRequest request, HttpServletResponse response, PrintWriter out, 
-            String selectedPage){
+            String parent, String page){
+        
         String user = getCookieValue(request, "user");
+        if (page == null){
+              page = "";
+            }
 
-        String version  = "1.0.2";
+        String version  = "1.0.3";
         
         if (user == null){
             user = "";
@@ -90,66 +94,30 @@ public class Web {
               String amiEnd = "";
               String toolsFont = "";
               String toolsEnd = "";
+              String advancedFont = "";
+              String advancedEnd = "";
               
-              if (selectedPage.equals("home")) {
+              
+              if (parent.equals("home")) {
                   homeFont = "<b><font color=lime>";
                   homeEnd = "</font></b>";
               }
               
-              if (selectedPage.equals("status")) {
-                  statusFond = "<b><font color=lime>";
-                  statusEnd = "</font></b>";
-              }
               
-              if (selectedPage.equals("files")) {
-                  filesFont = "<b><font color=lime>";
-                  filesEnd = "</font></b>";
-              }
-              
-              if (selectedPage.equals("sip")) {
-                  sipFont = "<b><font color=lime>";
-                  sipEnd = "</font></b>";
-              }
-              
-              if (selectedPage.equals("dialplan")) {
-                  dialFont = "<b><font color=lime>";
-                  dialEnd = "</font></b>";
-              }
-
-              if (selectedPage.equals("myadmin")) {
+              if (parent.equals("myadmin")) {
                   myFont = "<b><font color=lime>";
                   myEnd = "</font></b>";
               }
-              
-              if (selectedPage.equals("commands")) {
-                  commandFont = "<b><font color=lime>";
-                  commandEnd = "</font></b>";
-              }              
-              if (selectedPage.equals("ami")) {
-                  amiFont = "<b><font color=lime>";
-                  amiEnd = "</font></b>";
-              }              
-              
-              if (selectedPage.equals("logs")) {
-                  logFont = "<b><font color=lime>";
-                  logEnd = "</font></b>";
-              }              
+             
 
-              if (selectedPage.equals("tools")) {
-                  toolsFont = "<b><font color=lime>";
-                  toolsEnd = "</font></b>";
+              if (parent.equals("advanced")) {
+                  advancedFont = "<b><font color=lime>";
+                  advancedEnd = "</font></b>";
               }              
               
               out.println(
                      "	<li><a href=Home>" + homeFont + "Home" + homeEnd + "</a></li>\n" +
-                     "	<li><a href=Status>" + statusFond + "Status" + statusEnd + "</a></li>\n" +
-                     "	<li><a href=Files>" + filesFont + "Files" + filesEnd + "</a></li>\n" +
-                     "	<li><a href=SIPNodes>" + sipFont + "SIP" + sipEnd + "</a></li>\n" +
-                     "	<li><a href=Dialplan>" + dialFont + "Dial-plans" + dialEnd + "</a></li>\n" +
-                     "	<li><a href=Commands>" + commandFont + "Commands" + commandEnd + "</a></li>\n" +
-                     "	<li><a href=AMI>" + amiFont + "AMI" + amiEnd + "</a></li>\n" +
-                     "	<li><a href=Logs>" + logFont + "Logs" + logEnd + "</a></li>\n" +
-                     "	<li><a href=Tools>" + toolsFont + "Tools" + toolsEnd + "</a></li>\n" +
+                     "	<li><a href=Advanced?sub=" + parent + ">" + advancedFont + "Advanced" + advancedEnd + "</a></li>\n" +
                      "	<li><a href=ChangePassword>" + myFont + "My Admin" + myEnd + "</a></li>\n"
              );
          }
@@ -161,7 +129,54 @@ public class Web {
             "		<div class=\"container\">\n" +
             "		<div class=\"main\">");
         
+        if (parent.equals("advanced")) {
+ 
+           advancedTab(page, out);
+          
+        }
         
+        
+    }
+
+    private static void advancedTab(String page, PrintWriter out) {
+        
+        out.println("<table><tr bgcolor='#AADDCC'>");
+        
+        selectedAdvancedTab(out, page, "status");
+        out.println("<a href='Status'>Status</a></td>");
+        
+        selectedAdvancedTab(out, page, "files");
+        out.println("<a href='Files'>Files</a></td>");
+        
+        selectedAdvancedTab(out, page, "sip");
+        out.println("<a href='SIPNodes'>SIP</a></td>");
+        
+        selectedAdvancedTab(out, page, "dialplan");
+        out.println("<a href='Dialplan'>Dial plan</a></td>");
+        
+        selectedAdvancedTab(out, page, "commands");
+        out.println("<a href='Commands'>CLI commands</a></td>");
+        
+        selectedAdvancedTab(out, page, "ami");
+        out.println("<a href='AMI'>AMI commands</a></td>");
+        
+        selectedAdvancedTab(out, page, "logs");
+        out.println("<a href='Logs'>Logs</a></td>");
+        
+        selectedAdvancedTab(out, page, "tools");
+        out.println("<a href='Tools'>Tools</a></td>");
+
+        out.println("</tr></table>");
+    }
+
+    private static void selectedAdvancedTab(PrintWriter out, String page, String compare) {
+        
+        String selected = " bgcolor='#99ccBB'";
+        out.print("<td ");
+        if (page.equals(compare)){
+            out.println(selected);
+        }
+        out.println(">");
     }
    
    public static void setFooter(PrintWriter out){

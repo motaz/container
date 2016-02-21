@@ -43,9 +43,9 @@ public class Files extends HttpServlet {
             String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
             try {
               if (Web.checkSession(request, user)) {
-                Web.setHeader(true, request, response, out, "files");
+                Web.setHeader(true, request, response, out, "advanced", "files");
 
-                out.println("<h1>Files</h1>");
+                out.println("<h2>Files</h2>");
                 
                 out.println("<table><tr>");
                 out.println("<td><a href='Files?file=sip.conf'>sip.conf</a></td>");

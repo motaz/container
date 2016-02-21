@@ -5,22 +5,21 @@
  */
 package sd.code.svspanel.pages;
 
-import sd.code.svspanel.common.Web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sd.code.svspanel.common.Web;
 
 /**
  *
  * @author motaz
  */
-@WebServlet(name = "SelectPBX", urlPatterns = {"/SelectPBX"})
-public class SelectPBX extends HttpServlet {
+@WebServlet(name = "Advanced", urlPatterns = {"/Advanced"})
+public class Advanced extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -34,21 +33,30 @@ public class SelectPBX extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            Web.setHeader(true, request, response, out, "home", "");
+           try{ 
+              String page= request.getParameter("page");
+              Web.setHeader(true, request, response, out, "advanced", page);
             
-            String user = Web.getCookieValue(request, "user");
+              String user = Web.getCookieValue(request, "user");
 
-            if (Web.checkSession(request, user)){
-                Cookie co = new Cookie("file", request.getParameter("pbx"));
-                co.setMaxAge(60 * 60 * 24 * 7);                
-                response.addCookie(co);
-                
-                response.sendRedirect("Status");
-            }
-            else {
-                response.sendRedirect("Login");
-            }
-            Web.setFooter(out);
+              if (Web.checkSession(request, user)){
+
+                  out.println("<p class=infomessage>Asterisk Advanced configuration<br/>");
+                  out.println("<font size=-1>"
+                          + "Requires administrative previlege for STPanel application server"
+                          + "</font></p>");
+                 
+              }
+              else
+              {
+                 response.sendRedirect("Login");
+              }
+        
+              Web.setFooter(out);
+           
+        } catch (Exception ex){
+            out.println("<p class=errormessage>" + ex.toString() + "</p>");
+        }
         }
     }
 

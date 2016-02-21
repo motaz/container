@@ -36,7 +36,7 @@ public class AddPBX extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
            try{ 
-              Web.setHeader(true, request, response, out, "");
+              Web.setHeader(true, request, response, out, "", "");
             
               String user = Web.getCookieValue(request, "user");
 

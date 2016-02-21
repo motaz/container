@@ -35,7 +35,7 @@ public class ChangePassword extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            Web.setHeader(true, request, response, out, "myadmin");
+            Web.setHeader(true, request, response, out, "myadmin", "");
             
             String user = Web.getCookieValue(request, "user");
 
