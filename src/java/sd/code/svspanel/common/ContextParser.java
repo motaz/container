@@ -6,6 +6,7 @@
 package sd.code.svspanel.common;
 
 import java.util.ArrayList;
+import sd.code.svspanel.types.NodeInfo;
 
 /**
  *
@@ -23,6 +24,7 @@ public class ContextParser {
         
     }
     
+
     public ArrayList<String> getNodes(){
         
         ArrayList<String> nodes = new ArrayList<>();
@@ -34,6 +36,33 @@ public class ContextParser {
                 nodes.add(line);
                 
             }
+        }
+        
+        return nodes;
+        
+    }
+    
+    public ArrayList<NodeInfo> getNodesWithInfo(){
+        
+        ArrayList<NodeInfo> nodes = new ArrayList<>();
+        NodeInfo node = null;
+    
+        for (String line: contents){
+            line = line.trim();
+            if ((line.indexOf("[") == 0) &&  (line.indexOf("]")> 2)){
+                line = line.substring(0, line.indexOf("]") + 1);
+                if (node != null){
+                    nodes.add(node);
+                }
+                node = new NodeInfo(line);
+            }
+            else if (node != null){
+                node.addLine(line);
+            }
+
+        }
+        if (node != null){
+            nodes.add(node);
         }
         
         return nodes;

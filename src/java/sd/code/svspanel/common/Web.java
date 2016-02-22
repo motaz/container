@@ -160,7 +160,7 @@ public class Web {
         out.println("<a href='Extensions'>Extensions</a></td>");
         
         selectTabPage(out, page, "trunks");
-        out.println("<a href='Trunks'>Trunks</a></td>");
+        out.println("<a href='Extensions?type=trunk'>Trunks</a></td>");
 
         out.println("</tr></table>");
     }
