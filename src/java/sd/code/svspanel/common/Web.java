@@ -74,65 +74,48 @@ public class Web {
 
          // Tabs
          if (displayTabs) {
-              String homeFont = "";
-              String homeEnd  = "";
-              String statusFond = "";
-              String statusEnd = "";
-              String sipFont = "";
-              String sipEnd = "";
-              String filesFont = "";
-              String filesEnd = "";
-              String dialFont = "";
-              String dialEnd = "";
-              String myFont = "";
-              String myEnd = "";
-              String commandFont = "";
-              String commandEnd = "";
-              String logFont = "";
-              String logEnd = "";
-              String amiFont = "";
-              String amiEnd = "";
-              String toolsFont = "";
-              String toolsEnd = "";
-              String advancedFont = "";
-              String advancedEnd = "";
-              
-              
-              if (parent.equals("home")) {
-                  homeFont = "<b><font color=lime>";
-                  homeEnd = "</font></b>";
+             String font = "style='color:lime;font-weight: bold;'";
+              out.print("<li><a href=Home><font ");
+              if (parent.equals("home")){
+                  out.print(font);
               }
+              out.println(">Home</font></a></li>");
               
-              
-              if (parent.equals("myadmin")) {
-                  myFont = "<b><font color=lime>";
-                  myEnd = "</font></b>";
+              out.print("<li><a href=Advanced><font ");
+              if (parent.equals("advanced")){
+                  out.print(font);
               }
+              out.println(">Advanced</font></a></li>");
+              
+              
+              out.print("<li><a href=Pbx?sub=" + parent + "><font ");
+              if (parent.equals("pbx")){
+                  out.print(font);
+              }
+              out.println(">PBX</font></a></li>");
+              
+              out.println("<li><a href=ChangePassword><font ");
+              if (parent.equals("myadmin")){
+                  out.print(font);
+              }
+              out.println(">My Admin</font></a></li>");
              
-
-              if (parent.equals("advanced")) {
-                  advancedFont = "<b><font color=lime>";
-                  advancedEnd = "</font></b>";
-              }              
-              
-              out.println(
-                     "	<li><a href=Home>" + homeFont + "Home" + homeEnd + "</a></li>\n" +
-                     "	<li><a href=Advanced?sub=" + parent + ">" + advancedFont + "Advanced" + advancedEnd + "</a></li>\n" +
-                     "	<li><a href=ChangePassword>" + myFont + "My Admin" + myEnd + "</a></li>\n"
-             );
          }
          
-         out.println("		</ul>\n" +
-            "			</div>\n" +
-            "		</div>\n" +
-            "		<div class=\"content\">\n" +
-            "		<div class=\"container\">\n" +
-            "		<div class=\"main\">");
+         out.println("</ul>\n" +
+            "	</div>\n" +
+            "	</div>\n" +
+            "	<div class=\"content\">\n" +
+            "	<div class=\"container\">\n" +
+            "	<div class=\"main\">");
         
         if (parent.equals("advanced")) {
  
            advancedTab(page, out);
           
+        }
+        else if (parent.equals("pbx")) {
+            pbxTab(page, out);
         }
         
         
@@ -142,34 +125,47 @@ public class Web {
         
         out.println("<table><tr bgcolor='#AADDCC'>");
         
-        selectedAdvancedTab(out, page, "status");
+        selectTabPage(out, page, "status");
         out.println("<a href='Status'>Status</a></td>");
         
-        selectedAdvancedTab(out, page, "files");
+        selectTabPage(out, page, "files");
         out.println("<a href='Files'>Files</a></td>");
         
-        selectedAdvancedTab(out, page, "sip");
+        selectTabPage(out, page, "sip");
         out.println("<a href='SIPNodes'>SIP</a></td>");
         
-        selectedAdvancedTab(out, page, "dialplan");
+        selectTabPage(out, page, "dialplan");
         out.println("<a href='Dialplan'>Dial plan</a></td>");
         
-        selectedAdvancedTab(out, page, "commands");
+        selectTabPage(out, page, "commands");
         out.println("<a href='Commands'>CLI commands</a></td>");
         
-        selectedAdvancedTab(out, page, "ami");
+        selectTabPage(out, page, "ami");
         out.println("<a href='AMI'>AMI commands</a></td>");
         
-        selectedAdvancedTab(out, page, "logs");
+        selectTabPage(out, page, "logs");
         out.println("<a href='Logs'>Logs</a></td>");
         
-        selectedAdvancedTab(out, page, "tools");
+        selectTabPage(out, page, "tools");
         out.println("<a href='Tools'>Tools</a></td>");
 
         out.println("</tr></table>");
     }
 
-    private static void selectedAdvancedTab(PrintWriter out, String page, String compare) {
+    private static void pbxTab(String page, PrintWriter out) {
+        
+        out.println("<table><tr bgcolor='#AADDCC'>");
+        
+        selectTabPage(out, page, "extensions");
+        out.println("<a href='Extensions'>Extensions</a></td>");
+        
+        selectTabPage(out, page, "trunks");
+        out.println("<a href='Trunks'>Trunks</a></td>");
+
+        out.println("</tr></table>");
+    }
+    
+    private static void selectTabPage(PrintWriter out, String page, String compare) {
         
         String selected = " bgcolor='#99ccBB'";
         out.print("<td ");
@@ -181,15 +177,15 @@ public class Web {
    
    public static void setFooter(PrintWriter out){
 
-       out.println("		</div>\n" +
+       out.println("	</div>\n" +
+                   "	</div>\n" +
+                   "	</div>\n" +
+                   "	<div class=\"footer\">\n" +
+                   "		<div class=\"container\">\n" +
+                   "			&copy; Code for computer software 2015 <img src='img/small-code.png' />\n" +
                    "		</div>\n" +
-                   "		</div>\n" +
-                   "		<div class=\"footer\">\n" +
-                   "			<div class=\"container\">\n" +
-                   "				&copy; Code for computer software 2015 <img src='img/small-code.png' />\n" +
-                   "			</div>\n" +
-                   "		</div>\n" +
-                   "	</body>\n" +
+                   "	</div>\n" +
+                   "  </body>\n" +
                    "</html>");
    }
    
