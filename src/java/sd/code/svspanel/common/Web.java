@@ -24,7 +24,7 @@ public class Web {
               page = "";
             }
 
-        String version  = "1.0.3";
+        String version  = "1.0.4";
         
         if (user == null){
             user = "";
@@ -156,10 +156,10 @@ public class Web {
         
         out.println("<table><tr bgcolor='#AADDCC'>");
         
-        selectTabPage(out, page, "extensions");
+        selectTabPage(out, page, "ext");
         out.println("<a href='Extensions'>Extensions</a></td>");
         
-        selectTabPage(out, page, "trunks");
+        selectTabPage(out, page, "trunk");
         out.println("<a href='Extensions?type=trunk'>Trunks</a></td>");
 
         out.println("</tr></table>");
