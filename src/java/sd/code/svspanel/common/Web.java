@@ -182,7 +182,7 @@ public class Web {
                    "	</div>\n" +
                    "	<div class=\"footer\">\n" +
                    "		<div class=\"container\">\n" +
-                   "			&copy; Code for computer software 2015 <img src='img/small-code.png' />\n" +
+                   "			&copy; Code for computer software 2015-2016 <img src='img/small-code.png' />\n" +
                    "		</div>\n" +
                    "	</div>\n" +
                    "  </body>\n" +
