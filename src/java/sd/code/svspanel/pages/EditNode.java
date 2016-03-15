@@ -121,6 +121,7 @@ public class EditNode extends HttpServlet {
     private void displayEditForm(final PrintWriter out, JSONObject resObj, String nodename, String dataHeader, String dataFooter, boolean edit) {
         
         out.println("<form method=POST>");
+	displayEditSaveButton(edit, out);
         if ((boolean)resObj.get("success")) {
             String content = resObj.get("content").toString();
             String[] arr = content.split("\n");
@@ -148,13 +149,18 @@ public class EditNode extends HttpServlet {
             out.println(dataFooter);
             
         }
-        if (edit) {
-            out.println("<br/><input type=submit value=Save name=save id=button />");
-            
-        }else {
-            out.println("<input type=submit value=Edit name=edit />");
-        }
+	displayEditSaveButton(edit, out);
         out.println("</form>");
+    }
+
+    private void displayEditSaveButton(boolean edit, final PrintWriter out) {
+	if (edit) {
+	    out.println("<br/><input type=submit value=Save name=save id=button />");
+	    
+	}else {
+	    out.println("<input type=submit value=Edit name=edit />");
+	}
+	out.println("<br/>");
     }
 
     private void doSave(HttpServletRequest request, String fileName, String nodename, String url, final PrintWriter out) throws IOException, ParseException {
@@ -169,10 +175,10 @@ public class EditNode extends HttpServlet {
             JSONObject saveresObj = (JSONObject) saveparser.parse(resultText);
             boolean res = ((boolean)saveresObj.get("success"));
             if (res) {
-                out.println("<p id=infomessage>Saved</p>");
+                out.println("<p class=infomessage>Saved</p>");
             }
             else {
-                out.println("<p id=errormessage>Error: " + saveresObj.get("message").toString() + "</p>");
+                out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString() + "</p>");
             }
             
         }
