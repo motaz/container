@@ -66,7 +66,9 @@ public class EditNode extends HttpServlet {
                     }
                     else {
                         
-                        doAddNode(request, fileName, nodename, url, out);
+		        if (request.getParameter("add") != null) {			
+                           Web.addNewNode(pbxfile, request, fileName, nodename, request.getParameter("content"), out);
+			}
                         out.println("<h3>Edit Node: <b>" + nodename + "</b> </h3>");
 
                         doSave(request, fileName, nodename, url, out);
@@ -98,25 +100,7 @@ public class EditNode extends HttpServlet {
         }
     }
 
-    private void doAddNode(HttpServletRequest request, String fileName, String nodename, String url, final PrintWriter out) throws ParseException, IOException {
-        if (request.getParameter("add") != null) {
-            JSONObject saveobj = new JSONObject();
-            saveobj.put("filename", fileName);
-            saveobj.put("nodename", nodename);
-            saveobj.put("content", request.getParameter("content"));
-            String requestText = saveobj.toJSONString();
-            String resultText = General.restCallURL(url + "AddNode", requestText);
-            JSONParser saveparser = new JSONParser();
-            JSONObject saveresObj = (JSONObject) saveparser.parse(resultText);
-            boolean res = ((boolean)saveresObj.get("success"));
-            if (res) {
-                out.println("<p class=infomessage>New node " + nodename + " has been added</p>");
-            }
-            else {
-                out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString() + "</p>");
-            }
-        }
-    }
+
 
     private void displayEditForm(final PrintWriter out, JSONObject resObj, String nodename, String dataHeader, String dataFooter, boolean edit) {
         

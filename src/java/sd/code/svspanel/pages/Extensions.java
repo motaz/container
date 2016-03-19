@@ -190,7 +190,7 @@ public class Extensions extends HttpServlet {
 	out.println("<font color=gray>name=value</font></td>");
 	out.println("<td><textarea rows = 5 cols=20 name=additional />");
 	out.println("qualify=yes");
-	out.println("nat=yes");
+	out.println("nat=force_rport,comedia");
 	out.println("</textarea></td></tr>");
 
 	

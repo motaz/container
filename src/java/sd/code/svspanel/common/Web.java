@@ -5,10 +5,15 @@
  */
 package sd.code.svspanel.common;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -72,9 +77,9 @@ public class Web {
             "	<div class=\"container\">\n" +
             "	<ul class=\"nav\"> ");
 
-         // Tabs
-         if (displayTabs) {
-             String font = "style='color:lime;font-weight: bold;'";
+        // Tabs
+        if (displayTabs) {
+              String font = "style='color:lime;font-weight: bold;'";
               out.print("<li><a href=Home><font ");
               if (parent.equals("home")){
                   out.print(font);
@@ -100,9 +105,9 @@ public class Web {
               }
               out.println(">My Admin</font></a></li>");
              
-         }
+        }
          
-         out.println("</ul>\n" +
+        out.println("</ul>\n" +
             "	</div>\n" +
             "	</div>\n" +
             "	<div class=\"content\">\n" +
@@ -135,7 +140,7 @@ public class Web {
         out.println("<a href='SIPNodes'>SIP</a></td>");
         
         selectTabPage(out, page, "dialplan");
-        out.println("<a href='Dialplan'>Dial plan</a></td>");
+        out.println("<a href='Dialplan'>Dial plans</a></td>");
         
         selectTabPage(out, page, "commands");
         out.println("<a href='Commands'>CLI commands</a></td>");
@@ -162,7 +167,10 @@ public class Web {
         selectTabPage(out, page, "trunk");
         out.println("<a href='Extensions?type=trunk'>Trunks</a></td>");
 
-        out.println("</tr></table>");
+        selectTabPage(out, page, "dialplans");
+        out.println("<a href='Dialplans'>Dialplans</a></td>");
+
+	out.println("</tr></table>");
     }
     
     private static void selectTabPage(PrintWriter out, String page, String compare) {
@@ -222,4 +230,73 @@ public class Web {
         return(result);
         
     }     
+    
+      public static void displayDialplans(HttpServletRequest request, String user, final PrintWriter out
+	      ) throws IOException, ParseException {
+	
+	    String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+	    String url = General.getConfigurationParameter("url", "", pbxfile);
+	    JSONObject obj = new JSONObject();
+	    obj.put("filename", "extensions.conf");
+	    String requestText = obj.toJSONString();
+	    
+	    String resultText = General.restCallURL(url + "GetFile", requestText);
+	    JSONParser parser = new JSONParser();
+	    JSONObject resObj = (JSONObject) parser.parse(resultText);
+	    if ((boolean)resObj.get("success")) {
+		String content = resObj.get("content").toString();
+		String[] arr = content.split("\n");
+		
+		ContextParser cparser = new ContextParser(arr, "extensions.conf");
+		ArrayList<String> nodes = cparser.getNodes();
+		
+		String reverseStr = Web.getCookieValue(request, "reverse");
+		boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
+		
+		out.println("<table><tr><th>Node</th><th></th></tr>");
+		if (reverse) {
+		    for (int i= nodes.size() -1; i >= 0; i--) {
+			String node = nodes.get(i);
+			out.println("<tr>");
+			out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + node + "'>" +
+				node + "</a></td>");
+			out.println("</tr>");
+		    }
+		}
+		else {
+		    
+		    for (String node: nodes) {
+			out.println("<tr>");
+			out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + node + "'>" +
+				node + "</a></td>");
+			out.println("</tr>");
+		    }
+		}
+		out.println("</table>");
+		
+	}
+    }    
+      
+    public static void addNewNode(String pbxfile, HttpServletRequest request, String fileName, String nodename, String content, final PrintWriter out) 
+	    throws ParseException, IOException {
+	
+	    String url = General.getConfigurationParameter("url", "", pbxfile);	    
+            JSONObject saveobj = new JSONObject();
+            saveobj.put("filename", fileName);
+            saveobj.put("nodename", nodename);
+            saveobj.put("content", content);
+            String requestText = saveobj.toJSONString();
+            String resultText = General.restCallURL(url + "AddNode", requestText);
+            JSONParser saveparser = new JSONParser();
+            JSONObject saveresObj = (JSONObject) saveparser.parse(resultText);
+            boolean res = ((boolean)saveresObj.get("success"));
+            if (res) {
+                out.println("<p class=infomessage>New node " + nodename + " has been added</p>");
+            }
+            else {
+                out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString()
+			+ "</p>");
+            }
+        
+    }      
 }
