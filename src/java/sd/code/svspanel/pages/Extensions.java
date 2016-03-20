@@ -188,12 +188,10 @@ public class Extensions extends HttpServlet {
 	
 	out.println("<td>additional properties<br/>");
 	out.println("<font color=gray>name=value</font></td>");
-	out.println("<td><textarea rows = 5 cols=20 name=additional />");
+	out.println("<td><textarea rows = 5 cols=40 name=additional />");
 	out.println("qualify=yes");
 	out.println("nat=force_rport,comedia");
 	out.println("</textarea></td></tr>");
-
-	
 
 	out.println("<tr><td><input type=submit name=addnode value='Add " + title + "' /></td></tr>");
 	out.println("</table>");
@@ -202,6 +200,7 @@ public class Extensions extends HttpServlet {
     }
 
     private void displayNode(final PrintWriter out, NodeInfo node, boolean displayExtension) {
+	
         if ((displayExtension &&node.isExtension()) || (! displayExtension && node.isTrunk())) {
             out.println("<tr>");
             out.println("<td><a href='EditNode?filename=sip.conf&nodename=[" + 
