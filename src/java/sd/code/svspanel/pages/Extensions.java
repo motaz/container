@@ -61,11 +61,11 @@ public class Extensions extends HttpServlet {
 		  // Insert SIP node
 
 		  doAddNode(request, out);
-		  
+		  boolean isDisplayAdd = (request.getParameter("add") != null);
 		  // Display add SIP link
-		  if (request.getParameter("add") == null){
+		  if (! isDisplayAdd){
 		      if (type.equals("ext")) {
-                        out.println("<a href='Extensions?add=1'>Add new SIP Extension</a>");
+                         out.println("<a href='Extensions?add=1'>Add new SIP Extension</a>");
 		      }
 		      else
 		      {
@@ -75,44 +75,16 @@ public class Extensions extends HttpServlet {
 		    
 		  }  // Display add SIP form
 		  else {
+		      out.println("<table><tr><td>");
 		      	displayAddSIPNode(out, title, type);
+			out.println("</td><td>");
 		  }
+		  
 
-                  String url = General.getConfigurationParameter("url", "", pbxfile);
-                  JSONObject obj = new JSONObject();
-                  obj.put("filename", "sip.conf");
-                  String requestText = obj.toJSONString();
-
-                  String resultText = General.restCallURL(url + "GetFile", requestText);
-
-                  JSONParser parser = new JSONParser();
-                  JSONObject resObj = (JSONObject) parser.parse(resultText);
-                  if ((boolean)resObj.get("success")) {
-                        String content = resObj.get("content").toString();
-                        String[] arr = content.split("\n");
-
-                        ContextParser cparser = new ContextParser(arr, "sip.conf");
-                        ArrayList<NodeInfo> nodes = cparser.getNodesWithInfo();
-
-                        String reverseStr = Web.getCookieValue(request, "reverse");
-                        boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
-                        out.println("<table><tr><th>" + title +"</th><th>User name</th>");
-                        out.println("<th>Host</th><th>Context</th></tr>");
-                        if (reverse) {
-                            for (int i= nodes.size() -1; i >= 0; i--) {
-                                NodeInfo node = nodes.get(i);
-                                  displayNode(out, node, isExten);
-
-                            }
-                        }
-                        else {
-                          for (NodeInfo node: nodes) {
-                                 displayNode(out, node, isExten);
-                          }
-                        }
-                        out.println("</table>");
-                        Web.setFooter(out);
-                    }
+                  displayExtensions(pbxfile, request, out, title, isExten);
+		  if (isDisplayAdd){
+		      out.println("</td></tr></table>");
+		  }
 
                 }
         
@@ -124,7 +96,45 @@ public class Extensions extends HttpServlet {
         }
     }
 
+    private void displayExtensions(String pbxfile, HttpServletRequest request, final PrintWriter out, String title, boolean isExten) throws IOException, ParseException {
+	String url = General.getConfigurationParameter("url", "", pbxfile);
+	JSONObject obj = new JSONObject();
+	obj.put("filename", "sip.conf");
+	String requestText = obj.toJSONString();
+	
+	String resultText = General.restCallURL(url + "GetFile", requestText);
+	
+	JSONParser parser = new JSONParser();
+	JSONObject resObj = (JSONObject) parser.parse(resultText);
+	if ((boolean)resObj.get("success")) {
+	    String content = resObj.get("content").toString();
+	    String[] arr = content.split("\n");
+	    
+	    ContextParser cparser = new ContextParser(arr, "sip.conf");
+	    ArrayList<NodeInfo> nodes = cparser.getNodesWithInfo();
+	    
+	    String reverseStr = Web.getCookieValue(request, "reverse");
+	    boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
+	    out.println("<table><tr><th>" + title +"</th><th>User name</th>");
+	    out.println("<th>Host</th><th>Context</th></tr>");
+	    if (reverse) {
+		for (int i= nodes.size() -1; i >= 0; i--) {
+		    NodeInfo node = nodes.get(i);
+		    displayNode(out, node, isExten);
+		    
+		}
+	    }
+	    else {
+		for (NodeInfo node: nodes) {
+		    displayNode(out, node, isExten);
+		}
+	    }
+	    out.println("</table>");
+	}
+    }
+
     private void doAddNode(HttpServletRequest request, final PrintWriter out) throws ParseException, IOException {
+	
         if (request.getParameter("addnode") != null) {
 	    String pbxfile = General.getPBXsDir() + Web.getCookieValue(request, "file");
             String url = General.getConfigurationParameter("url", "", pbxfile);
@@ -146,20 +156,29 @@ public class Extensions extends HttpServlet {
   	       content = content + "password=" + request.getParameter("password") + "\n";
 	    }
 	    if (!request.getParameter("additional").isEmpty()) {
-		content = content + request.getParameter("additional");
+	       content = content + request.getParameter("additional");
 	    }
-            saveobj.put("content", content);
-            String requestText = saveobj.toJSONString();
-            String resultText = General.restCallURL(url + "AddNode", requestText);
-            JSONParser saveparser = new JSONParser();
-            JSONObject saveresObj = (JSONObject) saveparser.parse(resultText);
-            boolean res = ((boolean)saveresObj.get("success"));
-            if (res) {
-                out.println("<p class=infomessage>New node " + nodeName + " has been added</p>");
-            }
-            else {
-                out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString() + "</p>");
-            }
+	    if (request.getParameter("preview") != null){ // Preview only
+		out.println("<br/><pre>");
+		out.println(nodeName);
+		out.println(content);
+		out.println("</pre><br/>");
+	    }
+	    else // Create actual SIP node
+	    {
+		saveobj.put("content", content);
+		String requestText = saveobj.toJSONString();
+		String resultText = General.restCallURL(url + "AddNode", requestText);
+		JSONParser saveparser = new JSONParser();
+		JSONObject saveresObj = (JSONObject) saveparser.parse(resultText);
+		boolean res = ((boolean)saveresObj.get("success"));
+		if (res) {
+		    out.println("<p class=infomessage>New node " + nodeName + " has been added</p>");
+		}
+		else {
+		    out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString() + "</p>");
+		}
+	    }
         }
     }
     
@@ -168,6 +187,10 @@ public class Extensions extends HttpServlet {
 	out.println("<h3>Add new SIP " + title + "</h3>");
 	out.println("<form method=POST action='Extensions?type=" + type + "'>");
 	out.println("<table><tr>");
+	
+	out.println("<td><input type=checkbox name=preview value=1 /></td>");
+	out.println("<td>Preview only (Don't create extension)</td></tr>");
+	
 	out.println("<td>" + title + " name</td>");
 	out.println("<td><input type=text name=nodename /></td></tr>");
 	

@@ -40,12 +40,14 @@ public class Dialplans extends HttpServlet {
             
               String user = Web.getCookieValue(request, "user");
             
-	      out.println("<h3>Dialplans</h3>");
 	      String action = request.getParameter("action");
 	      if (action == null){
 		  action ="";
 	      }
-	      if (action.equals("displayadd")){
+	      boolean isDisplayAdd = action.equals("displayadd");
+	      out.println("<h3>Dialplans</h3>");
+	      if (isDisplayAdd){
+		    out.println("<table><tr><td>");
 		    displayAdd(out);
 	      }
 	      else
@@ -54,7 +56,13 @@ public class Dialplans extends HttpServlet {
 		  
 	      }
 	      addNewContext(request, out);
+	      if (isDisplayAdd) {
+	        out.println("</td><td>");
+	      }
 	      Web.displayDialplans(request, user, out);
+	      if (isDisplayAdd){
+	        out.println("</td></tr></table>");
+	      }
 	      Web.setFooter(out);
 	    }
 	    catch (Exception ex){
@@ -103,9 +111,18 @@ public class Dialplans extends HttpServlet {
 		content = content + "  same => n,dial(" + request.getParameter("dialto") + ")\n";
 	    }
 	    content = content + "  same => n,hangup()\n";
-	    String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+	    if (request.getParameter("preview") != null){ // Preview only
+		out.println("<br/><pre>");
+		out.println(contextname);
+		out.println(content);
+		out.println("</pre><br/>");
+	    }
+	    else
+	    {	    
+	      String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
 	    
-	    Web.addNewNode(pbxfile, request, "extensions.conf", contextname, content, out);
+	      Web.addNewNode(pbxfile, request, "extensions.conf", contextname, content, out);
+	    }
 	}
 	catch (Exception ex){
 	  out.println(ex.toString());
@@ -118,6 +135,10 @@ public class Dialplans extends HttpServlet {
 	
 	out.println("<h4>Add new dialplan context</h4>");
 	out.println("<form method=POST>");
+	
+	out.println("<input type=checkbox name=preview value=1 />");
+	out.println("Preview only (Don't create extension)<br/>");
+		
 	displaySubtitle(out, "Context name");
 	out.println("<input type=text name=contextname size = 12 /><br/><br/>");
 	
@@ -144,7 +165,7 @@ public class Dialplans extends HttpServlet {
 	out.println("<input type=checkbox name=dial value=1 />Dial ");
 	out.println("<input type=text name=dialto value = 'SIP/${EXTEN},,120'/><br/>");
 	
-	out.println("<br/><input type=submit name=addcontext value='Add Context' />");
+	out.println("<br/><input type=submit name=addcontext value='Add Context'  />");
 	out.println("</form>");
     }
 
