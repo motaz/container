@@ -55,6 +55,9 @@ public class Monitor extends HttpServlet {
 		  executeShell("Server time", "date", url, out);
 		  
 		  out.println("</br/>");
+		  executeShell("Processors count", "cat /proc/cpuinfo | grep processor | wc -l", url, out);
+		  
+		  out.println("</br/>");
 		  executeShell("Uptime", "uptime", url, out);
 		  
 		  out.println("<br/>");
@@ -64,12 +67,11 @@ public class Monitor extends HttpServlet {
 		  executeShell("Disk usage", "df -h", url, out);
 		  
 		  out.println("<script type=\"text/javascript\">\n" +
-		    "  var timeout = setTimeout(\"location.reload(true);\",50000);\n" +
-		    "</script>");
+			      "  var timeout = setTimeout(\"location.reload(true);\",50000);\n" +
+			      "</script>");
 		  
 		  Web.setFooter(out);
 
-                  
               }
               else {
                   response.sendRedirect("Login");
