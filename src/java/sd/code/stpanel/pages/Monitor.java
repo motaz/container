@@ -31,13 +31,12 @@ public class Monitor extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-	    throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+	try {
+            PrintWriter out = response.getWriter();
             try {
               String user = Web.getCookieValue(request, "user");
               String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
@@ -45,26 +44,31 @@ public class Monitor extends HttpServlet {
                   Web.setHeader(true, request, response, out, "advanced", "monitor");
                   out.println("<h2>Monitor</h2>");
 
+		  String function = request.getParameter("function");
+		  if (function == null){
+		      function = "system";
+		  }
+		  
+                  out.println("<table><tr>");
+                  out.println("<td><a href='Monitor?function=system'>System</a></td>");
+                  out.println("<td><a href='Monitor?function=calls'>Calls</a></td>");
+		  out.println("</tr></table>");
+		  
 		  String url = General.getConfigurationParameter("url", "", pbxfile);
 		  
 		  Date now = new Date();
 		  out.println(now.toString());
-		  out.println("<a href='Monitor' class=button >Refresh</a>");
+		  out.println("<a href='Monitor?function=" + function + "' class=button >Refresh</a>");
 		  out.println("<br/><br/>");
 		  
-		  executeShell("Server time", "date", url, out);
+		  if (function.equals("system")){
+		     displaySystemStatus(url, out);
+		  }
+		  else if (function.equals("calls")) {
+		      
 		  
-		  out.println("</br/>");
-		  executeShell("Processors count", "cat /proc/cpuinfo | grep processor | wc -l", url, out);
-		  
-		  out.println("</br/>");
-		  executeShell("Uptime", "uptime", url, out);
-		  
-		  out.println("<br/>");
-		  executeShell("Memory (Mega)", "free -m", url, out);
-		  
-		  out.println("<br/>");
-		  executeShell("Disk usage", "df -h", url, out);
+		    displayCalls(pbxfile, url, out);
+		  }
 		  
 		  out.println("<script type=\"text/javascript\">\n" +
 			      "  var timeout = setTimeout(\"location.reload(true);\",50000);\n" +
@@ -80,23 +84,95 @@ public class Monitor extends HttpServlet {
             catch (Exception ex){
                 out.println(ex.toString());
             }
+	} finally {
+	}
     }
 
-    private void executeShell(String title, String command, String url, PrintWriter out) throws ParseException, IOException {
-	JSONObject obj = new JSONObject();
+    private void displayCalls(String pbxfile, String url, PrintWriter out) throws IOException, ParseException {
 	
-	obj.put("command", command);
+	String text = Web.callAMICommand(pbxfile, "core show channels concise");
+	    
+	out.println(text);
+	String lines[] = text.split("\n");
+	    
+	out.println("<table><tr><th>ID</th><th>Caller ID</th><th>Extension</th><th>Duration</th></tr>");
+	for (String line: lines) {
+		if (line.contains("!")) {
+		   String callid = line.substring(0, line.indexOf("!")).trim();
+		   
+		   String info[] = getCallInfo(pbxfile, callid);
+		   if ((info != null) && (info.length > 30)){
+		   String callerID = getValue(info[7]);
+		   String id = getValue(info[5]);
+		   String extension = getValue(info[31]);
+		   String duration = getValue(info[26]);
+		   out.println("<tr>");
+		   out.println("<td>" + id + "</td>");
+		   out.println("<td>" + callerID + "</td>");
+		   out.println("<td>" + extension + "</td>");
+		   out.println("<td>" + duration + "</td>");
+		   
+		   out.println("</tr>");
+		   }
+		}
+	    }
+	    out.println("</table>");
 	
-	String requestText = obj.toJSONString();
+    }
+
+    private String getValue(String text){
+     
+	return text.substring(text.indexOf(":") + 1, text.length()).trim();
+    }
+    
+    private String[] getCallInfo(String pbxfile, String callid) throws IOException, ParseException{
 	
-	String resultText = General.restCallURL(url + "Shell", requestText);
-	JSONParser parser = new JSONParser();
-	JSONObject resObj = (JSONObject) parser.parse(resultText);
+
+	String text = Web.callAMICommand(pbxfile, "core show channel " + callid);
+	String lines[] = null;
+	    
+	lines = text.split("\n");
 	
-	String content = resObj.get("result").toString();
-	out.println(title);
-	if (content != null){
-	    out.println("<pre>" + content + "</pre>");
+        
+	return lines;
+    }
+    
+    private void displaySystemStatus(String url, PrintWriter out) {
+	
+	executeShell("Server time", "date", url, out);
+	
+	out.println("</br/>");
+	executeShell("Processors count", "cat /proc/cpuinfo | grep processor | wc -l", url, out);
+	
+	out.println("</br/>");
+	executeShell("Uptime", "uptime", url, out);
+	
+	out.println("<br/>");
+	executeShell("Memory (Mega)", "free -m", url, out);
+	
+	out.println("<br/>");
+	executeShell("Disk usage", "df -h", url, out);
+    }
+
+    private void executeShell(String title, String command, String url, PrintWriter out) {
+	try {
+	    JSONObject obj = new JSONObject();
+
+	    obj.put("command", command);
+
+	    String requestText = obj.toJSONString();
+
+	    String resultText = General.restCallURL(url + "Shell", requestText);
+	    JSONParser parser = new JSONParser();
+	    JSONObject resObj = (JSONObject) parser.parse(resultText);
+
+	    String content = resObj.get("result").toString();
+	    out.println(title);
+	    if (content != null){
+		out.println("<pre>" + content + "</pre>");
+	    }
+	} catch (Exception ex){
+	    out.println(ex.toString());
 	}
     }
 

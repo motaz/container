@@ -15,22 +15,26 @@ public class NodeInfo {
     
     private String nodeName;
     ArrayList<String> data;
-    boolean aTrunk;
+    boolean isnumeric;
     
     public String getNodeName(){ return nodeName; }
     
     public NodeInfo(String node){
         nodeName = node.replaceAll("\\[", " ");
         nodeName = nodeName.replaceAll("\\]", " ").trim();
-        aTrunk = ! isNumeric(nodeName);
-        data = new ArrayList<String>();
+        isnumeric = ! isNumeric(nodeName);
+        data = new ArrayList<>();
     }
     
     public boolean isTrunk(){
-        return aTrunk;
+	String istrunk = getProperty("trunk");
+	if (istrunk == null){
+	    istrunk = "";
+	}
+        return (isnumeric || istrunk.toLowerCase().trim().equals("yes"));
     }
     public boolean isExtension(){
-        return ! aTrunk;
+        return ! isTrunk();
     }
     public void addLine(String line){
         

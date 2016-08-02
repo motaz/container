@@ -27,7 +27,7 @@ public class ContextParser {
 
     public ArrayList<String> getNodes(){
         
-        ArrayList<String> nodes = new ArrayList<String>();
+        ArrayList<String> nodes = new ArrayList<>();
         
         for (String line: contents){
             line = line.trim();
@@ -44,7 +44,7 @@ public class ContextParser {
     
     public ArrayList<NodeInfo> getNodesWithInfo(){
         
-        ArrayList<NodeInfo> nodes = new ArrayList<NodeInfo>();
+        ArrayList<NodeInfo> nodes = new ArrayList<>();
         NodeInfo node = null;
     
         for (String line: contents){

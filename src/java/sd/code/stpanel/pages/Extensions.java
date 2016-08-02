@@ -194,7 +194,7 @@ public class Extensions extends HttpServlet {
 	out.println("<td>" + title + " name</td>");
 	out.println("<td><input type=text name=nodename /></td></tr>");
 	
-	out.println("<td>Display name</td>");
+	out.println("<td>User name</td>");
 	out.println("<td><input type=text name=username /></td></tr>");
 	
 	out.println("<td>type</td>");
@@ -212,6 +212,9 @@ public class Extensions extends HttpServlet {
 	out.println("<td>additional properties<br/>");
 	out.println("<font color=gray>name=value</font></td>");
 	out.println("<td><textarea rows = 5 cols=40 name=additional />");
+	if (type.equals("trunk")) {
+  	   out.println("trunk=yes");
+	}
 	out.println("qualify=yes");
 	out.println("nat=force_rport,comedia");
 	out.println("</textarea></td></tr>");

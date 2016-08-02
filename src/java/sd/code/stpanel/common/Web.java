@@ -29,7 +29,7 @@ public class Web {
               page = "";
             }
 
-        String version  = "1.0.5";
+        String version  = "1.0.6";
         
         if (user == null){
             user = "";
@@ -148,6 +148,9 @@ public class Web {
         selectTabPage(out, page, "ami");
         out.println("<a href='AMI'>AMI commands</a></td>");
         
+        selectTabPage(out, page, "functions");
+        out.println("<a href='Functions'>Functions</a></td>");
+	
         selectTabPage(out, page, "logs");
         out.println("<a href='Logs'>Logs</a></td>");
         
@@ -300,6 +303,30 @@ public class Web {
                 out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString()
 			+ "</p>");
             }
-        
     }      
+    
+    public static String callAMICommand(String pbxfile, String command){
+	try {
+		  String url = General.getConfigurationParameter("url", "", pbxfile);
+		  JSONObject obj = new JSONObject();
+		  String username = General.getConfigurationParameter("amiuser", "admin", "");
+		  String secret = General.getConfigurationParameter("amisecret", "", "");
+		  obj.put("username", username);
+		  obj.put("secret", secret);
+		  obj.put("command", "action:command\ncommand:" + command);	
+
+		  String requestText = obj.toJSONString();
+
+		  String resultText = General.restCallURL(url + "CallAMI", requestText);
+		  JSONParser parser = new JSONParser();
+		  JSONObject resObj = (JSONObject) parser.parse(resultText);
+
+		  String content = resObj.get("message").toString();
+		  return content;
+	    }
+	     catch (Exception ex){
+	           return null;
+	    }
+	
+    }
 }
