@@ -48,8 +48,17 @@ public class Monitor extends HttpServlet {
 		  }
 		  
                   out.println("<table><tr>");
-                  out.println("<td><a href='Monitor?function=system'>System</a></td>");
-                  out.println("<td><a href='Monitor?function=calls'>Active Channels</a></td>");
+                  out.println("<td ");
+		  if (function.equals("system")) {
+		      out.println("bgcolor=#AAAADD");
+		  }
+		  out.println("><a href='Monitor?function=system'>System</a></td>");
+		  
+                  out.println("<td ");
+		  if (function.equals("calls")) {
+		      out.println("bgcolor=#AAAADD");
+		  }
+		  out.println("><a href='Monitor?function=calls'>Active Channels</a></td>");
 		  out.println("</tr></table>");
 		  
 		  String url = General.getConfigurationParameter("url", "", pbxfile);
@@ -65,7 +74,7 @@ public class Monitor extends HttpServlet {
 		  else if (function.equals("calls")) {
 		      
 		  
-		    displayCalls(pbxfile, url, out);
+		     displayCalls(pbxfile, url, out);
 		  }
 		  
 		  out.println("<script type=\"text/javascript\">\n" +
@@ -90,6 +99,9 @@ public class Monitor extends HttpServlet {
 	
 	String text = Web.callAMICommand(pbxfile, "core show channels concise");
 	    
+	if (text.length() < 300){
+	    out.println(text);
+	}
 	String lines[] = text.split("\n");
 	    
 	out.println("<table><tr><th>ID</th><th>Caller ID</th><th>Extension</th><th>Duration</th></tr>");

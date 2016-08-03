@@ -50,9 +50,24 @@ public class Functions extends HttpServlet {
 			function = "active";
 		    }
                     out.println("<table><tr>");
-                    out.println("<td><a href='Functions?function=active'>Queue-Active</a></td>");
-                    out.println("<td><a href='Functions?function=paused'>Queue-Paused</a></td>");
-                    out.println("<td><a href='Functions?function=busy'>Queue-Busy</a></td>");
+                    out.println("<td ");
+		    if (function.equals("active")) {
+  		      out.println("bgcolor=#AAAADD");
+		    }
+		    out.println("><a href='Functions?function=active'>Queue-Active</a></td>");
+		    
+                    out.println("<td ");
+  		    if (function.equals("paused")) {
+  		      out.println("bgcolor=#AAAADD");
+	 	    }
+		    out.println("><a href='Functions?function=paused'>Queue-Paused</a></td>");
+		    
+                    out.println("<td ");
+  		    if (function.equals("busy")) {
+  		      out.println("bgcolor=#AAAADD");
+	 	    }
+		    out.println("><a href='Functions?function=busy'>Queue-Busy</a></td>");
+		    
                     out.println("</tr></table>");
 
 		    pauseUnpause(request, url, out);

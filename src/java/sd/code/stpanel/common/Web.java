@@ -313,7 +313,7 @@ public class Web {
 		  String url = General.getConfigurationParameter("url", "", pbxfile);
 		  JSONObject obj = new JSONObject();
 		  String username = General.getConfigurationParameter("amiuser", "admin", pbxfile);
-		  String secret = General.getConfigurationParameter("amisecret", "", pbxfile);
+		  String secret = General.getConfigurationParameter("amipass", "", pbxfile);
 		  obj.put("username", username);
 		  obj.put("secret", secret);
 		  obj.put("command", "action:command\ncommand:" + command);	
