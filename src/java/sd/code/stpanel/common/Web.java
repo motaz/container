@@ -151,6 +151,9 @@ public class Web {
         selectTabPage(out, page, "functions");
         out.println("<a href='Functions'>Functions</a></td>");
 	
+        selectTabPage(out, page, "terminal");
+        out.println("<a href='Terminal'>Terminal</a></td>");
+	
         selectTabPage(out, page, "logs");
         out.println("<a href='Logs'>Logs</a></td>");
         
@@ -309,8 +312,8 @@ public class Web {
 	try {
 		  String url = General.getConfigurationParameter("url", "", pbxfile);
 		  JSONObject obj = new JSONObject();
-		  String username = General.getConfigurationParameter("amiuser", "admin", "");
-		  String secret = General.getConfigurationParameter("amisecret", "", "");
+		  String username = General.getConfigurationParameter("amiuser", "admin", pbxfile);
+		  String secret = General.getConfigurationParameter("amisecret", "", pbxfile);
 		  obj.put("username", username);
 		  obj.put("secret", secret);
 		  obj.put("command", "action:command\ncommand:" + command);	

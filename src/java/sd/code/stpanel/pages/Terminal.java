@@ -5,8 +5,6 @@
  */
 package sd.code.stpanel.pages;
 
-import sd.code.stpanel.common.General;
-import sd.code.stpanel.common.Web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -15,15 +13,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import sd.code.stpanel.common.General;
+import sd.code.stpanel.common.Web;
 
 /**
  *
  * @author motaz
  */
-@WebServlet(name = "AMI", urlPatterns = {"/AMI"})
-public class AMI extends HttpServlet {
+@WebServlet(name = "Terminal", urlPatterns = {"/Terminal"})
+public class Terminal extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -34,48 +32,38 @@ public class AMI extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+	    throws ServletException, IOException {
+	response.setContentType("text/html;charset=UTF-8");
+	try {
+            PrintWriter out = response.getWriter();
             try {
               String user = Web.getCookieValue(request, "user");
               String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
               if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "advanced", "ami");
-                  out.println("<h2>AMI command</h2>");
+                  Web.setHeader(true, request, response, out, "advanced", "terminal");
+                  out.println("<h2>Terminal</h2>");
 
-                  String command = request.getParameter("command"); 
-                  out.println("<form method=post>");
-                  out.println("<textarea name=command cols=50 rows=7 >");
-                  if (command != null) {
-                      out.print(command);
-                  }
-                  out.println("</textarea></br>");
-                  out.println("<input type=submit value=Execute name=execute class=btn />");
+		  
+		  String url = General.getConfigurationParameter("url", "", pbxfile);
+		  String commandText = request.getParameter("command");
+		  if (commandText == null){
+		      commandText = "";
+		  }
+                  out.println("<br/><form method=POST >");
+                  out.println("Command <input type=text name=command size = 40 value = '" + commandText + "' /> &emsp;");
+                  out.println("<input type=submit name=execute value='Execute' class=btn />");
                   out.println("</form>");
+		  
+		  if (request.getParameter("execute") != null) {
+		      String result = General.executeShell(commandText, url);
+		      out.println("<pre>");
+		      out.println(result);
+		      out.println("</pre>");
+		  }
+		  
+		  
+		  Web.setFooter(out);
 
-                  if ( request.getParameter("execute") != null) {
-                      String url = General.getConfigurationParameter("url", "", pbxfile);
-                      JSONObject obj = new JSONObject();
-                      String username = General.getConfigurationParameter("amiuser", "", pbxfile);
-                      String secret = General.getConfigurationParameter("amipass", "", pbxfile);
-                      obj.put("username", username);
-                      obj.put("secret", secret);
-                      obj.put("command", request.getParameter("command"));
-                      
-                      String requestText = obj.toJSONString();
-
-                      String resultText = General.restCallURL(url + "CallAMI", requestText);
-                      JSONParser parser = new JSONParser();
-                      JSONObject resObj = (JSONObject) parser.parse(resultText);
-
-                      String content = resObj.get("message").toString();
-                      Date now = new Date();
-                      if (content != null){
-                          out.println("<pre>" + now.toString() + "\n" + content + "</pre>");
-                      }
-
-                  }
               }
               else {
                   response.sendRedirect("Login");
@@ -84,8 +72,8 @@ public class AMI extends HttpServlet {
             catch (Exception ex){
                 out.println(ex.toString());
             }
-
-        
+	} finally {
+	}
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -99,8 +87,8 @@ public class AMI extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+	    throws ServletException, IOException {
+	processRequest(request, response);
     }
 
     /**
@@ -113,8 +101,8 @@ public class AMI extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+	    throws ServletException, IOException {
+	processRequest(request, response);
     }
 
     /**
@@ -124,7 +112,7 @@ public class AMI extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+	return "Short description";
     }// </editor-fold>
 
 }

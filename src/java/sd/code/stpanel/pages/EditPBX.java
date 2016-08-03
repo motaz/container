@@ -62,6 +62,8 @@ public class EditPBX extends HttpServlet {
             String title = request.getParameter("title");
             String url = request.getParameter("url");
             String fileName = request.getParameter("file");
+	    String amiuser = request.getParameter("amiuser");
+	    String amipass = request.getParameter("amipass");
             
             if ((title.trim().isEmpty()) || (url.trim().isEmpty()) || (fileName.trim().isEmpty())) {
                 out.println("<p class=errormessage>Empty parameter</p>");
@@ -93,6 +95,8 @@ public class EditPBX extends HttpServlet {
                 boolean success = General.setConfigurationParameter("url", url, fileName);
                 if (success) {
                     success = General.setConfigurationParameter("title", title, fileName);
+		    General.setConfigurationParameter("amiuser", amiuser, fileName);
+		    General.setConfigurationParameter("amipass", amipass, fileName);
                 }
                 if (success) {
                     response.sendRedirect("Home");
@@ -114,17 +118,26 @@ public class EditPBX extends HttpServlet {
         String title = General.getConfigurationParameter("title", "", pbxFileName);
         String url = General.getConfigurationParameter("url", "", pbxFileName);
        
+        String amiuser = General.getConfigurationParameter("amiuser", "admin", pbxFileName);
+        String amipass = General.getConfigurationParameter("amipass", "", pbxFileName);
+	
         out.println("<form method=POST>");
         out.println("<table>");
         out.println("<tr><td>Title </td><td><input type=text name=title value='" + title + 
-                "' /></td></td>");
+		    "' /></td></td>");
         out.println("<tr><td>Config file name </td>");
         out.println("<td><input type=text name=file value='" + fileName + "' /></td></td>");
         
-        out.println("<tr><td>ST Agent URL</td>");
+        out.println("<tr><td>STAgent URL</td>");
         out.println("<td><input type=text name=url size=30 value='" + url + "' /></td></tr>");
 
-        out.println("<tr><td><input type=submit name=update value=Update /></td></tr>");
+        out.println("<tr><td>AMI User</td>");
+        out.println("<td><input type=text name=amiuser size=30 value='" + amiuser + "' /></td></tr>");
+
+	out.println("<tr><td>AMI Password</td>");
+        out.println("<td><input type=text name=amipass size=30 value='" + amipass + "' /></td></tr>");
+
+	out.println("<tr><td><input type=submit name=update value=Update /></td></tr>");
         out.println("</table>");
         out.println("</form>");
     }

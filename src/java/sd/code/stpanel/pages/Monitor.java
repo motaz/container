@@ -13,8 +13,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
@@ -51,7 +49,7 @@ public class Monitor extends HttpServlet {
 		  
                   out.println("<table><tr>");
                   out.println("<td><a href='Monitor?function=system'>System</a></td>");
-                  out.println("<td><a href='Monitor?function=calls'>Calls</a></td>");
+                  out.println("<td><a href='Monitor?function=calls'>Active Channels</a></td>");
 		  out.println("</tr></table>");
 		  
 		  String url = General.getConfigurationParameter("url", "", pbxfile);
@@ -92,14 +90,15 @@ public class Monitor extends HttpServlet {
 	
 	String text = Web.callAMICommand(pbxfile, "core show channels concise");
 	    
-	out.println(text);
 	String lines[] = text.split("\n");
 	    
 	out.println("<table><tr><th>ID</th><th>Caller ID</th><th>Extension</th><th>Duration</th></tr>");
+	int count=0;
 	for (String line: lines) {
 		if (line.contains("!")) {
 		   String callid = line.substring(0, line.indexOf("!")).trim();
-		   
+		   count++;
+		   // Get details call info
 		   String info[] = getCallInfo(pbxfile, callid);
 		   if ((info != null) && (info.length > 30)){
 		   String callerID = getValue(info[7]);
@@ -117,6 +116,7 @@ public class Monitor extends HttpServlet {
 		}
 	    }
 	    out.println("</table>");
+	    out.println("<b>" + count + "</b> Channels");
 	
     }
 
@@ -129,7 +129,7 @@ public class Monitor extends HttpServlet {
 	
 
 	String text = Web.callAMICommand(pbxfile, "core show channel " + callid);
-	String lines[] = null;
+	String lines[];
 	    
 	lines = text.split("\n");
 	
@@ -139,42 +139,34 @@ public class Monitor extends HttpServlet {
     
     private void displaySystemStatus(String url, PrintWriter out) {
 	
-	executeShell("Server time", "date", url, out);
+	out.println("Server time");
+	String result = General.executeShell( "date", url);
+	out.println("<pre>" + result + "</pre>");
 	
 	out.println("</br/>");
-	executeShell("Processors count", "cat /proc/cpuinfo | grep processor | wc -l", url, out);
+	
+	out.println("Processors count");
+	result = General.executeShell("cat /proc/cpuinfo | grep processor | wc -l", url);
+	
+	out.println("<pre>" + result + "</pre>");
 	
 	out.println("</br/>");
-	executeShell("Uptime", "uptime", url, out);
+	out.println("Uptime");
+	result = General.executeShell("uptime", url);
+	out.println("<pre>" + result + "</pre>");
 	
 	out.println("<br/>");
-	executeShell("Memory (Mega)", "free -m", url, out);
+	out.println("Memory (In Megabytes)");
+	result = General.executeShell("free -m", url);
+	out.println("<pre>" + result + "</pre>");
 	
 	out.println("<br/>");
-	executeShell("Disk usage", "df -h", url, out);
+	out.println("Disk usage");
+	result = General.executeShell("df -h", url);
+	out.println("<pre>" + result + "</pre>");
+	
     }
 
-    private void executeShell(String title, String command, String url, PrintWriter out) {
-	try {
-	    JSONObject obj = new JSONObject();
-
-	    obj.put("command", command);
-
-	    String requestText = obj.toJSONString();
-
-	    String resultText = General.restCallURL(url + "Shell", requestText);
-	    JSONParser parser = new JSONParser();
-	    JSONObject resObj = (JSONObject) parser.parse(resultText);
-
-	    String content = resObj.get("result").toString();
-	    out.println(title);
-	    if (content != null){
-		out.println("<pre>" + content + "</pre>");
-	    }
-	} catch (Exception ex){
-	    out.println(ex.toString());
-	}
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

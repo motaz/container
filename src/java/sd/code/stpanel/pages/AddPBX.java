@@ -68,6 +68,8 @@ public class AddPBX extends HttpServlet {
             String title = request.getParameter("title");
             String url = request.getParameter("url");
             String fileName = request.getParameter("file");
+	    String amiuser = request.getParameter("amuser");
+	    String amipass = request.getParameter("amipass");
             
             if ((title.trim().isEmpty()) || (url.trim().isEmpty()) || 
                     (fileName.trim().isEmpty())) {
@@ -88,6 +90,8 @@ public class AddPBX extends HttpServlet {
                 boolean success = General.setConfigurationParameter("url", url, fileName);
                 if (success) {
                     success = General.setConfigurationParameter("title", title, fileName);
+		    General.setConfigurationParameter("amiuser", amiuser, fileName);
+		    General.setConfigurationParameter("amipass", amipass, fileName);
                 }
                 if (success) {
                     response.sendRedirect("Home");
@@ -105,11 +109,21 @@ public class AddPBX extends HttpServlet {
         out.println("<form method=POST>");
         out.println("<table>");
         out.println("<tr><td>Title </td><td><input type=text name=title /></td></td>");
+	
         out.println("<tr><td>Config file name </td>");
         out.println("<td><input type=text name=file /></td></td>");
-        out.println("<tr><td>ST Agent URL</td>");
+	
+        out.println("<tr><td>STAgent URL</td>");
         out.println("<td><input type=text name=url size=30 value='" +
                       "http://localhost:8080/STAgent/' /></td></tr>");
+	
+        out.println("<tr><td>AMI User</td>");
+        out.println("<td><input type=text name=amiuser size=30 value='" +
+                      "admin' /></td></tr>");
+	
+        out.println("<tr><td>AMI Password</td>");
+        out.println("<td><input type=text name=ampass size=30 /></td></tr>");
+	
         out.println("<tr><td><input type=submit name=add value=Add /></td></tr>");
         out.println("</table>");
         out.println("</form>");

@@ -350,5 +350,29 @@ final public class General {
         httpConn.disconnect();
         return op;
     } 
+   
+    public static String executeShell(String command, String url) {
+	try {
+	    
+	    JSONObject obj = new JSONObject();
+
+	    obj.put("command", command);
+
+	    String requestText = obj.toJSONString();
+
+	    String resultText = General.restCallURL(url + "Shell", requestText);
+	    JSONParser parser = new JSONParser();
+	    JSONObject resObj = (JSONObject) parser.parse(resultText);
+
+	    String content = resObj.get("result").toString();
+	    
+	    if (content != null){
+	    }
+  	    return content;
+	} catch (Exception ex){
+	    return "Error: " + ex.toString();
+	}
+    }
+   
     
 }
