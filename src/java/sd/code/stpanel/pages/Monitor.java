@@ -117,7 +117,7 @@ public class Monitor extends HttpServlet {
 	}
 	String lines[] = text.split("\n");
 	    
-	out.println("<table><tr><th>ID</th><th>Caller ID</th><th>Extension</th><th>Duration</th></tr>");
+	out.println("<table class=dtable><tr><th>ID</th><th>Caller ID</th><th>Extension</th><th>Duration</th></tr>");
 	int count=0;
 	for (String line: lines) {
 		if (line.contains("!")) {
@@ -156,7 +156,7 @@ public class Monitor extends HttpServlet {
 	     boolean success = Boolean.valueOf(obj.get("success").toString());
 
 	     if (success) {
-		 out.println("<table><tr>");
+		 out.println("<table class=dtable><tr>");
 		
 		 JSONObject result = (JSONObject) obj.get("result");
 		 JSONArray header = (JSONArray) result.get("header");
@@ -217,14 +217,14 @@ public class Monitor extends HttpServlet {
 	String result = General.executeShell( "date", url);
 	out.println("<pre>" + result + "</pre>");
 	
-	out.println("</br/>");
+	out.println("<br/>");
 	
 	out.println("Processors count");
 	result = General.executeShell("cat /proc/cpuinfo | grep processor | wc -l", url);
 	
 	out.println("<pre>" + result + "</pre>");
 	
-	out.println("</br/>");
+	out.println("<br/>");
 	out.println("Uptime");
 	result = General.executeShell("uptime", url);
 	out.println("<pre>" + result + "</pre>");

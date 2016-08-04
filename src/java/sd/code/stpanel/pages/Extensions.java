@@ -75,7 +75,7 @@ public class Extensions extends HttpServlet {
 		    
 		  }  // Display add SIP form
 		  else {
-		      out.println("<table><tr><td>");
+		      out.println("<table class=dtable><tr><td>");
 		      	displayAddSIPNode(out, title, type);
 			out.println("</td><td>");
 		  }
@@ -115,7 +115,7 @@ public class Extensions extends HttpServlet {
 	    
 	    String reverseStr = Web.getCookieValue(request, "reverse");
 	    boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
-	    out.println("<table><tr><th>" + title +"</th><th>User name</th>");
+	    out.println("<table class=dtable><tr><th>" + title +"</th><th>User name</th>");
 	    out.println("<th>Host</th><th>Context</th></tr>");
 	    if (reverse) {
 		for (int i= nodes.size() -1; i >= 0; i--) {
@@ -186,7 +186,7 @@ public class Extensions extends HttpServlet {
 	
 	out.println("<h3>Add new SIP " + title + "</h3>");
 	out.println("<form method=POST action='Extensions?type=" + type + "'>");
-	out.println("<table><tr>");
+	out.println("<table dtable><tr>");
 	
 	out.println("<td><input type=checkbox name=preview value=1 /></td>");
 	out.println("<td>Preview only (Don't create extension)</td></tr>");

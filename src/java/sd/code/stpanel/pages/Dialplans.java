@@ -47,7 +47,7 @@ public class Dialplans extends HttpServlet {
 	      boolean isDisplayAdd = action.equals("displayadd");
 	      out.println("<h3>Dialplans</h3>");
 	      if (isDisplayAdd){
-		    out.println("<table><tr><td>");
+		    out.println("<table class=dtable><tr><td>");
 		    displayAdd(out);
 	      }
 	      else

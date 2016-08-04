@@ -262,7 +262,7 @@ public class Web {
 		String reverseStr = Web.getCookieValue(request, "reverse");
 		boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
 		
-		out.println("<table><tr><th>Node</th><th></th></tr>");
+		out.println("<table class=dtable><tr><th>Node</th><th></th></tr>");
 		if (reverse) {
 		    for (int i= nodes.size() -1; i >= 0; i--) {
 			String node = nodes.get(i);

@@ -49,13 +49,15 @@ body
 pre
 {
 	margin: 0;
-	padding: 5;
-	color: #223322;
-	background-color: #FFFFdd;
+	padding: 7;
+	color: #444444;
+	background-color: #FFFFeF;
 	font: 1em/1.2 "Courier 10 Pitch", "Courier New", Arial, Geneva, sans-serif;
         border: 1px #55AA55 solid;
+	border-radius: 15px;
         
 }
+
 
 textarea {
    font-family: "Courier 10 Pitch";
@@ -318,6 +320,114 @@ Single styles
 	display: inline-block;
 	padding-right: 5px;
 	padding-left: 5px;
+}
+
+/* Data Table */
+table.dtable, table.logs {
+ border-left: 1px solid;
+ margin-left: 10px;
+    
+}
+
+table.dtable td, table.logs 
+td {
+  
+  padding-left:10px;
+  
+  border:1px solid;
+  border-top:none;
+  border-left:none;
+}
+
+table.dtable th, table.logs th {
+  color: #FFF;
+  font-size: 12px;
+  font-weight:bold;
+}
+
+
+table.dtable, table.dtable td, table.dtable th, table.logs, table.logs td, table.logs th {
+  border-color:#CCC;
+}
+
+
+
+/* Table headings */
+table.dtable th, table.logs 
+th {
+  
+  
+background:#ADADAD;
+  color:#FFF;
+}
+
+table.dtable th a, table.dtable th a:hover {
+  color:#FFF;
+  text-decoration:underline;
+}
+
+/* row highlighting on hover + select */
+.dtable tr:hover td, .highlight td {  background-color: #FFFFDD; }
+/* disabled highlighting on nohover */
+.dtable tr:hover td.nohover, .highlight td.nohover {}
+
+
+
+
+
+/* Form Table */
+
+table.tform {
+ border-left: 1px solid;
+ border-top: 1px solid;
+ margin-bottom: 10px;
+}
+
+table.tform td,table.tform 
+th {
+  padding-left:3px;
+  border:1px solid;
+  border-top:none;  
+  border-left:none;
+}
+
+table.tform 
+th {
+    
+
+    
+font-weight:normal;
+    background:#F4FAFF;
+    padding-left:5px;
+    width: 210px;
+}
+
+
+table.tform.tpl th 
+{
+    width: 150px;
+}
+
+
+table.tform td {
+    background:#FFF;
+}
+
+table.tform, table.tform td, table.tform th {
+  border-color:#CCC;
+}
+
+table.tform tr.header 
+td {
+    font-weight:bold;
+    background:#ADADAD; 
+    color:#FFF; 
+}
+
+table.tform tr.subheader 
+td {
+    font-weight:normal;
+    background:#DCDCDC;
 }
 
 /* -----------------------
