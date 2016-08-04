@@ -7,12 +7,16 @@ package sd.code.stpanel.pages;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
@@ -59,6 +63,13 @@ public class Monitor extends HttpServlet {
 		      out.println("bgcolor=#AAAADD");
 		  }
 		  out.println("><a href='Monitor?function=calls'>Active Channels</a></td>");
+		  
+                  out.println("<td ");
+		  if (function.equals("cdr")) {
+		      out.println("bgcolor=#AAAADD");
+		  }
+		  out.println("><a href='Monitor?function=cdr'>Last CDR</a></td>");
+		  
 		  out.println("</tr></table>");
 		  
 		  String url = General.getConfigurationParameter("url", "", pbxfile);
@@ -69,16 +80,18 @@ public class Monitor extends HttpServlet {
 		  out.println("<br/><br/>");
 		  
 		  if (function.equals("system")){
-		     displaySystemStatus(url, out);
+		      displaySystemStatus(url, out);
 		  }
 		  else if (function.equals("calls")) {
-		      
 		  
-		     displayCalls(pbxfile, url, out);
+		      displayCalls(pbxfile, url, out);
+		  }
+		  else if (function.equals("cdr")){
+		      displayCDR(pbxfile, url, out);
 		  }
 		  
 		  out.println("<script type=\"text/javascript\">\n" +
-			      "  var timeout = setTimeout(\"location.reload(true);\",50000);\n" +
+			      "  var timeout = setTimeout(\"location.reload(true);\", 50000);\n" +
 			      "</script>");
 		  
 		  Web.setFooter(out);
@@ -131,6 +144,55 @@ public class Monitor extends HttpServlet {
 	    out.println("<b>" + count + "</b> Channels");
 	
     }
+    
+    private void displayCDR(String pbxfile, String url, PrintWriter out) throws IOException, ParseException {
+	
+	try {
+	     String resultText = General.restCallURL(url + "GetLastCDR", "");
+	
+	     out.println("<h2>Last CDR</h2>");
+	     JSONParser parser = new JSONParser();
+	     JSONObject obj = (JSONObject) parser.parse(resultText);
+	     boolean success = Boolean.valueOf(obj.get("success").toString());
+
+	     if (success) {
+		 out.println("<table><tr>");
+		
+		 JSONObject result = (JSONObject) obj.get("result");
+		 JSONArray header = (JSONArray) result.get("header");
+		 JSONArray data = (JSONArray) result.get("data");
+		 
+		 
+		 // Table header
+		 if (header.size() > 0) {
+		     for (int i=0; i < header.size(); i++){
+			out.print("<th>" + header.get(i).toString() + "</th>");
+		     }
+		     
+		 }
+		 out.println("</tr>");
+		 
+		 // Records
+		 
+		 for (int i=0; i < data.size(); i++) {
+		     JSONArray record = (JSONArray)data.get(i);
+		     out.print("<tr>");
+		     for (int j=0; j < record.size(); j++){
+			 out.print("<td>" + record.get(j).toString() + "</td>");
+		     }
+		     out.println("</tr>");
+		 }
+	         out.println("</table>");
+	     
+	     
+
+	     }
+	}
+	catch (Exception ex){
+	    out.println(ex.toString());
+	}
+    }
+    
 
     private String getValue(String text){
      
