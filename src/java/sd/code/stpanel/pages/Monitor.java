@@ -112,8 +112,13 @@ public class Monitor extends HttpServlet {
 	
 	String text = Web.callAMICommand(pbxfile, "core show channels concise");
 	    
-	if (text.length() < 300){
-	    out.println(text);
+	if (text.length() < 150){
+	    if (text.contains("Privilege")){
+		out.println("<p class=infomessage>No active channels</p>");
+	    }
+	    else {
+	       out.println("<p class=infomessage>" + text + "</p>");
+	    }
 	}
 	String lines[] = text.split("\n");
 	    
