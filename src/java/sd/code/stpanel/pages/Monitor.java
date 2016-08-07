@@ -218,21 +218,53 @@ public class Monitor extends HttpServlet {
     
     private void displaySystemStatus(String url, PrintWriter out) {
 	
+	// CPU Utilization
+	String loadStr = General.executeShell("uptime", url);
+	String cpuloadStr = loadStr.substring(loadStr.indexOf("load average:"), loadStr.length());
+	cpuloadStr = cpuloadStr.substring(cpuloadStr.indexOf(":") + 1, cpuloadStr.indexOf(",")).trim();
+	double cpuload = Double.parseDouble(cpuloadStr);
+	String result = General.executeShell("cat /proc/cpuinfo | grep processor | wc -l", url);
+	int procCount = Integer.parseInt(result.trim());
+	
+	double utilization = (cpuload * 100) / procCount;
+	String bgcolor = "#AAFFAA";
+	if (utilization > 100) {
+	    bgcolor = "#990000";
+	}
+	else if (utilization > 90) {
+	    bgcolor = "#FF5555";
+	}
+	else if (utilization > 50) {
+	    bgcolor = "#FFFFaa";
+	}
+	if (utilization > 100) {
+	    utilization = 100;
+	}
+	else if (utilization == 0) {
+	    bgcolor = "#FFFFFF";
+	}
+	
+	out.println("<table class=dtable><tr>");;
+	out.println("<td>CPU Usage</td>");
+	out.println("<td bgcolor=" + bgcolor +">" + String.format("%.1f", utilization) + " %</td></tr>");
+	
+	out.println("</table><br/>");
+	
 	out.println("Server time");
-	String result = General.executeShell( "date", url);
+	result = General.executeShell( "date", url);
 	out.println("<pre>" + result + "</pre>");
 	
 	out.println("<br/>");
 	
 	out.println("Processors count");
-	result = General.executeShell("cat /proc/cpuinfo | grep processor | wc -l", url);
 	
-	out.println("<pre>" + result + "</pre>");
+	out.println("<pre>" + procCount + "</pre>");
 	
 	out.println("<br/>");
 	out.println("Uptime");
-	result = General.executeShell("uptime", url);
-	out.println("<pre>" + result + "</pre>");
+	
+	
+	out.println("<pre>" + loadStr + "</pre>");
 	
 	out.println("<br/>");
 	out.println("Memory (In Megabytes)");
@@ -242,7 +274,25 @@ public class Monitor extends HttpServlet {
 	out.println("<br/>");
 	out.println("Disk usage");
 	result = General.executeShell("df -h", url);
-	out.println("<pre>" + result + "</pre>");
+	String lines[] = result.split("\n");
+	out.println("<pre>");
+	for (String line: lines){
+	    if (line.contains("/") && line.contains("%")) {
+		String usageStr = line.substring(line.indexOf(" "), line.indexOf("%")).trim();
+		while (usageStr.contains(" ")) {
+		    usageStr = usageStr.substring(usageStr.indexOf(" "), usageStr.length()).trim();
+		}
+		double usage = Double.parseDouble(usageStr);
+		if (usage > 80) {
+		    line = "<font color=brown><b>" + line + "</b></font>";
+		}
+		else if (usage > 60) {
+		    line = "<font color=#ee7766><b>" + line + "</b></font>";
+		}
+	    }
+	    out.println(line);
+	}
+	out.println("</pre>");
 	
     }
 
