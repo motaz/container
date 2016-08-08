@@ -383,6 +383,7 @@ table.tform {
  margin-bottom: 10px;
 }
 
+
 table.tform td,table.tform 
 th {
   padding-left:3px;
@@ -396,16 +397,16 @@ th {
     
 
     
-font-weight:normal;
-    background:#F4FAFF;
+    font-weight:bold;
+    background:#eeeecc;
     padding-left:5px;
-    width: 210px;
+   /* width: 210px; */
 }
 
 
 table.tform.tpl th 
 {
-    width: 150px;
+    width: 150px; 
 }
 
 
@@ -420,14 +421,14 @@ table.tform, table.tform td, table.tform th {
 table.tform tr.header 
 td {
     font-weight:bold;
-    background:#ADADAD; 
+    background:#FFADAD; 
     color:#FFF; 
 }
 
 table.tform tr.subheader 
 td {
     font-weight:normal;
-    background:#DCDCDC;
+    background:#FFDCDC;
 }
 
 /* -----------------------

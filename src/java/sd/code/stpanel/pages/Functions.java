@@ -7,6 +7,7 @@ package sd.code.stpanel.pages;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -44,11 +45,19 @@ public class Functions extends HttpServlet {
                     Web.setHeader(true, request, response, out, "advanced", "functions");
                     String url = General.getConfigurationParameter("url", "", pbxfile);
 
-                    out.println("<h2>Functions</h2>");
+                    out.println("<h2>Queues</h2>");
 		    String function = request.getParameter("function");
 		    if (function == null){
 			function = "active";
 		    }
+
+		  
+		    out.println("<script type='text/javascript'>\n" +
+			        "var timeout = setTimeout('location.reload(true);', 50000);\n" +
+			        "</script>");
+		    Date now = new Date();
+		    out.println(now.toString());
+		    
                     out.println("<table><tr>");
                     out.println("<td ");
 		    if (function.equals("active")) {
@@ -68,6 +77,12 @@ public class Functions extends HttpServlet {
 	 	    }
 		    out.println("><a href='Functions?function=busy'>Queue-Busy</a></td>");
 		    
+                    out.println("<td ");
+  		    if (function.equals("wait")) {
+  		      out.println("bgcolor=#AAAADD");
+	 	    }
+		    out.println("><a href='Functions?function=wait'>Waiting</a></td>");
+		    
                     out.println("</tr></table>");
 
 		    pauseUnpause(request, url, out);
@@ -84,6 +99,11 @@ public class Functions extends HttpServlet {
 			out.println("<h2>Busy</h2>");
 		    	displayStatusOf(url, out, true, "Busy");
 		    }
+		    else if (function.equals("wait")) {
+			out.println("<h2>Busy</h2>");
+		    	displayWaiting(pbxfile, url, out);
+		    }
+		    
                     
 		}
 	    }
@@ -105,20 +125,46 @@ public class Functions extends HttpServlet {
 	JSONObject resObj = (JSONObject) parser.parse(resultText);
 	if (Boolean.valueOf(resObj.get("success").toString())) {
 	    String text = resObj.get("result").toString();
-	    
+	    out.println("<font color=green><b><label id=count></label></b></font> Members");
+	    out.println("<table class=tform>");
+	    out.println("<tr><th>Queue</th><th>Agent</th><th></th><th>Status</th><th>Info</th><th>Action</th></tr>");
+	    String queue = "";
 	    String lines[] = text.split("\n");
 	    int count = 0;
 	    for (String line: lines) {
 		if (line.contains("holdtime")){
-		    String queue = line.substring(0, line.trim().indexOf(" ")).trim();
-		    out.println("<h2>Queue " + queue + "</h2>");
+		    queue = line.substring(0, line.trim().indexOf(" ")).trim();
+		    out.println("<tr><th>-</th></tr><tr><td><b>" + queue + "</b></td>");
+		    
 		}
+		
 		if (line.contains("Agent/") && 
 			(((has &&line.contains(keyword))) || (! has && !line.contains(keyword)))) {
 		    count++;
 		    String member = line.substring(0, line.indexOf("(") - 1).trim();
-		    out.println("<b>" + member + "</b> " + line);
-		    out.println("<form method=post>");
+		    if (queue.isEmpty()) {
+			out.println("<tr><td>-</td>");
+			
+		    }
+		    else {
+			//out.println("<td>" + count + "</td>");
+		    }
+		    queue = "";
+		    
+		    out.println("<td>" + member + "</td>");
+		    line = line.substring(line.indexOf("("), line.length());
+		    
+		    // Option
+		    out.println("<td>" + line.substring(0, line.indexOf(")") +1 ) + "</td>");
+		    line = line.substring(line.indexOf(")") + 1, line.length());
+		    
+		    // Status
+		    out.println("<td>" + line.substring(0, line.indexOf(")") +1 ) + "</td>");
+		    line = line.substring(line.indexOf(")") + 1, line.length());
+		    
+		    // Info
+		    out.println("<td>" + line + "</td>");
+		    out.println("<td><form method=post>");
 		    out.println("<input type=hidden name=member value='" + member + "' />");
 		    if (has && keyword.equals("paused")) {
 		        out.println("<input type=submit name=unpause value='Unpause' />");
@@ -126,18 +172,77 @@ public class Functions extends HttpServlet {
 		    else if (! has && keyword.equals("paused")) {
 		        out.println("<input type=submit name=pause value='Pause' />");
 		    }
-		    out.println("</form>");
+		    out.println("</form></td>");
+		    out.println("</tr>");
 		}
 	    }
+	 
+	    out.println("</table>");
 	    if (count == 0) {
 		out.println("There is no members with status (" + keyword + ")");
 	    }
 	    else {
-		out.println("<font color=green><b>" + count + "</b> Members</font>");
+		out.println("<script> document.getElementById('count').innerHTML = '" + count + "'</script>");
 	    }
 	    
 	}
     }
+    
+    private void displayWaiting(String pbxfile, String url, final PrintWriter out) throws IOException, ParseException {
+	
+	JSONObject obj = new JSONObject();
+	obj.put("command", "queue show");
+	String requestText = obj.toJSONString();
+	
+	String resultText = General.restCallURL(url + "Command", requestText);
+	JSONParser parser = new JSONParser();
+	JSONObject resObj = (JSONObject) parser.parse(resultText);
+	if (Boolean.valueOf(resObj.get("success").toString())) {
+	    String text = resObj.get("result").toString();
+	    out.println("<font color=green><b><label id=count></label></b></font> Customers");
+	    out.println("<table class=tform>");
+	    out.println("<tr><th>Queue</th><th>Caller ID</th><th></th></tr>");
+	    String queue = "";
+	    String lines[] = text.split("\n");
+	    int count = 0;
+	    boolean started = false;
+	    for (String line: lines) {
+		    
+		if (line.trim().isEmpty()) {
+		    started = false;
+		}
+		if (started) {
+		    String callid = line.substring(line.indexOf(".") + 1, line.indexOf("(")).trim();
+ 		   String info[] = General.getCallInfo(pbxfile, callid);
+		   if ((info != null) && (info.length > 30)){
+		   String callerID = General.getValue(info[7]);
+		    
+		    out.println("<tr><td>" + queue + "</td>");
+		    out.println("<td>" + callerID + "</td>");
+		    line = line.substring(line.indexOf("("), line.length());
+		    out.println("<td>" + line + "</td></tr>");
+		    count++;
+
+		}
+		if (line.contains("Callers:")) {
+		    started = true;
+		}
+		out.println("</tr>");
+	    }
+	    }
+	    
+	 
+	    out.println("</table>");
+	    if (count == 0) {
+		out.println("There is no waiting customer");
+	    }
+	    else {
+		out.println("<script> document.getElementById('count').innerHTML = '" + count + "'</script>");
+	    }
+	    
+	}
+    }
+    
 
     private void pauseUnpause(HttpServletRequest request, String url, final PrintWriter out) throws IOException, ServletException {
 	

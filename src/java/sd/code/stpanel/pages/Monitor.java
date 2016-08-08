@@ -68,7 +68,7 @@ public class Monitor extends HttpServlet {
 		  if (function.equals("cdr")) {
 		      out.println("bgcolor=#AAAADD");
 		  }
-		  out.println("><a href='Monitor?function=cdr'>Last CDR</a></td>");
+		  out.println("><a href='Monitor?function=cdr'>Last CDRs</a></td>");
 		  
 		  out.println("</tr></table>");
 		  
@@ -84,7 +84,7 @@ public class Monitor extends HttpServlet {
 		  }
 		  else if (function.equals("calls")) {
 		  
-		      displayCalls(pbxfile, url, out);
+		      displayActiveChannels(pbxfile, url, out);
 		  }
 		  else if (function.equals("cdr")){
 		      displayCDR(pbxfile, url, out);
@@ -108,7 +108,7 @@ public class Monitor extends HttpServlet {
 	}
     }
 
-    private void displayCalls(String pbxfile, String url, PrintWriter out) throws IOException, ParseException {
+    private void displayActiveChannels(String pbxfile, String url, PrintWriter out) throws IOException, ParseException {
 	
 	String text = Web.callAMICommand(pbxfile, "core show channels concise");
 	    
@@ -122,31 +122,35 @@ public class Monitor extends HttpServlet {
 	}
 	String lines[] = text.split("\n");
 	    
-	out.println("<table class=dtable><tr><th>ID</th><th>Caller ID</th><th>Extension</th><th>Duration</th></tr>");
+	out.println("<b><lable id='channels'></lablel></b> Active channels");
+	out.println("<table class=tform><tr><th>ID</th><th>Caller ID</th><th>Extension</th>");
+	out.println("<th>Duration</th><th>Application</th></tr>");
 	int count=0;
 	for (String line: lines) {
 		if (line.contains("!")) {
 		   String callid = line.substring(0, line.indexOf("!")).trim();
 		   count++;
 		   // Get details call info
-		   String info[] = getCallInfo(pbxfile, callid);
+		   String info[] = General.getCallInfo(pbxfile, callid);
 		   if ((info != null) && (info.length > 30)){
-		   String callerID = getValue(info[7]);
-		   String id = getValue(info[5]);
-		   String extension = getValue(info[31]);
-		   String duration = getValue(info[26]);
+		   String callerID = General.getValue(info[7]);
+		   String id = General.getValue(info[5]);
+		   String extension = General.getValue(info[31]);
+		   String duration = General.getValue(info[26]);
+		   String application = General.getValue(info[35]);
 		   out.println("<tr>");
 		   out.println("<td>" + id + "</td>");
 		   out.println("<td>" + callerID + "</td>");
 		   out.println("<td>" + extension + "</td>");
 		   out.println("<td>" + duration + "</td>");
+		   out.println("<td>" + application + "</td>");
 		   
 		   out.println("</tr>");
 		   }
 		}
 	    }
 	    out.println("</table>");
-	    out.println("<b>" + count + "</b> Channels");
+	    out.println("<script>document.getElementById('channels').innerHTML='" + count + "'</script>");
 	
     }
     
@@ -155,13 +159,13 @@ public class Monitor extends HttpServlet {
 	try {
 	     String resultText = General.restCallURL(url + "GetLastCDR", "");
 	
-	     out.println("<h2>Last CDR</h2>");
+	     out.println("<h2>Last CDRs</h2>");
 	     JSONParser parser = new JSONParser();
 	     JSONObject obj = (JSONObject) parser.parse(resultText);
 	     boolean success = Boolean.valueOf(obj.get("success").toString());
 
 	     if (success) {
-		 out.println("<table class=dtable><tr>");
+		 out.println("<table class=tform><tr>");
 		
 		 JSONObject result = (JSONObject) obj.get("result");
 		 JSONArray header = (JSONArray) result.get("header");
@@ -199,22 +203,8 @@ public class Monitor extends HttpServlet {
     }
     
 
-    private String getValue(String text){
-     
-	return text.substring(text.indexOf(":") + 1, text.length()).trim();
-    }
     
-    private String[] getCallInfo(String pbxfile, String callid) throws IOException, ParseException{
-	
 
-	String text = Web.callAMICommand(pbxfile, "core show channel " + callid);
-	String lines[];
-	    
-	lines = text.split("\n");
-	
-        
-	return lines;
-    }
     
     private void displaySystemStatus(String url, PrintWriter out) {
 	

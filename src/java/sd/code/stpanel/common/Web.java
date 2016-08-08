@@ -149,7 +149,7 @@ public class Web {
         out.println("<a href='AMI'>AMI commands</a></td>");
         
         selectTabPage(out, page, "functions");
-        out.println("<a href='Functions'>Functions</a></td>");
+        out.println("<a href='Functions'>Queues</a></td>");
 	
         selectTabPage(out, page, "terminal");
         out.println("<a href='Terminal'>Terminal</a></td>");

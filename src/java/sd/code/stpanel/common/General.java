@@ -373,6 +373,22 @@ final public class General {
 	    return "Error: " + ex.toString();
 	}
     }
-   
+    
+     public static String[] getCallInfo(String pbxfile, String callid) throws IOException, ParseException{
+	
+
+	String text = Web.callAMICommand(pbxfile, "core show channel " + callid);
+	String lines[];
+	    
+	lines = text.split("\n");
+    
+	return lines;
+    }  
+     
+    public static String getValue(String text){
+     
+	return text.substring(text.indexOf(":") + 1, text.length()).trim();
+    }
+     
     
 }
