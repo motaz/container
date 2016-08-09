@@ -7,7 +7,6 @@ package sd.code.stpanel.pages;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,7 +42,7 @@ public class Monitor extends HttpServlet {
               String user = Web.getCookieValue(request, "user");
               String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
               if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "advanced", "monitor");
+                  Web.setHeader(true, request, response, out, "pbx", "monitor");
                   out.println("<h2>Monitor</h2>");
 
 		  String function = request.getParameter("function");

@@ -389,6 +389,46 @@ final public class General {
      
 	return text.substring(text.indexOf(":") + 1, text.length()).trim();
     }
-     
+ 
+    public static String getRemoteFile(String url, String filename) throws IOException, ParseException {
+	
+	JSONObject obj = new JSONObject();
+	obj.put("filename", filename);
+	String requestText = obj.toJSONString();
+
+	String resultText = General.restCallURL(url + "GetFile", requestText);
+	JSONParser parser = new JSONParser();
+	JSONObject resObj = (JSONObject) parser.parse(resultText);
+	if (Boolean.valueOf(resObj.get("success").toString())) {
+	    String text = resObj.get("content").toString();
+	    return text;
+	}
+	else {
+	    return "Error: " + resObj.get("message").toString();
+	}
+    }
+    
+    public static Operation saveRemoteFile(String url, String filename, String content) throws IOException, ParseException {
+	
+	Operation result = new Operation();
+	JSONObject obj = new JSONObject();
+	obj.put("filename", filename);
+	obj.put("content", content);
+	String requestText = obj.toJSONString();
+
+	String resultText = General.restCallURL(url + "ModifyFile", requestText);
+	JSONParser parser = new JSONParser();
+	JSONObject resObj = (JSONObject) parser.parse(resultText);
+	if (Boolean.valueOf(resObj.get("success").toString())) {
+	    result.success = true;
+	}
+	else {
+	    result.success = false;
+	    result.errorCode = 5;
+	    result.message = resObj.get("message").toString();
+	}
+	return result;
+    }
+    
     
 }

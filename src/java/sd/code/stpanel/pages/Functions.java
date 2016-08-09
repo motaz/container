@@ -42,7 +42,7 @@ public class Functions extends HttpServlet {
           String pbxfile = General.getPBXsDir() + Web.getCookieValue(request, "file");
             try {
                 if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, "advanced", "functions");
+                    Web.setHeader(true, request, response, out, "pbx", "functions");
                     String url = General.getConfigurationParameter("url", "", pbxfile);
 
                     out.println("<h2>Queues</h2>");

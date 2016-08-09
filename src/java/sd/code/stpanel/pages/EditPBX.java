@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sd.code.stpanel.types.Operation;
 
 /**
  *
@@ -33,31 +34,33 @@ public class EditPBX extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+	
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        Web.setHeader(true, request, response, out, "", "");
-            
-        String user = Web.getCookieValue(request, "user");
-        String selectedFileName = request.getParameter("pbx");
-            
-        if (Web.checkSession(request, user)){
-                
-	   doUpdate(request, out, selectedFileName, response); 
-	   out.println("<h2>Edit PBX configuration</h2>");
-
-	   displayEdit(out, selectedFileName);
+	try (PrintWriter out = response.getWriter()) {
+	     Web.setHeader(true, request, response, out, "", "");
+	    
+	     String user = Web.getCookieValue(request, "user");
+	     String selectedFileName = request.getParameter("pbx");
+	    
+	     if (Web.checkSession(request, user)){
+		
+		doUpdate(request, out, selectedFileName, response);
+		out.println("<h2>Edit PBX configuration</h2>");
+		
+		displayEdit(out, selectedFileName);
+	     }
+	     else
+	     {
+		response.sendRedirect("Login");
+	     }
+	    
+	     Web.setFooter(out);
 	}
-	else
-	{
-	    response.sendRedirect("Login");
-	}
-
-       Web.setFooter(out);
-       out.close();
         
     }
 
     private void doUpdate(HttpServletRequest request, final PrintWriter out, String selectedFileName, HttpServletResponse response) throws IOException {
+	
         if (request.getParameter("update") != null) {
             String title = request.getParameter("title");
             String url = request.getParameter("url");
@@ -97,6 +100,22 @@ public class EditPBX extends HttpServlet {
                     success = General.setConfigurationParameter("title", title, fileName);
 		    General.setConfigurationParameter("amiuser", amiuser, fileName);
 		    General.setConfigurationParameter("amipass", amipass, fileName);
+		    
+		    // Save remote config
+		    if (request.getParameter("remoteconfig") != null) {
+			try {
+			    Operation op = General.saveRemoteFile(url, "/etc/simpletrunk/stagent.ini", 
+				    request.getParameter("remoteconfig"));
+			    success = op.success;
+			    if (! success) {
+				out.println("<p class=errormessage>Unable to write configuration:" + op.message + "</p>");
+			    }
+			}
+			catch (Exception ex){
+			    out.println("<p class=errormessage>Unable to write configuration:" + ex.toString()  + "</p>");
+			    success = false;
+			}
+		    }
                 }
                 if (success) {
                     response.sendRedirect("Home");
@@ -136,6 +155,29 @@ public class EditPBX extends HttpServlet {
 
 	out.println("<tr><td>AMI Password</td>");
         out.println("<td><input type=text name=amipass size=30 value='" + amipass + "' /></td></tr>");
+	
+	if (url != null) {
+	    try
+	    {
+	      String result = General.getRemoteFile(url, "/etc/simpletrunk/stagent.ini");
+	      if (result != null && result.contains("FileNotFoundException")){
+		  result = "";
+	      }
+	      if (result != null && result.trim().isEmpty()){
+		  result = "amiurl=http://localhost:8088/rawman\n" +
+			    "cdrdbserver=\n" +
+			    "cdrdatabase=\n" +
+			    "cdruser=\n" +
+			    "cdrpass=\n" +
+			    "cdrtable=";
+	      }
+	      out.println("<tr><td>Remote STAgent config</td>");
+	      out.println("<td><textarea cols=80 rows=8 name=remoteconfig >" + result + "</textarea></td></tr>");
+	      
+	    } catch (Exception ex){
+		out.println(ex.toString());
+	    }
+	}
 
 	out.println("<tr><td><input type=submit name=update value=Update /></td></tr>");
         out.println("</table>");

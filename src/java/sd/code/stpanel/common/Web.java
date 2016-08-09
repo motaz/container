@@ -29,7 +29,7 @@ public class Web {
               page = "";
             }
 
-        String version  = "1.0.7";
+        String version  = "1.0.8";
         
         if (user == null){
             user = "";
@@ -148,8 +148,6 @@ public class Web {
         selectTabPage(out, page, "ami");
         out.println("<a href='AMI'>AMI commands</a></td>");
         
-        selectTabPage(out, page, "functions");
-        out.println("<a href='Functions'>Queues</a></td>");
 	
         selectTabPage(out, page, "terminal");
         out.println("<a href='Terminal'>Terminal</a></td>");
@@ -160,8 +158,6 @@ public class Web {
         selectTabPage(out, page, "tools");
         out.println("<a href='Tools'>Tools</a></td>");
 
-        selectTabPage(out, page, "monitor");
-        out.println("<a href='Monitor'>Monitor</a></td>");
 	
         out.println("</tr></table>");
     }
@@ -178,6 +174,13 @@ public class Web {
 
         selectTabPage(out, page, "dialplans");
         out.println("<a href='Dialplans'>Dialplans</a></td>");
+	
+        selectTabPage(out, page, "functions");
+        out.println("<a href='Functions'>Queues</a></td>");
+	
+        selectTabPage(out, page, "monitor");
+        out.println("<a href='Monitor'>Monitor</a></td>");
+	
 
 	out.println("</tr></table>");
     }

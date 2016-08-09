@@ -41,7 +41,7 @@ public class Pbx extends HttpServlet {
 
               if (Web.checkSession(request, user)){
 
-                  out.println("<p class=infomessage>Asterisk PBX configuration</p>");
+                  out.println("<p class=infomessage>Asterisk PBX configuration and monitoring</p>");
                  
               }
               else
