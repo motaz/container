@@ -100,7 +100,7 @@ public class Functions extends HttpServlet {
 		    	displayStatusOf(url, out, true, "Busy");
 		    }
 		    else if (function.equals("wait")) {
-			out.println("<h2>Busy</h2>");
+			out.println("<h2>Waiting</h2>");
 		    	displayWaiting(pbxfile, url, out);
 		    }
 		    
@@ -201,34 +201,49 @@ public class Functions extends HttpServlet {
 	    String text = resObj.get("result").toString();
 	    out.println("<font color=green><b><label id=count></label></b></font> Customers");
 	    out.println("<table class=tform>");
-	    out.println("<tr><th>Queue</th><th>Caller ID</th><th></th></tr>");
+	    out.println("<tr><th>Queue</th><th>Caller ID</th><th>Application</th><th>Info</th></tr>");
 	    String queue = "";
+	    
 	    String lines[] = text.split("\n");
 	    int count = 0;
 	    boolean started = false;
+	    String lastQueue = "";
 	    for (String line: lines) {
-		    
+
+		if (line.contains("holdtime")) {
+		    queue = line.substring(0, line.indexOf(" ")).trim();
+		}
 		if (line.trim().isEmpty()) {
 		    started = false;
 		}
 		if (started) {
 		    String callid = line.substring(line.indexOf(".") + 1, line.indexOf("(")).trim();
- 		   String info[] = General.getCallInfo(pbxfile, callid);
-		   if ((info != null) && (info.length > 30)){
-		   String callerID = General.getValue(info[7]);
-		    
-		    out.println("<tr><td>" + queue + "</td>");
-		    out.println("<td>" + callerID + "</td>");
-		    line = line.substring(line.indexOf("("), line.length());
-		    out.println("<td>" + line + "</td></tr>");
-		    count++;
+ 		    String info[] = General.getCallInfo(pbxfile, callid);
+		    if ((info != null) && (info.length > 30)){
+			String callerID = General.getValue(info[7]);
+			String application = General.getValue(info[35]);
+			 
+			out.print("<tr><td><b>");
+			if (!lastQueue.equals(queue)) {
+			    out.print(queue);
+			}
+			out.println("</b></td>");
+			lastQueue = queue;
+			out.println("<td>" + callerID + "</td>");
+			line = line.substring(line.indexOf("("), line.length());
+			out.println("<td>" + application + "</td>");
+			out.println("<td>" + line + "</td>");
+			out.println("</tr>");
+			count++;
 
+		   }
 		}
 		if (line.contains("Callers:")) {
+		    
 		    started = true;
 		}
 		out.println("</tr>");
-	    }
+	    
 	    }
 	    
 	 
