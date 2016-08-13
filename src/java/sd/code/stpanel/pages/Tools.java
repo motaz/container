@@ -32,25 +32,25 @@ public class Tools extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-          String user = Web.getCookieValue(request, "user");
-            try {
-                if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, "advanced", "tools");
-
-                    out.println("<h2>Tools</h2>");
-
-                    out.println("<a href=Backup>Backup all config files</a>");
-                    
-                    Web.setFooter(out);
-                }
-            }
-            catch (Exception ex){
-                out.println(ex.toString());
-            }                
-
-        out.close();
-	
+	try (PrintWriter out = response.getWriter()) {
+	    String user = Web.getCookieValue(request, "user");
+	    try {
+		if (Web.checkSession(request, user)) {
+		    Web.setHeader(true, request, response, out, "advanced", "tools");
+		    
+		    out.println("<h2>Tools</h2>");
+		    
+		    out.println("<a href=Backup>Backup all config files</a><br/>");
+		    
+		    out.println("<br/><a href=UploadSound>Upload sound file</a><br/>");
+		    
+		    Web.setFooter(out);
+		}
+	    }
+	    catch (Exception ex){
+		out.println(ex.toString());
+	    }
+	}
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

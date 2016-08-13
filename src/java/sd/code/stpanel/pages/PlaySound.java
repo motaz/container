@@ -3,23 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Test;
+package sd.code.stpanel.pages;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONObject;
+import sd.code.stpanel.common.General;
+import sd.code.stpanel.common.Web;
+import sd.code.stpanel.types.Operation;
 
 /**
  *
  * @author motaz
  */
-@WebServlet(name = "Hello", urlPatterns = {"/Hello"})
-public class Hello extends HttpServlet {
+@WebServlet(name = "PlaySound", urlPatterns = {"/PlaySound"})
+public class PlaySound extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,31 +37,34 @@ public class Hello extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
 	response.setContentType("text/html;charset=UTF-8");
-	PrintWriter out = response.getWriter();
+	String user = Web.getCookieValue(request, "user");
 	try {
-	    /* TODO output your page here. You may use following sample code. */
-	    out.println("<!DOCTYPE html>");
-	    out.println("<html>");
-	    out.println("<head>");
-	    out.println("<title>Servlet Hello</title>");	    
-	    out.println("</head>");
-	    out.println("<body>");
-	    out.println("<h1>Servlet Hello at " + request.getContextPath() + "</h1>");
-	    out.println("</body>");
-            // Test
-	    out.println("</html>");
-	    String dir = request.getParameter("dir");
-	    Enumeration<String> param = request.getHeaderNames();
-	    while (param.hasMoreElements()) {
-		String paramName = param.nextElement();
-		System.out.println(paramName + ":" + request.getHeader(paramName));
+	    if (Web.checkSession(request, user)) {
+	       String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+	       String url = General.getConfigurationParameter("url", "", pbxfile);	      
+		   
+	       String contenttype = "audio/wav";
+	       String filename = request.getParameter("filename");
+	       response.setContentType(contenttype);
+	       JSONObject obj = new JSONObject();
+	       obj.put("filename", filename);
+	       obj.put("contenttype", contenttype);
+	       String requestText = obj.toJSONString();
+	       OutputStream output = response.getOutputStream();
+	       File file = new File(filename);
+	       
+	       System.out.println(url);
+	       System.out.println(requestText);
+
+	       response.setHeader("Content-Disposition", "attachment;filename=" + file.getName());
+	       Operation op = General.downloadFile(url + "DownloadFile", requestText, contenttype, output);
+	       response.setContentLength((int)op.size);		    
+		   
 	    }
-	    System.out.println("Dir = " + dir);
-	    
-	    
-	} finally {
-	    out.close();
-	}
+	   } catch (Exception ex){
+		
+	   }
+	
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

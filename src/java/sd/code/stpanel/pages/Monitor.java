@@ -41,6 +41,7 @@ public class Monitor extends HttpServlet {
             try {
               String user = Web.getCookieValue(request, "user");
               String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+	      String url = General.getConfigurationParameter("url", "", pbxfile);	      
               if (Web.checkSession(request, user)) {
                   Web.setHeader(true, request, response, out, "pbx", "monitor");
                   out.println("<h2>Monitor</h2>");
@@ -71,7 +72,7 @@ public class Monitor extends HttpServlet {
 		  
 		  out.println("</tr></table>");
 		  
-		  String url = General.getConfigurationParameter("url", "", pbxfile);
+		  
 		  
 		  Date now = new Date();
 		  out.println(now.toString());

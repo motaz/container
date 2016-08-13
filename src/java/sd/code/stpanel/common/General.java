@@ -281,13 +281,13 @@ final public class General {
         return outputText;
     }     
 
-   public static Operation downloadFile(String fileURL, String urlParameters, OutputStream outputStream)
+   public static Operation downloadFile(String fileURL, String urlParameters, String contentType, OutputStream outputStream)
             throws IOException, ParseException {
         
         Operation op = new Operation();
         URL url = new URL(fileURL);
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-        httpConn.setRequestProperty("Content-Type", "application/zip");
+        httpConn.setRequestProperty("Content-Type", contentType);
         httpConn.setDoOutput(true);
         
 
@@ -407,6 +407,33 @@ final public class General {
 	    return "Error: " + resObj.get("message").toString();
 	}
     }
+    
+    public static String listFiles(String url, String folderName) throws IOException, ParseException {
+	
+	JSONObject obj = new JSONObject();
+	folderName = addSlash(folderName);
+	obj.put("foldername", folderName);
+	String requestText = obj.toJSONString();
+
+	String resultText = General.restCallURL(url + "ListFiles", requestText);
+	JSONParser parser = new JSONParser();
+	JSONObject resObj = (JSONObject) parser.parse(resultText);
+	if (Boolean.valueOf(resObj.get("success").toString())) {
+	    String files = resObj.get("files").toString();
+	    return files;
+	}
+	else {
+	    return "Error: " + resObj.get("message").toString();
+	}
+    }
+
+    public static String addSlash(String folderName) {
+	if (folderName.charAt(folderName.length()-1) != '/') {
+	    folderName = folderName + "/";
+	}
+	return folderName;
+    }
+    
     
     public static Operation saveRemoteFile(String url, String filename, String content) throws IOException, ParseException {
 	
