@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
@@ -92,8 +91,6 @@ public class UploadSound extends HttpServlet {
 			     
 			 }
 			 
-			 
-			 
 		    } catch (Exception ex){
 			out.println(ex.toString());
 		    }
@@ -102,7 +99,8 @@ public class UploadSound extends HttpServlet {
 		    
 		    // Upload sound form
 		    out.println("<form method=POST action='UploadSoundFile' enctype='multipart/form-data'>");
-		    //out.println("<form method=POST action='http://localhost:9066' enctype='multipart/form-data'>");
+		    //out.println("<form method=POST action='http://localhost:8084/STAgent/UploadFile' enctype='multipart/form-data'>");
+		    //out.println("<form method=POST action='http://localhost:9090' enctype='multipart/form-data'>");
 		    out.println("<br/>Upload file");
 		    out.println("<input type=hidden name=dir value='" + dir + "' />");
 		    out.println("<input type=file name=file />");
