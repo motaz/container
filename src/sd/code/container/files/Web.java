@@ -19,7 +19,7 @@ import java.net.URLConnection;
  */
 public class Web {
     
-    public static String cURL(String methodURL, String urlParameters, int waitSeconds, String contentType) throws 
+    public static String callURL(String methodURL, String urlParameters, int waitSeconds, String contentType) throws 
 	    IOException, MalformedURLException {
 	
 	if (contentType == null){
@@ -51,6 +51,5 @@ public class Web {
         reader.close();
         return outputText;
     }     
-    
     
 }
