@@ -138,7 +138,7 @@ public class Functions extends HttpServlet {
 		    
 		}
 		
-		if (line.contains("Agent/") && 
+		if ((line.contains("Agent/") || (line.contains("SIP/"))) && 
 			(((has &&line.contains(keyword))) || (! has && !line.contains(keyword)))) {
 		    count++;
 		    String member = line.substring(0, line.indexOf("(") - 1).trim();
@@ -179,6 +179,9 @@ public class Functions extends HttpServlet {
 	 
 	    out.println("</table>");
 	    if (count == 0) {
+		if (!has) {
+		    keyword = "Un" + keyword;
+		}
 		out.println("There is no members with status (" + keyword + ")");
 	    }
 	    else {
