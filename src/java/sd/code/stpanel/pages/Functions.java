@@ -71,18 +71,13 @@ public class Functions extends HttpServlet {
 	 	    }
 		    out.println("><a href='Functions?function=paused'>Queue-Paused</a></td>");
 		    
+  
                     out.println("<td ");
-  		    if (function.equals("busy")) {
+  		    if (function.equals("talk")) {
   		      out.println("bgcolor=#AAAADD");
 	 	    }
-		    out.println("><a href='Functions?function=busy'>Queue-Busy</a></td>");
-		    
-                    out.println("<td ");
-  		    if (function.equals("wait")) {
-  		      out.println("bgcolor=#AAAADD");
-	 	    }
-		    out.println("><a href='Functions?function=wait'>Waiting</a></td>");
-		    
+		    out.println("><a href='Functions?function=talk'>Talking/Waiting</a></td>");
+		   		    
                     out.println("</tr></table>");
 
 		    pauseUnpause(request, url, out);
@@ -95,13 +90,16 @@ public class Functions extends HttpServlet {
 			out.println("<h2>Active</h2>");
 		    	displayStatusOf(url, out, false, "paused");
 		    }
-		    else if (function.equals("busy")) {
-			out.println("<h2>Busy</h2>");
-		    	displayStatusOf(url, out, true, "Busy");
-		    }
-		    else if (function.equals("wait")) {
-			out.println("<h2>Waiting</h2>");
+	
+		    else if (function.equals("talk")) {
+			out.println("<h2>Talking/Waiting</h2>");
+			out.println("<table><tr>");
+			out.println("<td>");
+		        displayStatusOf(url, out, true, "Busy");
+			out.println("</td><td>");
+
 		    	displayWaiting(pbxfile, url, out);
+			out.println("</td><tr></table>");
 		    }
 		    
                     
@@ -119,6 +117,10 @@ public class Functions extends HttpServlet {
 	JSONObject obj = new JSONObject();
 	obj.put("command", "queue show");
 	String requestText = obj.toJSONString();
+	boolean isBusy  = keyword.equals("Busy");
+	if (isBusy){
+	    out.println("<h3>Talking</h3>");
+	}
 	
 	String resultText = General.restCallURL(url + "Command", requestText);
 	JSONParser parser = new JSONParser();
@@ -127,14 +129,18 @@ public class Functions extends HttpServlet {
 	    String text = resObj.get("result").toString();
 	    out.println("<font color=green><b><label id=count></label></b></font> Members");
 	    out.println("<table class=tform>");
-	    out.println("<tr><th>Queue</th><th>Agent</th><th></th><th>Status</th><th>Info</th><th>Action</th></tr>");
+	    out.println("<tr><th>Queue</th><th>Agent</th><th>Status</th><th>Info</th>");
+	    if (!isBusy) { 
+		out.println("<th>Action</th>");
+	    }
+	    out.println("</tr>");
 	    String queue = "";
 	    String lines[] = text.split("\n");
 	    int count = 0;
 	    for (String line: lines) {
 		if (line.contains("holdtime")){
 		    queue = line.substring(0, line.trim().indexOf(" ")).trim();
-		    out.println("<tr><th>-</th></tr><tr><td><b>" + queue + "</b></td>");
+		    out.println("<tr><td><b>" + queue + "</b></td>");
 		    
 		}
 		
@@ -146,33 +152,39 @@ public class Functions extends HttpServlet {
 			out.println("<tr><td>-</td>");
 			
 		    }
-		    else {
-			//out.println("<td>" + count + "</td>");
-		    }
+
 		    queue = "";
 		    
 		    out.println("<td>" + member + "</td>");
 		    line = line.substring(line.indexOf("("), line.length());
 		    
 		    // Option
-		    out.println("<td>" + line.substring(0, line.indexOf(")") +1 ) + "</td>");
+		    //out.println("<td  style='font-size:12'>" + line.substring(0, line.indexOf(")") +1 ) + "</td>");
 		    line = line.substring(line.indexOf(")") + 1, line.length());
 		    
 		    // Status
-		    out.println("<td>" + line.substring(0, line.indexOf(")") +1 ) + "</td>");
-		    line = line.substring(line.indexOf(")") + 1, line.length());
+		    String status  = line.substring(0, line.indexOf(")") +1 );
+		    line = line.substring(line.indexOf(")") + 1, line.length()).trim();
+		    if (line.startsWith("(")){
+			status = status + line.substring(0, line.indexOf(")") + 1);
+			line = line.substring(line.indexOf(")") + 1, line.length());
+		    }
+		    
+		    out.println("<td>" + status + "</td>");
 		    
 		    // Info
-		    out.println("<td>" + line + "</td>");
-		    out.println("<td><form method=post>");
-		    out.println("<input type=hidden name=member value='" + member + "' />");
-		    if (has && keyword.equals("paused")) {
-		        out.println("<input type=submit name=unpause value='Unpause' />");
+		    out.println("<td style='font-size:12'>" + line + "</td>");
+		    if (! isBusy){
+			out.println("<td><form method=post>");
+			out.println("<input type=hidden name=member value='" + member + "' />");
+			if (has && keyword.equals("paused")) {
+			    out.println("<input type=submit name=unpause value='Unpause' />");
+			}
+			else if (! has && keyword.equals("paused")) {
+			    out.println("<input type=submit name=pause value='Pause' />");
+			}
+			out.println("</form></td>");
 		    }
-		    else if (! has && keyword.equals("paused")) {
-		        out.println("<input type=submit name=pause value='Pause' />");
-		    }
-		    out.println("</form></td>");
 		    out.println("</tr>");
 		}
 	    }
@@ -202,7 +214,8 @@ public class Functions extends HttpServlet {
 	JSONObject resObj = (JSONObject) parser.parse(resultText);
 	if (Boolean.valueOf(resObj.get("success").toString())) {
 	    String text = resObj.get("result").toString();
-	    out.println("<font color=green><b><label id=count></label></b></font> Customers");
+	    out.println("<h3>Waiting</h3>");
+	    out.println("<font color=green><b><label id=waitcount></label></b></font> Customers");
 	    out.println("<table class=tform>");
 	    out.println("<tr><th>Queue</th><th>Caller ID</th><th>Application</th><th>Info</th></tr>");
 	    String queue = "";
@@ -235,7 +248,7 @@ public class Functions extends HttpServlet {
 			out.println("<td>" + callerID + "</td>");
 			line = line.substring(line.indexOf("("), line.length());
 			out.println("<td>" + application + "</td>");
-			out.println("<td>" + line + "</td>");
+			out.println("<td  style='font-size:12'>" + line + "</td>");
 			out.println("</tr>");
 			count++;
 
@@ -255,7 +268,7 @@ public class Functions extends HttpServlet {
 		out.println("There is no waiting customer");
 	    }
 	    else {
-		out.println("<script> document.getElementById('count').innerHTML = '" + count + "'</script>");
+		out.println("<script> document.getElementById('waitcount').innerHTML = '" + count + "'</script>");
 	    }
 	    
 	}
