@@ -5,6 +5,7 @@
  */
 package sd.code.stpanel.common;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -21,15 +22,15 @@ import org.json.simple.parser.ParseException;
  */
 public class Web {
     
-    public static void setHeader(boolean displayTabs, HttpServletRequest request, HttpServletResponse response, PrintWriter out, 
-            String parent, String page){
+    public static void setHeader(boolean displayTabs, HttpServletRequest request, HttpServletResponse response, 
+            PrintWriter out, String parent, String page){
         
         String user = getCookieValue(request, "user");
         if (page == null){
               page = "";
             }
 
-        String version  = "1.0.9";
+        String version  = "1.0.10";
         
         if (user == null){
             user = "";
@@ -37,8 +38,9 @@ public class Web {
         String logoutText =  user + "&emsp; <a href=Logout>Logout</a>";
         
         String selectedPBX = "";
+        String fileName = "";
         if (displayTabs) {
-              String fileName = getCookieValue(request, "file");
+              fileName = getCookieValue(request, "file");
               if (fileName != null) {
                  String title = General.getConfigurationParameter("title", "", General.getPBXsDir() + fileName);
                  selectedPBX = "<font color=lime><b>" + title + "</b></font>";
@@ -104,6 +106,9 @@ public class Web {
                   out.print(font);
               }
               out.println(">My Admin</font></a></li>");
+              
+              out.println("&emsp;");
+              displayPbxsBox(out, fileName);
              
         }
          
@@ -313,26 +318,52 @@ public class Web {
     
     public static String callAMICommand(String pbxfile, String command){
 	try {
-		  String url = General.getConfigurationParameter("url", "", pbxfile);
-		  JSONObject obj = new JSONObject();
-		  String username = General.getConfigurationParameter("amiuser", "admin", pbxfile);
-		  String secret = General.getConfigurationParameter("amipass", "", pbxfile);
-		  obj.put("username", username);
-		  obj.put("secret", secret);
-		  obj.put("command", "action:command\ncommand:" + command);	
+              String url = General.getConfigurationParameter("url", "", pbxfile);
+              JSONObject obj = new JSONObject();
+              String username = General.getConfigurationParameter("amiuser", "admin", pbxfile);
+              String secret = General.getConfigurationParameter("amipass", "", pbxfile);
+              obj.put("username", username);
+              obj.put("secret", secret);
+              obj.put("command", "action:command\ncommand:" + command);	
 
-		  String requestText = obj.toJSONString();
+              String requestText = obj.toJSONString();
 
-		  String resultText = General.restCallURL(url + "CallAMI", requestText);
-		  JSONParser parser = new JSONParser();
-		  JSONObject resObj = (JSONObject) parser.parse(resultText);
+              String resultText = General.restCallURL(url + "CallAMI", requestText);
+              JSONParser parser = new JSONParser();
+              JSONObject resObj = (JSONObject) parser.parse(resultText);
 
-		  String content = resObj.get("message").toString();
-		  return content;
+              String content = resObj.get("message").toString();
+              return content;
 	    }
 	     catch (Exception ex){
 	           return null;
 	    }
 	
+    }
+    
+    public static void displayPbxsBox(final PrintWriter out, String selected){
+              
+        File folder = new File(General.getPBXsDir());
+        File[] listOfFiles = folder.listFiles();
+        
+        out.println("<select name=pbx onchange='selectPBX(this)'>");
+        out.println("<option >--Select PBX--</option>");
+        for (File file: listOfFiles){
+            if (file.isFile()) {
+                String title = General.getConfigurationParameter("title", "", file.getAbsolutePath());            
+                out.println("<option value='" + file.getName() + "' ");
+                if (file.getName().equals(selected)){
+                    out.println("selected");
+                }
+                out.println(">" + title);
+                out.println("</option>");
+            }
+        }
+        out.println("</select>");
+        out.println("<script>");
+        out.println("function selectPBX(sel) {\n" +
+                    "   location='SelectPBX?pbx=' + sel.value;  \n" +
+                    "}");
+        out.println("</script>");
     }
 }

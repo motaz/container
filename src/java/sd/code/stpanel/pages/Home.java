@@ -34,67 +34,68 @@ public class Home extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-	try{
-            Web.setHeader(true, request, response, out, "home", "home");
-            
-            String user = Web.getCookieValue(request, "user");
-
-            if (Web.checkSession(request, user)){
+	try(PrintWriter out = response.getWriter()) {
+            try{
+                Web.setHeader(true, request, response, out, "home", "home");
                 
-                out.println("<h3>Select PBX</h3>");
+                String user = Web.getCookieValue(request, "user");
                 
-                out.println("<a href='AddPBX'>Insert new PBX</a>");
+                if (Web.checkSession(request, user)){
+                    
+                    out.println("<h3>Select PBX</h3>");
+                    
+                    out.println("<a href='AddPBX'>Insert new PBX</a>");
+                    
+                    displayFiles(out);
+                    
+                }
+                else
+                {
+                    response.sendRedirect("Login");
+                }
                 
-                displayFiles(out);
-              
+                
+                Web.setFooter(out);
             }
-            else
-            {
-                response.sendRedirect("Login");
+            catch (Exception ex){
+                out.println("<p class=errormessage>" + ex.toString() + "</p>");
             }
-                  
-              
-           Web.setFooter(out);
         }
-	catch (Exception ex){
-	    out.println("<p class=errormessage>" + ex.toString() + "</p>");
-	}
-        out.close();
             
     }
 
     private void displayFiles(PrintWriter out) {
+        
         File folder = new File(General.getPBXsDir());
         File[] listOfFiles = folder.listFiles();
         out.println("<table><tr>");
         int counter = 0;
         if (listOfFiles != null){
-        for (File listOfFile : listOfFiles) {
-            if (listOfFile.isFile()) {
-                String fileName = listOfFile.getName();
-                String title = General.getConfigurationParameter("title", "", listOfFile.getAbsolutePath());
-                
-                if (counter % 5 == 0){
-                    out.println("</tr><tr>");
-                }
-                String color;
-                if (counter % 2 == 0) {
-                    color = "#aaddaa";
-                }
-                else
-                {
-                    color = "#77AAAA";
-                }
-                String link = "<a href='SelectPBX?pbx=" + fileName + "'>" + title + "</a>";
-                String editLink = "<font >" + 
-                        "<a style='font-size:57%'  href='EditPBX?pbx=" + fileName + "'>Edit" +
-                        "</a></font>";
-                out.println("<td width=20% bgcolor=" + color  + 
-                            "><b>" + link + "</b><br/>" + fileName + "<br/" + editLink + "</td>");
-                }
-                counter++;
-        }
+            for (File listOfFile : listOfFiles) {
+                if (listOfFile.isFile()) {
+                    String fileName = listOfFile.getName();
+                    String title = General.getConfigurationParameter("title", "", listOfFile.getAbsolutePath());
+
+                    if (counter % 5 == 0){
+                        out.println("</tr><tr>");
+                    }
+                    String color;
+                    if (counter % 2 == 0) {
+                        color = "#aaddaa";
+                    }
+                    else
+                    {
+                        color = "#77AAAA";
+                    }
+                    String link = "<a href='SelectPBX?pbx=" + fileName + "'>" + title + "</a>";
+                    String editLink = "<font >" + 
+                            "<a style='font-size:57%'  href='EditPBX?pbx=" + fileName + "'>Edit" +
+                            "</a></font>";
+                    out.println("<td width=20% bgcolor=" + color  + 
+                                "><b>" + link + "</b><br/>" + fileName + "<br/" + editLink + "</td>");
+                    }
+                    counter++;
+            }
             
         }
         out.println("</tr></table>");

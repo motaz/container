@@ -48,7 +48,7 @@ public class Functions extends HttpServlet {
                     out.println("<h2>Queues</h2>");
 		    String function = request.getParameter("function");
 		    if (function == null){
-			function = "active";
+			function = "talk";
 		    }
 
 		  
@@ -74,7 +74,7 @@ public class Functions extends HttpServlet {
   
                     out.println("<td ");
   		    if (function.equals("talk")) {
-  		      out.println("bgcolor=#AAAADD");
+  		        out.println("bgcolor=#AAAADD");
 	 	    }
 		    out.println("><a href='Functions?function=talk'>Talking/Waiting</a></td>");
 		   		    
@@ -82,25 +82,27 @@ public class Functions extends HttpServlet {
 
 		    pauseUnpause(request, url, out);
 		    
-		    if (function.equals("paused")) {
-			out.println("<h2>Paused</h2>");
-		    	displayStatusOf(url, out, true, "paused");
-		    }
-		    else if (function.equals("active")) {
-			out.println("<h2>Active</h2>");
-		    	displayStatusOf(url, out, false, "paused");
-		    }
-	
-		    else if (function.equals("talk")) {
-			out.println("<h2>Talking/Waiting</h2>");
-			out.println("<table><tr>");
-			out.println("<td>");
-		        displayStatusOf(url, out, true, "Busy");
-			out.println("</td><td>");
-
-		    	displayWaiting(pbxfile, url, out);
-			out.println("</td><tr></table>");
-		    }
+                    switch (function) {
+                        case "paused":
+                            out.println("<h2>Paused</h2>");
+                            displayStatusOf(url, out, true, "paused");
+                            break;
+                        case "active":
+                            out.println("<h2>Active</h2>");
+                            displayStatusOf(url, out, false, "paused");
+                            break;
+                        case "talk":
+                            out.println("<h2>Talking/Waiting</h2>");
+                            out.println("<table><tr>");
+                            out.println("<td>");
+                            displayStatusOf(url, out, true, "Busy");
+                            out.println("</td><td>");
+                            displayWaiting(pbxfile, url, out);
+                            out.println("</td><tr></table>");
+                            break;
+                        default:
+                            break;
+                    }
 		    
                     
 		}
