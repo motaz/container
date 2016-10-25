@@ -43,30 +43,28 @@ public class Files extends HttpServlet {
             String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
             try {
               if (Web.checkSession(request, user)) {
-                Web.setHeader(true, request, response, out, "advanced", "files");
+                  Web.setHeader(true, request, response, out, "advanced", "files");
 
-                out.println("<h2>Files</h2>");
+                  out.println("<h2>Files</h2>");
                 
-                out.println("<table><tr>");
-                out.println("<td><a href='Files?file=sip.conf'>sip.conf</a></td>");
-                out.println("<td><a href='Files?file=extensions.conf'>extensions.conf</a></td>");
-                out.println("<td><a href='Files?file=queues.conf'>queues.conf</a></td>");
-                out.println("<td><a href='Files?file=agents.conf'>agents.conf</a></td>");
-                out.println("<td><a href='Files?file=rtp.conf'>rtp.conf</a></td>");
-                out.println("<td><a href='Files?file=cdr.conf'>cdr.conf</a></td>");
-                out.println("<td><a href='Files?file=cdr_custom.conf'>cdr_custom.conf</a></td>");
-                out.println("<td><a href='Files?file=all'>All Files</a></td>");
-                out.println("</tr></table>");
+                  out.println("<table><tr>");
+                  out.println("<td><a href='Files?file=sip.conf'>sip.conf</a></td>");
+                  out.println("<td><a href='Files?file=extensions.conf'>extensions.conf</a></td>");
+                  out.println("<td><a href='Files?file=queues.conf'>queues.conf</a></td>");
+                  out.println("<td><a href='Files?file=agents.conf'>agents.conf</a></td>");
+                  out.println("<td><a href='Files?file=rtp.conf'>rtp.conf</a></td>");
+                  out.println("<td><a href='Files?file=cdr.conf'>cdr.conf</a></td>");
+                  out.println("<td><a href='Files?file=cdr_custom.conf'>cdr_custom.conf</a></td>");
+                  out.println("<td><a href='Files?file=all'>All Files</a></td>");
+                  out.println("</tr></table>");
                 
-                String fileName = request.getParameter("file");
+                  String fileName = request.getParameter("file");
                 
-                if (fileName != null) {
-                    
+                  if (fileName != null) {
 
                     JSONObject obj = new JSONObject();
                     obj.put("filename", fileName);
                     String requestText = obj.toJSONString();
-
 
                     String url = General.getConfigurationParameter("url", "", pbxfile);
 
@@ -78,13 +76,13 @@ public class Files extends HttpServlet {
                         out.println("<h3>" + fileName + "</h3>");
                         displayFileContents(url, requestText, out, fileName);
                     }
-                }
+                  }
                 
-                Web.setFooter(out);
-            }
-            else {
-                response.sendRedirect("Login");
-            }
+                  Web.setFooter(out);
+              }
+              else {
+                  response.sendRedirect("Login");
+              }
             }
             catch (Exception ex){
                 out.println(ex.toString());
@@ -127,19 +125,14 @@ public class Files extends HttpServlet {
         JSONObject resObj = (JSONObject) parser.parse(resultText);
         if (Boolean.valueOf(resObj.get("success").toString())) {
             String content = resObj.get("content").toString();
-            String[] arr = content.split("\n");
             
-            for (String line: arr){
-                if ((line.contains("#include")) &&
-                        ((!line.contains(";")) || (line.indexOf(";") > line.indexOf("#include")))) {
-                    line = line.substring(line.indexOf(" ", line.indexOf("#include")), line.length()).trim();
-                    out.println("<a href='Files?file="  + line + "'>" + line + "</a><br/>");
-                }
-            }
+            Web.displayIncludedFiles(content, out, "Files?file=");
             
             out.println("<pre>" + content + "</pre>");
         }
     }
+
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

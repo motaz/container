@@ -366,4 +366,18 @@ public class Web {
                     "}");
         out.println("</script>");
     }
+    
+    public static void displayIncludedFiles(String content, final PrintWriter out, String action) {
+
+        String[] arr = content.split("\n");
+
+        for (String line: arr){
+            if ((line.contains("#include")) &&
+                    ((!line.contains(";")) || (line.indexOf(";") > line.indexOf("#include")))) {
+                line = line.substring(line.indexOf(" ", line.indexOf("#include")), line.length()).trim();
+                out.println("<a href='" + action + line + "'>" + line + "</a><br/>");
+            }
+        }
+    }
+    
 }

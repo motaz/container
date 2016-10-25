@@ -49,7 +49,10 @@ public class Extensions extends HttpServlet {
                   title = "Extension";
                   isExten = true;
               }
-              
+              String fileName = request.getParameter("file");
+              if (fileName == null){
+                  fileName = "sip.conf";
+              }
               Web.setHeader(true, request, response, out, "pbx", type);
             
               String user = Web.getCookieValue(request, "user");
@@ -65,23 +68,24 @@ public class Extensions extends HttpServlet {
 		  // Display add SIP link
 		  if (! isDisplayAdd){
 		      if (type.equals("ext")) {
-                         out.println("<a href='Extensions?add=1'>Add new SIP Extension</a>");
+                         out.println("<a href='Extensions?file=" + fileName + "&add=1'>Add new SIP Extension</a>");
 		      }
 		      else
 		      {
-                        out.println("<a href='Extensions?add=2&type=trunk'>Add new SIP Trunk</a>");
+                        out.println("<a href='Extensions?file=" + fileName + "&add=2&type=trunk'>Add new SIP Trunk</a>");
 			  
 		      }
 		    
 		  }  // Display add SIP form
 		  else {
-		      out.println("<table class=dtable><tr><td>");
-		      	displayAddSIPNode(out, title, type);
+		        out.println("<table class=dtable><tr><td>");
+		      	displayAddSIPNode(out, title, type, fileName);
 			out.println("</td><td>");
 		  }
 		  
+                  
 
-                  displayExtensions(pbxfile, request, out, title, isExten);
+                  displayExtensions(pbxfile, fileName, request, out, title, isExten, type);
 		  if (isDisplayAdd){
 		      out.println("</td></tr></table>");
 		  }
@@ -96,13 +100,19 @@ public class Extensions extends HttpServlet {
         out.close();
     }
 
-    private void displayExtensions(String pbxfile, HttpServletRequest request, final PrintWriter out, String title, boolean isExten) throws IOException, ParseException {
+    private void displayExtensions(String pbxfile, String fileName, HttpServletRequest request, 
+            final PrintWriter out, String title, boolean isExten, String type) throws IOException, ParseException {
+        
 	String url = General.getConfigurationParameter("url", "", pbxfile);
 	JSONObject obj = new JSONObject();
-	obj.put("filename", "sip.conf");
+
+	obj.put("filename", fileName);
 	String requestText = obj.toJSONString();
 	
 	String resultText = General.restCallURL(url + "GetFile", requestText);
+        if (type == null){
+            type = "Extensions";
+        }
 	
 	JSONParser parser = new JSONParser();
 	JSONObject resObj = (JSONObject) parser.parse(resultText);
@@ -110,23 +120,25 @@ public class Extensions extends HttpServlet {
 	    String content = resObj.get("content").toString();
 	    String[] arr = content.split("\n");
 	    
-	    ContextParser cparser = new ContextParser(arr, "sip.conf");
+	    ContextParser cparser = new ContextParser(arr, fileName);
 	    ArrayList<NodeInfo> nodes = cparser.getNodesWithInfo();
 	    
 	    String reverseStr = Web.getCookieValue(request, "reverse");
 	    boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
+            out.println("</br>");
+            Web.displayIncludedFiles(content, out, "Extensions?type=" + type + "&file=");
 	    out.println("<table class=dtable><tr><th>" + title +"</th><th>User name</th>");
 	    out.println("<th>Host</th><th>Context</th></tr>");
 	    if (reverse) {
 		for (int i= nodes.size() -1; i >= 0; i--) {
 		    NodeInfo node = nodes.get(i);
-		    displayNode(out, node, isExten);
+		    displayNode(out, node, isExten, fileName);
 		    
 		}
 	    }
 	    else {
 		for (NodeInfo node: nodes) {
-		    displayNode(out, node, isExten);
+		    displayNode(out, node, isExten, fileName);
 		}
 	    }
 	    out.println("</table>");
@@ -140,7 +152,12 @@ public class Extensions extends HttpServlet {
             String url = General.getConfigurationParameter("url", "", pbxfile);
 	    
             JSONObject saveobj = new JSONObject();
-            saveobj.put("filename", "sip.conf");
+            String fileName = request.getParameter("file");
+            if (fileName == null){
+                fileName = "sip.conf";
+            }
+            out.println(fileName);
+            saveobj.put("filename", fileName);
 	    String nodeName = "[" + request.getParameter("nodename") + "]";
             saveobj.put("nodename", nodeName);
 	    
@@ -182,10 +199,11 @@ public class Extensions extends HttpServlet {
         }
     }
     
-    private void displayAddSIPNode(final PrintWriter out, String title, String type) {
+    private void displayAddSIPNode(final PrintWriter out, String title, String type, String fileName) {
 	
 	out.println("<h3>Add new SIP " + title + "</h3>");
 	out.println("<form method=POST action='Extensions?type=" + type + "'>");
+        out.println("<input type=hidden name=file value='" + fileName + "' />");
 	out.println("<table dtable><tr>");
 	
 	out.println("<td><input type=checkbox name=preview value=1 /></td>");
@@ -225,11 +243,11 @@ public class Extensions extends HttpServlet {
 	
     }
 
-    private void displayNode(final PrintWriter out, NodeInfo node, boolean displayExtension) {
+    private void displayNode(final PrintWriter out, NodeInfo node, boolean displayExtension, String fileName) {
 	
         if ((displayExtension &&node.isExtension()) || (! displayExtension && node.isTrunk())) {
             out.println("<tr>");
-            out.println("<td><a href='EditNode?filename=sip.conf&nodename=[" + 
+            out.println("<td><a href='EditNode?filename=" + fileName + "&nodename=[" + 
                     node.getNodeName() + "]'>" +
                     node.getNodeName() + "</a></td>");
             out.println("<td>" + node.getProperty("username") + "</td>");
