@@ -76,11 +76,9 @@ public class Log {
             }
             
 	    // Write into log file
-            PrintWriter out;
-            out = new PrintWriter(new BufferedWriter(
-                      new FileWriter(fileName, true)));
-            out.println(today.toString() + " : " + eventText);  
-            out.close();
+            FileWriter writer = new FileWriter(fileName, true);
+            writer.write(today.toString() + " : " + eventText + "\n");  
+            writer.close();
             
               
         } catch (IOException e) {  
@@ -88,5 +86,5 @@ public class Log {
         }     
     }
 
-    
+ 
 }

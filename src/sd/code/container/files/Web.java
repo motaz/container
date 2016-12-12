@@ -19,10 +19,18 @@ import java.net.URLConnection;
  */
 public class Web {
     
-    public static String callURL(String methodURL, String urlParameters, int waitSeconds, String contentType) throws 
+    public static String URLAddSlash(String url){
+        
+        if ((url != null) && (!url.endsWith("/"))){
+              url = url + "/";
+        }
+        return url;
+    }
+    
+    public static String callURL(String methodURL, String contents, int waitSeconds, String contentType) throws 
 	    IOException, MalformedURLException {
 	
-	if (contentType == null){
+	if ((contentType == null) || (contentType.isEmpty())){
 	    contentType = "text/json";
 	}
     
@@ -32,10 +40,11 @@ public class Web {
         conn.setReadTimeout(waitSeconds * 1000);        
         conn.setRequestProperty("Content-Type", contentType);
         conn.setDoOutput(true);
+        
         String outputText = "";
         BufferedReader reader;
 	try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream())) {
-	    writer.write(urlParameters);
+	    writer.write(contents);
 	    
 	    writer.flush();
 	    String line;
