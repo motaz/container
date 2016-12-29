@@ -38,6 +38,11 @@ public class DateExtra {
       
     }
     
+    public static int GetCurrentYear(){
+        
+        Date now = new Date();
+        return getYear(now);
+    }
     
     
 }
