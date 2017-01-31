@@ -30,7 +30,7 @@ public class Web {
               page = "";
             }
 
-        String version  = "1.0.10";
+        String version  = "1.0.11";
         
         if (user == null){
             user = "";

@@ -130,6 +130,9 @@ public class Files extends HttpServlet {
             
             out.println("<pre>" + content + "</pre>");
         }
+        else {
+            out.println("<p class=errormessage>" + resObj.get("message") + "</p>");
+        }
     }
 
 

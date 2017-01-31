@@ -93,6 +93,9 @@ public class Logs extends HttpServlet {
                             String text = resObj.get("content").toString();
                             out.println("<pre>" + text + "</pre>");
                         }
+                        else {
+                           out.println("<p class=errormessage>" + resObj.get("message") + "</p>");
+                        }                        
                     }
                     Web.setFooter(out);
                 }
