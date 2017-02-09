@@ -82,7 +82,7 @@ public class AMI extends HttpServlet {
               }
             }
             catch (Exception ex){
-                out.println(ex.toString());
+                out.println("<p class=errormessage>" + ex.toString() + "</p>");
             }
 
         
