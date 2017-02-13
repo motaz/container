@@ -170,7 +170,7 @@ public class EditPBX extends HttpServlet {
 			    "cdruser=\n" +
 			    "cdrpass=\n" +
 			    "cdrtable=\n" +
-                            "cdrfirstfield=";
+                            "cdrkeyfield=";
 	      }
 	      out.println("<tr><td>Remote STAgent config</td>");
 	      out.println("<td><textarea cols=80 rows=8 name=remoteconfig >" + result + "</textarea></td></tr>");
