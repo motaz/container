@@ -8,7 +8,6 @@ package sd.code.stpanel.pages;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,6 +38,7 @@ public class Backup extends HttpServlet {
             throws ServletException, IOException {
         
         try {
+            General.writeEvent("Download file called from: " + request.getRemoteAddr());
             response.setContentType("application/zip");
             String pbxfile = General.getPBXsDir() + Web.getCookieValue(request, "file");
             String url = General.getConfigurationParameter("url", "", pbxfile);          
@@ -49,14 +49,16 @@ public class Backup extends HttpServlet {
             String requestText = obj.toJSONString();
             OutputStream output = response.getOutputStream();
             File file = new File(pbxfile);
-                
+            General.writeEvent("Downloading: " + file.getName());
             response.setHeader("Content-Disposition", "attachment;filename=" + file.getName() + ".zip");
             Operation op = General.downloadFile(url + "BackupFiles",requestText, "application/zip", output);
+            General.writeEvent("Size: " + op.size);
             response.setContentLength((int)op.size);
         }
         catch (Exception ex){
           PrintWriter out = response.getWriter();
           out.println(ex.toString());
+          General.writeEvent("Error in Backup: " + ex.toString());
         }
         
     }

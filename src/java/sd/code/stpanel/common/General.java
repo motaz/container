@@ -289,15 +289,15 @@ final public class General {
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestProperty("Content-Type", contentType);
         httpConn.setDoOutput(true);
-        
 
         OutputStreamWriter writer = new OutputStreamWriter(httpConn.getOutputStream());
         writer.write(urlParameters);
-        
+        General.writeEvent("URL " + fileURL);
+        General.writeEvent("Parameters: " + urlParameters);
         writer.flush();        
         writer.close();
         int responseCode = httpConn.getResponseCode();
- 
+
         String result = "";
         // always check HTTP response code first
         if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -310,19 +310,21 @@ final public class General {
            // outputStream = new FileOutputStream(saveFilePath);
  
             long size = 0;
-            int bytesRead = -1;
+            int bytesRead;
             byte[] buffer = new byte[1024];
+            
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
                 size = size + bytesRead;
-                if (size < 2048) {
-                    byte[] text = new byte[(int)size];
-                    System.arraycopy(buffer, 0, text, 0, (int)size);
-                    String str = new String(text);
-                    result = result + str;
-                    
-                }
             }
+            if (size < 2048) {
+                byte[] text = new byte[(int)size];
+                System.arraycopy(buffer, 0, text, 0, (int)size);
+                String str = new String(text);
+                result = result + str;
+
+            }
+            
  
             outputStream.close();
             inputStream.close();
@@ -332,20 +334,22 @@ final public class General {
             
             if (!op.success) {
                 try {
-                JSONParser parser = new JSONParser();
-                JSONObject obj = (JSONObject)parser.parse(result);
-                op.message = obj.get("message").toString();
+                  JSONParser parser = new JSONParser();
+                  JSONObject obj = (JSONObject)parser.parse(result);
+                  op.message = obj.get("message").toString();
                 }
                 catch (Exception ex){
                     op.success = false;
                     op.errorCode = 5;
                     op.message = "Error while parsing result: " + ex.toString() ;
+                    General.writeEvent("Error : " + ex.toString());
                 }
             }
         } else {
             op.success = false;
             op.errorCode = 5;
             op.message = "HTTP download Error";
+            General.writeEvent("HTTP error: " + responseCode);
         }
         httpConn.disconnect();
         return op;
