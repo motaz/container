@@ -37,35 +37,37 @@ public class AMI extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-            try {
-              String user = Web.getCookieValue(request, "user");
-              String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
-              if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "advanced", "ami");
-                  out.println("<h2>AMI command</h2>");
+        try {
+          String user = Web.getCookieValue(request, "user");
+          String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+          if (Web.checkSession(request, user)) {
+              Web.setHeader(true, request, response, out, "advanced", "ami");
+              out.println("<h2>AMI command</h2>");
 
-                  String command = request.getParameter("command"); 
-                  out.println("<form method=post>");
-                  out.println("<textarea name=command cols=50 rows=7 >");
-                  if (command != null) {
-                      out.print(command);
-                  }
-                  out.println("</textarea></br>");
-                  out.println("<input type=submit value=Execute name=execute class=btn />");
-                  out.println("</form>");
+              String command = request.getParameter("command"); 
+              out.println("<form method=post>");
+              out.println("<textarea name=command cols=50 rows=7 >");
+              if (command != null) {
+                  out.print(command);
+              }
+              out.println("</textarea></br>");
+              out.println("<input type=submit value=Execute name=execute class=btn />");
+              out.println("</form>");
 
-                  if ( request.getParameter("execute") != null) {
-                      String url = General.getConfigurationParameter("url", "", pbxfile);
-                      JSONObject obj = new JSONObject();
-                      String username = General.getConfigurationParameter("amiuser", "", pbxfile);
-                      String secret = General.getConfigurationParameter("amipass", "", pbxfile);
-                      obj.put("username", username);
-                      obj.put("secret", secret);
-                      obj.put("command", request.getParameter("command"));
-                      
-                      String requestText = obj.toJSONString();
+              if ( request.getParameter("execute") != null) {
+                  String url = General.getConfigurationParameter("url", "", pbxfile);
+                  JSONObject obj = new JSONObject();
+                  String username = General.getConfigurationParameter("amiuser", "", pbxfile);
+                  String secret = General.getConfigurationParameter("amipass", "", pbxfile);
+                  obj.put("username", username);
+                  obj.put("secret", secret);
+                  obj.put("command", request.getParameter("command"));
+           
+                  String requestText = obj.toJSONString();
+                 
 
-                      String resultText = General.restCallURL(url + "CallAMI", requestText);
+                  String resultText = General.restCallURL(url + "CallAMI", requestText);
+                  try{
                       JSONParser parser = new JSONParser();
                       JSONObject resObj = (JSONObject) parser.parse(resultText);
 
@@ -74,16 +76,23 @@ public class AMI extends HttpServlet {
                       if (content != null){
                           out.println("<pre>" + now.toString() + "\n" + content + "</pre>");
                       }
-
                   }
+                  catch (Exception ex){
+                         out.println("<p class=errormessage>" + 
+                                 ex.toString() +
+                       "<br/>" + resultText + "</p>");
+                      
+                  }
+
               }
-              else {
-                  response.sendRedirect("Login");
-              }
-            }
-            catch (Exception ex){
-                out.println("<p class=errormessage>" + ex.toString() + "</p>");
-            }
+          }
+          else {
+              response.sendRedirect("Login");
+          }
+        }
+        catch (Exception ex){
+            out.println("<p class=errormessage>-" + ex.toString() + "</p>");
+        }
 
         
     }
