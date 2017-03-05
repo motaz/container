@@ -30,7 +30,7 @@ public class Web {
               page = "";
             }
 
-        String version  = "1.0.12";
+        String version  = "1.0.13";
         
         if (user == null){
             user = "";
@@ -270,25 +270,26 @@ public class Web {
 		String reverseStr = Web.getCookieValue(request, "reverse");
 		boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
 		
-		out.println("<table class=dtable><tr><th>Node</th><th></th></tr>");
-		if (reverse) {
-		    for (int i= nodes.size() -1; i >= 0; i--) {
-			String node = nodes.get(i);
-			out.println("<tr>");
-			out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + node + "'>" +
-				node + "</a></td>");
-			out.println("</tr>");
-		    }
-		}
-		else {
+		out.println("<table class=dtable>");
+                //<tr><th>Node</th><th></th></tr>");
+
 		    
-		    for (String node: nodes) {
-			out.println("<tr>");
-			out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + node + "'>" +
-				node + "</a></td>");
-			out.println("</tr>");
-		    }
-		}
+                int count = 0;
+                out.println("<tr>");
+                for (String node: nodes) {
+                    out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + node + "'>" +
+                            node + "</a></td>");
+                    count++;
+                    if (count % 6 == 0) {
+                      out.println("</tr><tr>");
+                      
+                        
+                    }
+                }
+                
+                out.println("</tr>");
+                
+
 		out.println("</table>");
 		
 	}
@@ -377,6 +378,19 @@ public class Web {
                 line = line.substring(line.indexOf(" ", line.indexOf("#include")), line.length()).trim();
                 out.println("<a href='" + action + line + "'>" + line + "</a><br/>");
             }
+        }
+    }
+    
+    public static void displayReloadLink(String fileName, final PrintWriter out) {
+        if (fileName.equals("extensions.conf") || fileName.equals("sip.conf")) {
+            String command = "dialplanreload";
+            String caption = "Reload Dialplan";
+            if (fileName.equals("sip.conf")){
+                command = "sipreload";
+                caption = "Reload SIP";
+            }
+            out.println("<p class=warnmessage>");
+            out.println("<a href='Commands?command=" + command + "&ret=1'>" + caption + "</a></br></p>");
         }
     }
     

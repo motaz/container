@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import static sd.code.stpanel.common.Web.displayReloadLink;
 
 /**
  *
@@ -161,6 +162,7 @@ public class EditNode extends HttpServlet {
             boolean res = (Boolean.valueOf(saveresObj.get("success").toString()));
             if (res) {
                 out.println("<p class=infomessage>Saved</p>");
+                displayReloadLink(fileName, out);
             }
             else {
                 out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString() + "</p>");
@@ -168,6 +170,7 @@ public class EditNode extends HttpServlet {
             
         }
     }
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

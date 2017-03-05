@@ -59,13 +59,11 @@ public class Commands extends HttpServlet {
                     }
    
                     if (command != null) {
-                        
-                        
+                  
                         if (command .equals("corereload")){
                                 commandLine = "core reload";
                                 chColor = "bgcolor=#AAAADD";
-                                
-				
+			
 			}
 			else if (command.equals("sipreload")){
                                 commandLine = "sip reload";
@@ -129,6 +127,9 @@ public class Commands extends HttpServlet {
                         }
                     }
 
+                    if (request.getParameter("ret") != null){
+                        response.sendRedirect(request.getHeader("referer"));
+                    }
                     Web.setFooter(out);
                 }
                 else {

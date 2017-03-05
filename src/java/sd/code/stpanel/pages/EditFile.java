@@ -100,6 +100,7 @@ public class EditFile extends HttpServlet {
             if (res) {
                 out.println("<p class=infomessage>Saved</p>");
                 out.println("<a href='Files?file=" + fileName + "'>View (Read only)</a>");
+                Web.displayReloadLink(fileName, out);
             }
             else {
                 out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString() + "</p>");

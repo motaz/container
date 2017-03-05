@@ -117,7 +117,7 @@ public class Files extends HttpServlet {
     private void displayFileContents(String url, String requestText, final PrintWriter out, String fileName) throws IOException, ParseException {
         
         String resultText = General.restCallURL(url + "GetFile", requestText);
-        out.println("<form method=POST action=EditFile>");
+        out.println("<form method=GET action=EditFile>");
         out.println("<input type=hidden name=filename value='" + fileName + "' />");
         out.println("<input type=submit name=edit value= 'Edit file' />");
         out.println("</form>");
