@@ -169,8 +169,8 @@ public class Extensions extends HttpServlet {
 	       content = content + "context=" + request.getParameter("context") + "\n";
 	    }
 	    
-	    if (!request.getParameter("password").isEmpty()) {
-  	       content = content + "password=" + request.getParameter("password") + "\n";
+	    if (!request.getParameter("secret").isEmpty()) {
+  	       content = content + "secret=" + request.getParameter("secret") + "\n";
 	    }
 	    if (!request.getParameter("additional").isEmpty()) {
 	       content = content + request.getParameter("additional");
@@ -209,7 +209,7 @@ public class Extensions extends HttpServlet {
 	out.println("<td><input type=checkbox name=preview value=1 /></td>");
 	out.println("<td>Preview only (Don't create extension)</td></tr>");
 	
-	out.println("<td>" + title + " name</td>");
+	out.println("<td>" + title + "</td>");
 	out.println("<td><input type=text name=nodename /></td></tr>");
 	
 	out.println("<td>User name</td>");
@@ -224,8 +224,8 @@ public class Extensions extends HttpServlet {
 	out.println("<td>context</td>");
 	out.println("<td><input type=text name=context /></td></tr>");
 
-	out.println("<td>password</td>");
-	out.println("<td><input type=text name=password /></td></tr>");
+	out.println("<td>Secret</td>");
+	out.println("<td><input type=text name=secret /></td></tr>");
 	
 	out.println("<td>additional properties<br/>");
 	out.println("<font color=gray>name=value</font></td>");
