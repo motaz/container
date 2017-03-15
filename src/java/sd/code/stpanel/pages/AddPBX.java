@@ -115,7 +115,7 @@ public class AddPBX extends HttpServlet {
 	
         out.println("<tr><td>STAgent URL</td>");
         out.println("<td><input type=text name=url size=30 value='" +
-                      "http://localhost:8080/STAgent/' /></td></tr>");
+                      "http://localhost:9091/' /></td></tr>");
 	
         out.println("<tr><td>AMI User</td>");
         out.println("<td><input type=text name=amiuser size=30 value='" +
