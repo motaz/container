@@ -18,8 +18,8 @@ import sd.code.stpanel.common.Web;
  *
  * @author motaz
  */
-@WebServlet(name = "Tools", urlPatterns = {"/Tools"})
-public class Tools extends HttpServlet {
+@WebServlet(name = "Config", urlPatterns = {"/Config"})
+public class Config extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,13 +36,43 @@ public class Tools extends HttpServlet {
 	    String user = Web.getCookieValue(request, "user");
 	    try {
 		if (Web.checkSession(request, user)) {
-		    Web.setHeader(true, request, response, out, "advanced", "tools");
+		    Web.setHeader(true, request, response, out, "advanced", "config");
 		    
-		    out.println("<h2>Tools</h2>");
-		    
-		    out.println("<a href=Backup>Backup all config files</a><br/>");
-		    
-		    out.println("<br/><a href=UploadSound>Upload sound file</a><br/>");
+		    out.println("<h2>Configurations</h2>");
+                    
+                    String command = request.getParameter("command");
+                    
+                    String tab1Color = "";
+                    String tab2Color =  "";
+                    String tab3Color = "";
+                    String tab4Color = "";
+                    
+                    if (command != null) {
+                        
+                        if (command.equals("configbackup")){
+                                tab1Color = "bgcolor=#AAAADD";
+			}
+			else if (command.equals("peers")){
+                                tab2Color = "bgcolor=#AAAADD";
+			}
+                        else if (command.equals("ami")){
+                            tab3Color = "bgcolor=#AAAADD";
+                        }
+                        else if (command.equals("cdr")){
+                            tab4Color = "bgcolor=#AAAADD";
+                        }
+                    }
+
+                    
+                    
+                    
+                    out.println("<table><tr>");
+                    out.println("<td " + tab1Color + "><a href='Backup'>Configuration Backup</a></td>");
+                    out.println("<td " + tab2Color + "><a href='UploadSound?command=peers'>Sound files</a></td>");
+                    out.println("<td " + tab3Color + "><a href='Config?command=ami'>Config AMI</a></td>");
+                    out.println("<td " + tab4Color + "><a href='Config?command=cdr'>Config CDR</a></td>");
+                    out.println("</tr></table>");
+                                        
 		    
 		    Web.setFooter(out);
 		}

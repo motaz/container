@@ -30,7 +30,7 @@ public class Web {
               page = "";
             }
 
-        String version  = "1.0.13";
+        String version  = "1.0.14";
         
         if (user == null){
             user = "";
@@ -160,8 +160,8 @@ public class Web {
         selectTabPage(out, page, "logs");
         out.println("<a href='Logs'>Logs</a></td>");
         
-        selectTabPage(out, page, "tools");
-        out.println("<a href='Tools'>Tools</a></td>");
+        selectTabPage(out, page, "config");
+        out.println("<a href='Config'>Configuration</a></td>");
 
 	
         out.println("</tr></table>");
