@@ -12,14 +12,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
 
 /**
  *
  * @author motaz
  */
-@WebServlet(name = "Config", urlPatterns = {"/Config"})
-public class Config extends HttpServlet {
+@WebServlet(name = "AMIConfig", urlPatterns = {"/AMIConfig"})
+public class AMIConfig extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,55 +33,15 @@ public class Config extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-	try (PrintWriter out = response.getWriter()) {
-	    String user = Web.getCookieValue(request, "user");
-	    try {
-		if (Web.checkSession(request, user)) {
-		    Web.setHeader(true, request, response, out, "advanced", "config");
-		    
-		    out.println("<h2>Configurations</h2>");
-                    
-                    String command = request.getParameter("command");
-                    
-                    String tab1Color = "";
-                    String tab2Color =  "";
-                    String tab3Color = "";
-                    String tab4Color = "";
-                    
-                    if (command != null) {
-                        
-                        if (command.equals("configbackup")){
-                                tab1Color = "bgcolor=#AAAADD";
-			}
-			else if (command.equals("peers")){
-                                tab2Color = "bgcolor=#AAAADD";
-			}
-                        else if (command.equals("ami")){
-                            tab3Color = "bgcolor=#AAAADD";
-                        }
-                        else if (command.equals("cdr")){
-                            tab4Color = "bgcolor=#AAAADD";
-                        }
-                    }
-
-                    
-                    
-                    
-                    out.println("<table><tr>");
-                    out.println("<td " + tab1Color + "><a href='Backup'>Configuration Backup</a></td>");
-                    out.println("<td " + tab2Color + "><a href='UploadSound?command=peers'>Sound files</a></td>");
-                    out.println("<td " + tab3Color + "><a href='AMIConfig'>Config AMI</a></td>");
-                    out.println("<td " + tab4Color + "><a href='Config?command=cdr'>Config CDR</a></td>");
-                    out.println("</tr></table>");
-                                        
-		    
-		    Web.setFooter(out);
-		}
-	    }
-	    catch (Exception ex){
-		out.println(ex.toString());
-	    }
-	}
+        try (PrintWriter out = response.getWriter()) {
+          String user = Web.getCookieValue(request, "user");
+          String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+          if (Web.checkSession(request, user)) {
+              Web.setHeader(true, request, response, out, "advanced", "config");
+              out.println("<h2>AMI Configurations</h2>");
+          }
+          Web.setFooter(out);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
