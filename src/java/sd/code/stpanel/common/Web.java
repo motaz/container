@@ -68,11 +68,11 @@ public class Web {
             "	<body>\n" +
             "	<div class=header>\n" +
             "	<div class=container>\n" +
-            "<table ><tr bgcolor=#888888><td class=titletd><img src='img/title.jpg' /> </td>" + 
-            "<td class=titletd><table class=titletable><tr  bgcolor=#888888><td class=titletd>" +
-            "&emsp;" + logoutText + "&emsp;</td></tr><tr  bgcolor=#888888><td>" + 
-		       selectedPBX + "</td></tr></table>" +
-            "</td><td bgcolor=#777777 style=vertical-align:bottom>Version " +
+            "<table ><tr bgcolor=#77779999><td class=titletd><img src='img/title.jpg' /> </td>" + 
+            "<td class=titletd><td bgcolor=#88AAAA>" +
+            "" + logoutText + "</td><td bgcolor=#77779999>" + 
+		       selectedPBX + "</td>" +
+            "<td bgcolor=#88AAAA style=vertical-align:bottom>Version " +
                 version + "</td></tr></table>	</div>\n" +
             "	</div>\n" +
             "	<div class=\"nav-bar\">\n" +
@@ -205,12 +205,11 @@ public class Web {
        out.println("	</div>\n" +
                    "	</div>\n" +
                    "	</div>\n" +
-                   "	<div class=\"footer\">\n" +
-                   "		<div class=\"container\">\n" +
-                   "			&copy; Code for computer software 2015-2016 <img src='img/small-code.png' />\n" +
-                   "		</div>\n" +
-                   "	</div>\n" +
-                   "  </body>\n" +
+                   "	<div class='footer'>" +
+                   "        &copy; Code for computer software 2015-2017 " + 
+                   "        <img src='img/small-code.png' width=40 />" +
+                   "	</div>" +
+                   "  </body>" +
                    "</html>");
    }
    

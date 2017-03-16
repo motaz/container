@@ -180,15 +180,15 @@ Layout styles
 .header
 {
 	color: #fff;
-	background: #555;
-	padding: 1em 1.25em;
+	background: #667788;
+	padding: 0.5em 1.25em;
 }
 
 .header-heading { margin: 0; }
 
 .nav-bar
 {
-	background: #000;
+	background: #445566;
 	padding: 0;
 }
 
@@ -201,8 +201,8 @@ Layout styles
 .footer
 {
 	color: #fff;
-	background: #000;
-	padding: 1em 1.25em;
+	background: #667788;
+        
 }
 
 /* -----------------------
@@ -438,9 +438,9 @@ Wide styles
 @media (min-width: 42em)
 {
 	.header { padding: 1.5em 3em; }
-	.nav-bar { padding: 1em 3em; }
+	.nav-bar { padding: 0.2em 3em; }
 	.content { padding: 2em 3em; }
-	.footer { padding: 2em 3em; }
+	.footer { padding: 0.5em 8em}
 	
 	.nav li
 	{
