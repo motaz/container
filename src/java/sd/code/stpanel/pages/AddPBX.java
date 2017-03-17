@@ -68,7 +68,7 @@ public class AddPBX extends HttpServlet {
             String title = request.getParameter("title");
             String url = request.getParameter("url");
             String fileName = request.getParameter("file");
-	    String amiuser = request.getParameter("amuser");
+	    String amiuser = request.getParameter("amiuser");
 	    String amipass = request.getParameter("amipass");
             
             if ((title.trim().isEmpty()) || (url.trim().isEmpty()) || 
@@ -122,7 +122,7 @@ public class AddPBX extends HttpServlet {
                       "admin' /></td></tr>");
 	
         out.println("<tr><td>AMI Password</td>");
-        out.println("<td><input type=text name=ampass size=30 /></td></tr>");
+        out.println("<td><input type=text name=amipass size=30 /></td></tr>");
 	
         out.println("<tr><td><input type=submit name=add value=Add /></td></tr>");
         out.println("</table>");
