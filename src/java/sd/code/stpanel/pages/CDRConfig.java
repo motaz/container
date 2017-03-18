@@ -121,6 +121,8 @@ public class CDRConfig extends HttpServlet {
               }
               
           }
+          else
+              response.sendRedirect("Login");
           Web.setFooter(out);
         }catch(Exception e){
             out.println("<p class=errormessage >Error: "+e.getMessage()+"</p>");
