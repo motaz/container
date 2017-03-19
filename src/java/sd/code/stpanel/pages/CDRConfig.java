@@ -48,11 +48,13 @@ public class CDRConfig extends HttpServlet {
               JSONParser checkPar = new JSONParser();
               JSONObject chres = (JSONObject) checkPar.parse(checkRes);
               boolean chsuccess = (Boolean.valueOf(chres.get("success").toString()));
-              if( !chsuccess && request.getParameter("cf")==null && request.getParameter("cok")==null)
+              JSONObject csres=checkCDRStatus(url);
+              boolean cssuccess= (Boolean.valueOf(csres.get("success").toString()));
+              if( (!chsuccess && !cssuccess) && paramStatus(request))
               {
                   out.println("<p class=errormessage > CDR Not Configure yet <a href=CDRConfig?cf=yes> click to configure</a></p>");
               }
-              if( chsuccess && paramStatus(request)){
+              if ( (chsuccess || cssuccess) && paramStatus(request)){
                   displayConf(out,url);
                   displayCDRStatus(out, url);
               }
@@ -125,7 +127,7 @@ public class CDRConfig extends HttpServlet {
               response.sendRedirect("Login");
           Web.setFooter(out);
         }catch(Exception e){
-            out.println("<p class=errormessage >Error: "+e.getMessage()+"</p>");
+            out.println("<p class=errormessage>" + e.toString()+"</p>");
         }
         }
     }
@@ -157,7 +159,7 @@ public class CDRConfig extends HttpServlet {
         out.println("<td><input type=text name=cdrtab size=30 value=\""+spl[4]+"\" required/></td></tr>");
 	
         out.println("<tr><td>Key Field</td>");
-        out.println("<td><input type=text name=key size=30 value=\""+spl[05]+"\" required/></td></tr>");
+        out.println("<td><input type=text name=key size=30 value=\""+spl[5]+"\" required/></td></tr>");
         
         out.println("<tr><td><input type=submit name=mcok value=OK required/></td></tr>");
         out.println("</table>");
@@ -218,9 +220,7 @@ public class CDRConfig extends HttpServlet {
      }
      private void displayCDRStatus(PrintWriter out,String url)throws Exception
      {
-        String resultText = General.restCallURL(url + "GetCDRConfStatus", "");
-          JSONParser parser = new JSONParser();
-          JSONObject res = (JSONObject) parser.parse(resultText);
+                    JSONObject res=checkCDRStatus(url);
                     boolean success = (Boolean.valueOf(res.get("success").toString()));
                     if(success)
                         out.println("<p style=margin-left:20px >CDR Conf Status:<span class=infomessage> OK </span></p>");
@@ -229,6 +229,13 @@ public class CDRConfig extends HttpServlet {
      }
      private boolean paramStatus(HttpServletRequest request){
          return request.getParameter("cf")==null && request.getParameter("cok")==null && request.getParameter("mcok")==null && request.getParameter("edit")==null;
+     }
+     private JSONObject checkCDRStatus(String url) throws Exception
+     {
+         String resultText = General.restCallURL(url + "GetCDRConfStatus", "");
+          JSONParser parser = new JSONParser();
+          JSONObject res = (JSONObject) parser.parse(resultText);
+          return res;
      }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
