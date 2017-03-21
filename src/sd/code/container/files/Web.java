@@ -42,10 +42,10 @@ public class Web {
         conn.setRequestProperty("Content-Type", contentType);
         conn.setDoOutput(true);
         
-        return actualCall(conn, contents);
+        return actualCall(conn, contents, "UTF-8");
     }     
 
-    public static String callURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType, String method) throws 
+    public static String callURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType, String method, String encoding) throws 
 	    IOException, MalformedURLException {
 	
 	if ((contentType == null) || (contentType.isEmpty())){
@@ -57,26 +57,33 @@ public class Web {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(waitSeconds * 1000);            
         conn.setReadTimeout(waitSeconds * 1000);        
-        conn.setRequestProperty("Content-Type", contentType);
+       conn.setRequestProperty("Content-Type", contentType);
+       
+//Accept: */*
+//Accept-Language: null
+//Accept-Encoding: gzip, deflate
+       
+        
         conn.setRequestProperty("method", method);
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
         
-        return actualCall(conn, contents);
+        return actualCall(conn, contents, encoding);
     }         
     
-    public static String actualCall(URLConnection conn, String contents) throws IOException {
+    public static String actualCall(URLConnection conn, String contents, String encode) throws IOException {
+        
         String outputText = "";
         BufferedReader reader;
-        try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream())) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), encode)) {
             writer.write(contents);
             
             writer.flush();
             String line;
             
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), encode));
             while ((line = reader.readLine()) != null) {
-                
+                String text = new String(line.getBytes(encode));
                 outputText = outputText + line;
                 
             }
@@ -85,5 +92,7 @@ public class Web {
         reader.close();
         return outputText;
     }     
+    
+    
     
 }
