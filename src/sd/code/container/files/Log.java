@@ -32,7 +32,7 @@ public class Log {
             int day = cal.get(Calendar.DAY_OF_MONTH);
             
 	    // Default directory if it is null
-            if (logdir == null) {
+            if ((logdir == null) || (logdir.isEmpty())){
 		if (Config.isUnixLike()) {
 		    logdir = "/var/log/code";
 		}
