@@ -84,7 +84,7 @@ public class Web {
             reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), encode));
             while ((line = reader.readLine()) != null) {
                 String text = new String(line.getBytes(encode));
-                outputText = outputText + line;
+                outputText = outputText + text;
                 
             }
         }
