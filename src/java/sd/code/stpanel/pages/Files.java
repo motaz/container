@@ -126,6 +126,20 @@ public class Files extends HttpServlet {
         if (Boolean.valueOf(resObj.get("success").toString())) {
             String content = resObj.get("content").toString();
             
+            // Display last updated time
+            if (resObj.get("filetime") != null){
+                String fileTime = resObj.get("filetime").toString();
+                if (fileTime.contains(".") || fileTime.contains("+")){
+                    String terminateAt = ".";
+                    if (! fileTime.contains(".")){
+                        terminateAt = "+";
+                    }
+                    fileTime = fileTime.substring(0, fileTime.indexOf(terminateAt));
+                }
+                out.println("Last updated: <font size=-1>" + fileTime + "</font><br/>");
+            }
+                    
+            
             Web.displayIncludedFiles(content, out, "Files?file=");
             
             out.println("<pre>" + content + "</pre>");
