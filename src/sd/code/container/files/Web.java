@@ -12,6 +12,8 @@ import sd.code.container.url.CodeURL;
 /**
  *
  * @author motaz
+ * This is a backward compatible class name, instead use CodeURL class in url package 
+ * 
  */
 public class Web {
     
