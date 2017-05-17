@@ -1,8 +1,9 @@
 # container
 Common utilities Library used by other Java applications
 
-# Packages, Classes and Methods
-sd.code.container.<b>date</b><br>
+<h3> Packages, Classes and Methods</h3>
+
+<b>sd.code.container.<b>date</b></b><br/>
 <b>ExtraDate</b> class:
   - getCalendarValue
   - getDay
@@ -11,15 +12,15 @@ sd.code.container.<b>date</b><br>
   - GetCurrentYear
   - getEndOfToday
   
-sd.code.container.<b>encryption</b><br/>
-<b>Calc</b> class:
+<b>sd.code.container.<b>encryption</b></b><br/>
+  <b>Calc</b> class:
   - getMD5
   
-<b>Encoding</b> class:
+  <b>Encoding</b> class:
   - base64decode
   - base64encode
   
-sd.code.container.<b>files</b><br/>
+<b>sd.code.container.<b>files</b></b><br/>
   <b>Config</b> class:
   - isUnixLike
   - getConfigurationParameter
@@ -28,4 +29,18 @@ sd.code.container.<b>files</b><br/>
   <b>Log</b> class:
   - writeEvent
   
-sd.code.container.<b>formats</b><br/>
+<b>sd.code.container.<b>formats</b></b><br/>
+  <b>XML</b> class:
+  - getNodeByName
+  - getNodesListByName
+  
+<b>sd.code.container.<b>url</b></b><br/>
+  <b>CodeURL</b> class:
+  - URLAddSlash
+  - callURL
+  - callURLWithMethod
+  - actualCall
+  - callHTTPSURLWithMethod
+  - disableSslVerification
+  
+  
