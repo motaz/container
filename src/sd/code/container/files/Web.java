@@ -13,6 +13,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  *
@@ -45,8 +55,8 @@ public class Web {
         return actualCall(conn, contents, "UTF-8");
     }     
 
-    public static String callURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType, String method, String encoding) throws 
-	    IOException, MalformedURLException {
+    public static String callURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType, 
+            String method, String encoding) throws IOException {
 	
 	if ((contentType == null) || (contentType.isEmpty())){
 	    contentType = "text/json";
@@ -57,12 +67,9 @@ public class Web {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(waitSeconds * 1000);            
         conn.setReadTimeout(waitSeconds * 1000);        
-       conn.setRequestProperty("Content-Type", contentType);
+        conn.setRequestProperty("Content-Type", contentType);
        
-//Accept: */*
-//Accept-Language: null
-//Accept-Encoding: gzip, deflate
-       
+ 
         
         conn.setRequestProperty("method", method);
         conn.setRequestMethod(method);
@@ -93,6 +100,57 @@ public class Web {
         return outputText;
     }     
     
+    
+    public static String callHTTPSURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType,
+            String method, String encoding) throws IOException {
+        
+        disableSslVerification();
+        return callURLWithMethod(methodURL, contents, waitSeconds, contentType, method, encoding);
+        
+    }
+    
+    public static boolean disableSslVerification() {
+        try {
+            // Create a trust manager that does not validate certificate chains
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                @Override
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                @Override
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+               }
+            };
+
+            // Install the all-trusting trust manager
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // Create all-trusting host name verifier
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+
+            };
+
+            // Install the all-trusting host verifier
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+            return true;
+            
+        } catch (Exception  e) {
+            
+            return false;
+        }
+    } // end  disableSslVerification function
     
     
 }
