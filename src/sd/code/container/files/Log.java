@@ -17,6 +17,10 @@ import java.util.Date;
  */
 public class Log {
     
+    public static void writeEvent(String eventText, String logname) {
+        
+        writeEvent(eventText, logname, "");
+    }
     
     public static void writeEvent(String eventText, String logname, String logdir) {
         

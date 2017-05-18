@@ -14,5 +14,6 @@ public class OperationResult {
     public boolean success;
     public int errorCode;
     public String message;
+    public int id;
     
 }

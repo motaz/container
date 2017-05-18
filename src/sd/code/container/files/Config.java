@@ -17,11 +17,16 @@ import java.util.Properties;
  */
 public class Config {
     
+    static private String lastError;
+    
     public static boolean isUnixLike(){
 	
 	return File.separator.equals("/");
     }
     
+    static public String getLastError(){
+        return lastError;
+    }
     
     public static String getConfigurationParameter(String parameterName, String defaultValue, String aFile) {
         
@@ -44,7 +49,7 @@ public class Config {
          
        }
        catch (IOException ex) {
-         System.out.println("Error in getConfiguration: " + ex.toString());
+         lastError = "Error in getConfiguration: " + ex.toString();
          return(defaultValue);
        }
      
@@ -80,8 +85,8 @@ public class Config {
          
        }
        catch (IOException ex) {
-         System.out.println("Error in setConfiguration: " + ex.toString());
-         return(false);
+          lastError = "Error in setConfiguration: " + ex.toString();
+          return(false);
        }
      
     }  
