@@ -35,14 +35,14 @@ public class CodeURL {
         return url;
     }
     
-    public static String callURL(String methodURL, String contents, int waitSeconds, String contentType) throws 
+    public static String callURL(String aURL, String contents, int waitSeconds, String contentType) throws 
 	    IOException, MalformedURLException {
 	
 	if ((contentType == null) || (contentType.isEmpty())){
 	    contentType = "text/json";
 	}
     
-        URL url = new URL(methodURL);
+        URL url = new URL(aURL);
         URLConnection conn = url.openConnection();
         conn.setConnectTimeout(waitSeconds * 1000);            
         conn.setReadTimeout(waitSeconds * 1000);        
@@ -52,14 +52,14 @@ public class CodeURL {
         return actualCall(conn, contents, "UTF-8");
     }     
 
-    public static String callURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType, 
+    public static String callURLWithMethod(String aURL, String contents, int waitSeconds, String contentType, 
             String method, String encoding) throws IOException {
 	
 	if ((contentType == null) || (contentType.isEmpty())){
 	    contentType = "text/json";
 	}
     
-        URL url = new URL(methodURL);
+        URL url = new URL(aURL);
         
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(waitSeconds * 1000);            
@@ -98,11 +98,11 @@ public class CodeURL {
     }     
     
     
-    public static String callHTTPSURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType,
+    public static String callHTTPSURLWithMethod(String aURL, String contents, int waitSeconds, String contentType,
             String method, String encoding) throws IOException {
         
         disableSslVerification();
-        return callURLWithMethod(methodURL, contents, waitSeconds, contentType, method, encoding);
+        return callURLWithMethod(aURL, contents, waitSeconds, contentType, method, encoding);
         
     }
     
