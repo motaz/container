@@ -20,6 +20,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import sd.code.container.types.HTTPResponse;
 
 /**
  *
@@ -35,21 +36,23 @@ public class CodeURL {
         return url;
     }
     
-    public static String callURL(String aURL, String contents, int waitSeconds, String contentType) throws 
+    public static HTTPResponse callURL(String aURL, String contents, int waitSeconds, String contentType) throws 
 	    IOException, MalformedURLException {
 	
+        HTTPResponse response = new HTTPResponse();
 	if ((contentType == null) || (contentType.isEmpty())){
 	    contentType = "text/json";
 	}
     
         URL url = new URL(aURL);
-        URLConnection conn = url.openConnection();
+        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
         conn.setConnectTimeout(waitSeconds * 1000);            
         conn.setReadTimeout(waitSeconds * 1000);        
         conn.setRequestProperty("Content-Type", contentType);
         conn.setDoOutput(true);
-        
-        return actualCall(conn, contents, "UTF-8");
+        response.responseText =  actualCall(conn, contents, "UTF-8");
+        response.responsCode = conn.getResponseCode();
+        return response;
     }     
 
     public static String callURLWithMethod(String aURL, String contents, int waitSeconds, String contentType, 
@@ -79,19 +82,24 @@ public class CodeURL {
         
         String outputText = "";
         BufferedReader reader;
-        try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), encode)) {
+        
+        if ((contents != null) && (!contents.isEmpty())){
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), encode);
             writer.write(contents);
-            
+
             writer.flush();
-            String line;
-            
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), encode));
-            while ((line = reader.readLine()) != null) {
-                String text = new String(line.getBytes(encode));
-                outputText = outputText + text;
-                
-            }
+            writer.close();
         }
+        
+        String line;
+
+        reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), encode));
+        while ((line = reader.readLine()) != null) {
+            String text = new String(line.getBytes(encode));
+            outputText = outputText + text;
+
+        }
+        
         
         reader.close();
         return outputText;
@@ -148,6 +156,10 @@ public class CodeURL {
             return false;
         }
     } // end  disableSslVerification function
+
+    public static String callURLWithMethod(String string, String parameter, int i, String get, String string0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
         
     
 }

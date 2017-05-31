@@ -26,7 +26,7 @@ public class Web {
     
     public static String callURL(String methodURL, String contents, int waitSeconds, String contentType) throws IOException { 
             
-	  return CodeURL.callURL(methodURL, contents, waitSeconds, contentType);
+	  return CodeURL.callURL(methodURL, contents, waitSeconds, contentType).responseText;
     }     
 
     public static String callURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType, 
