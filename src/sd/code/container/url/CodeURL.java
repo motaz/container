@@ -157,9 +157,7 @@ public class CodeURL {
         }
     } // end  disableSslVerification function
 
-    public static String callURLWithMethod(String string, String parameter, int i, String get, String string0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+
         
     
 }
