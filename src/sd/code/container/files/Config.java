@@ -62,9 +62,16 @@ public class Config {
        try
        {
            
-         if ((!aFile.contains(File.separator)) && isUnixLike()){
+         if (!aFile.contains(File.separator)) {
+                 if ( isUnixLike()){
 	       aFile = "/etc/code/" + aFile;
-	 }
+            }
+            else { // Windows: c:\\users\\currentuser
+               aFile =  System.getProperty("user.home") + File.separator + aFile;
+                
+
+                 }
+         }
          
 	 // Check file existence
          File confFile = new File(aFile);
