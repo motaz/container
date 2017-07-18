@@ -39,7 +39,7 @@ public class Log {
 		    logdir = "/var/log/code";
 		}
 		else {
-		    logdir = "log";
+		    logdir =  System.getProperty("user.home")  + "\\code\\log";
 		}
 	    }
 

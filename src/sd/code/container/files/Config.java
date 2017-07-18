@@ -66,9 +66,8 @@ public class Config {
                  if ( isUnixLike()){
 	       aFile = "/etc/code/" + aFile;
             }
-            else { // Windows: c:\\users\\currentuser
-               aFile =  System.getProperty("user.home") + File.separator + aFile;
-                
+            else { // Windows: c:\\users\\currentuser\\code
+               aFile =  System.getProperty("user.home") + "\\code\\" + aFile;
 
                  }
          }
