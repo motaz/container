@@ -28,9 +28,9 @@ public class Web {
         String user = getCookieValue(request, "user");
         if (page == null){
               page = "";
-            }
+        }
 
-        String version  = "1.0.15";
+        String version  = "1.0.16";
         
         if (user == null){
             user = "";
@@ -121,7 +121,7 @@ public class Web {
         
         if (parent.equals("advanced")) {
  
-           advancedTab(page, out);
+            advancedTab(page, out);
           
         }
         else if (parent.equals("pbx")) {

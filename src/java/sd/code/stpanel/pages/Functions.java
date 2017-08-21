@@ -67,7 +67,7 @@ public class Functions extends HttpServlet {
 		    
                     out.println("<td ");
   		    if (function.equals("paused")) {
-  		      out.println("bgcolor=#AAAADD");
+  		        out.println("bgcolor=#AAAADD");
 	 	    }
 		    out.println("><a href='Functions?function=paused'>Queue-Paused</a></td>");
 		    
@@ -80,7 +80,7 @@ public class Functions extends HttpServlet {
 		   		    
                     out.println("</tr></table>");
 
-		    pauseUnpause(request, url, out);
+		    //pauseUnpause(request, url, out);
 		    
                     switch (function) {
                         case "paused":
@@ -176,7 +176,7 @@ public class Functions extends HttpServlet {
 		    
 		    // Info
 		    out.println("<td style='font-size:12'>" + line + "</td>");
-		    if (! isBusy){
+		    /*if (! isBusy){
 			out.println("<td><form method=post>");
 			out.println("<input type=hidden name=member value='" + member + "' />");
 			if (has && keyword.equals("paused")) {
@@ -187,6 +187,7 @@ public class Functions extends HttpServlet {
 			}
 			out.println("</form></td>");
 		    }
+                    */
 		    out.println("</tr>");
 		}
 	    }
