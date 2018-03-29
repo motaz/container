@@ -18,7 +18,8 @@ public class DateExtra {
 	
       Calendar cal = Calendar.getInstance();
       cal.setTime(aday);
-      return cal.get(tag);	
+      return cal.get(tag);
+      
     }
     
     public static int getDay(Date aday){
@@ -44,6 +45,13 @@ public class DateExtra {
         return getYear(now);
     }
     
+    public static int getLastDayInMonth(Date aday){
+        
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(aday);
+        int lastDay =  cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        return lastDay;
+    }
     
     public static Date getEndOfToday() {
 
