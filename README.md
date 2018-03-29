@@ -4,13 +4,14 @@ Common utilities Library used by other Java applications
 <h3> Packages, Classes and Methods</h3>
 
 <b>sd.code.container.<b>date</b></b><br/>
-<b>ExtraDate</b> class:
+<b>DateExtra</b> class:
   - getCalendarValue
   - getDay
   - getMonth
   - getYear
   - GetCurrentYear
   - getEndOfToday
+  - getLastDayInMonth
   
 <b>sd.code.container.<b>encryption</b></b><br/>
   <b>Calc</b> class:
