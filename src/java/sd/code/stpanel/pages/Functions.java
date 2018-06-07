@@ -120,10 +120,7 @@ public class Functions extends HttpServlet {
 	obj.put("command", "queue show");
 	String requestText = obj.toJSONString();
 	boolean isBusy  = keyword.equals("Busy");
-        String alternativeKeywowrd = "-";
-        if (isBusy) {
-            alternativeKeywowrd = "in call";
-        }
+ 
 	if (isBusy){
 	    out.println("<h3>Talking</h3>");
 	}
@@ -151,10 +148,10 @@ public class Functions extends HttpServlet {
 		}
 		
 		if ((line.contains("Agent/") || (line.contains("SIP/")) || (line.contains("Local/"))) && 
-			((((has &&line.contains(keyword))) || (! has && !line.contains(keyword)))
-                        || (isBusy && line.contains(alternativeKeywowrd)))) {
+			//(((has &&line.contains(keyword))) || (! has && !line.contains(keyword)) ||
+                         (isBusy && (line.contains("In use")) && (!line.contains("Not in use")))) {
 		    count++;
-		    String member = line.substring(0, line.indexOf("(") - 1).trim();
+		    String member = line.substring(0, line.indexOf("/")).trim() + ")";
 		    if (queue.isEmpty()) {
 			out.println("<tr><td>-</td>");
 			
@@ -242,10 +239,10 @@ public class Functions extends HttpServlet {
 		}
 		if (started) {
 		    String callid = line.substring(line.indexOf(".") + 1, line.indexOf("(")).trim();
- 		    String info[] = General.getCallInfo(pbxfile, callid);
-		    if ((info != null) && (info.length > 30)){
-			String callerID = getFieldValue("Caller ID", info);
-			String application = getFieldValue("Data:", info);
+ 		    //String info[] = General.getCallInfo(pbxfile, callid);
+		    //if ((info != null) && (info.length > 30)){
+			//String callerID = getFieldValue("Caller ID", info);
+			//String application = getFieldValue("Data:", info);
 			 
 			out.print("<tr><td><b>");
 			if (!lastQueue.equals(queue)) {
@@ -253,15 +250,15 @@ public class Functions extends HttpServlet {
 			}
 			out.println("</b></td>");
 			lastQueue = queue;
-			out.println("<td>" + callerID + "</td>");
+			out.println("<td>" + callid + "</td>");
 			line = line.substring(line.indexOf("("), line.length());
-			out.println("<td>" + application + "</td>");
+			out.println("<td>" +  "</td>");
 			out.println("<td  style='font-size:12'>" + line + "</td>");
 			out.println("</tr>");
 			count++;
 
 		   }
-		}
+		//}
 		if (line.contains("Callers:")) {
 		    
 		    started = true;
@@ -282,17 +279,7 @@ public class Functions extends HttpServlet {
 	}
     }
     
-    private String getFieldValue(String key, String lines []){
-        
-        for (String line: lines){
-            if (line.contains(key)){
-                line = line.trim();
-                line = line.substring(line.indexOf(":") + 1, line.length()).trim();
-                return line;
-            }
-        }
-        return "";
-    }
+  
     
     private void pauseUnpause(HttpServletRequest request, String url, final PrintWriter out) throws IOException, ServletException {
 	

@@ -133,11 +133,11 @@ public class Monitor extends HttpServlet {
 		   // Get details call info
 		   String info[] = General.getCallInfo(pbxfile, callid);
 		   if ((info != null) && (info.length > 30)){
-		   String callerID = General.getValue(info[7]);
-		   String id = General.getValue(info[5]);
-		   String extension = General.getValue(info[31]);
-		   String duration = General.getValue(info[26]);
-		   String application = General.getValue(info[35]);
+		   String callerID = getFieldValue("Caller ID:", info);
+		   String id = getFieldValue("UniqueID:", info);
+		   String extension = getFieldValue("Connected Line ID:", info);
+		   String duration = getFieldValue("Elapsed Time:", info);
+		   String application = getFieldValue("Application:", info);
 		   out.println("<tr>");
 		   out.println("<td>" + id + "</td>");
 		   out.println("<td>" + callerID + "</td>");
@@ -284,6 +284,18 @@ public class Monitor extends HttpServlet {
 	}
 	out.println("</pre>");
 	
+    }
+    
+    private String getFieldValue(String key, String lines []){
+        
+        for (String line: lines){
+            if (line.contains(key)){
+                line = line.trim();
+                line = line.substring(line.indexOf(":") + 1, line.length()).trim();
+                return line;
+            }
+        }
+        return "";
     }
 
 
