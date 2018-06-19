@@ -151,7 +151,9 @@ public class Functions extends HttpServlet {
 			//(((has &&line.contains(keyword))) || (! has && !line.contains(keyword)) ||
                          (isBusy && (line.contains("In use")) && (!line.contains("Not in use")))) {
 		    count++;
-		    String member = line.substring(0, line.indexOf("/")).trim() + ")";
+                    
+                    // Agent/Member
+		    String member = line.substring(line.indexOf("/")+1, line.indexOf("(")).trim(); 
 		    if (queue.isEmpty()) {
 			out.println("<tr><td>-</td>");
 			
@@ -173,7 +175,9 @@ public class Functions extends HttpServlet {
 			status = status + line.substring(0, line.indexOf(")") + 1);
 			line = line.substring(line.indexOf(")") + 1, line.length());
 		    }
-		    
+		    if (status.indexOf("(") > 3) {
+                        status = status.substring(status.indexOf("("), status.length());
+                    }
 		    out.println("<td>" + status + "</td>");
 		    
 		    // Info
