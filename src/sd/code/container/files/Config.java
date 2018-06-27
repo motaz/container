@@ -30,70 +30,70 @@ public class Config {
     
     public static String getConfigurationParameter(String parameterName, String defaultValue, String aFile) {
         
-       Properties prop  = new Properties();
-       try
+        Properties prop  = new Properties();
+        try
 
-       {
-         if ((!aFile.contains(File.separator)) && isUnixLike()){
+        {
+            if ((!aFile.contains(File.separator)) && isUnixLike()){
 	       aFile = "/etc/code/" + aFile;
-	 }
+	    }
 
          
-         String text;
-	 try (FileInputStream stream = new FileInputStream(aFile)) {
-	      prop.load(stream);
-	      text = prop.getProperty(parameterName, defaultValue);
-	 }
+            String text;
+	    try (FileInputStream stream = new FileInputStream(aFile)) {
+	       prop.load(stream);
+	       text = prop.getProperty(parameterName, defaultValue);
+	    }
            
-         return(text);
+             return(text);
          
-       }
-       catch (IOException ex) {
-         lastError = "Error in getConfiguration: " + ex.toString();
-         return(defaultValue);
-       }
+        }
+        catch (IOException ex) {
+           lastError = "Error in getConfiguration: " + ex.toString();
+           return(defaultValue);
+        }
      
     }  
     
  
     public static boolean setConfigurationParameter(String parameterName, String aValue, String aFile) {
         
-       Properties prop  = new Properties();
-       try
-       {
+        Properties prop  = new Properties();
+        try
+        {
            
-         if (!aFile.contains(File.separator)) {
-                 if ( isUnixLike()){
-	       aFile = "/etc/code/" + aFile;
-            }
-            else { // Windows: c:\\users\\currentuser\\code
-               aFile =  System.getProperty("user.home") + "\\code\\" + aFile;
+            if (!aFile.contains(File.separator)) {
+                if ( isUnixLike()){
+	          aFile = "/etc/code/" + aFile;
+                }
+                else { // Windows: c:\\users\\currentuser\\code
+                  aFile =  System.getProperty("user.home") + "\\code\\" + aFile;
 
-                 }
-         }
+                }
+            }
          
-	 // Check file existence
-         File confFile = new File(aFile);
-         if (! confFile.exists()){
-             confFile.createNewFile();
-         }
+	    // Check file existence
+            File confFile = new File(aFile);
+            if (! confFile.exists()){
+                confFile.createNewFile();
+            }
          
-	 try (FileInputStream stream = new FileInputStream(aFile)) {
+	    try (FileInputStream stream = new FileInputStream(aFile)) {
 	       prop.load(stream);
 	       prop.setProperty(parameterName, aValue);
-	 }
+	    }
 	 
-	 try (FileOutputStream output = new FileOutputStream(aFile)) {
-	       prop.store(output, "settings");
-	 }
+	    try (FileOutputStream output = new FileOutputStream(aFile)) {
+	         prop.store(output, "settings");
+	    }
            
-         return(true);
+            return(true);
          
-       }
-       catch (IOException ex) {
-          lastError = "Error in setConfiguration: " + ex.toString();
-          return(false);
-       }
+        }
+        catch (IOException ex) {
+           lastError = "Error in setConfiguration: " + ex.toString();
+           return(false);
+        }
      
     }  
     
