@@ -149,7 +149,7 @@ public class Functions extends HttpServlet {
 		
 		if ((line.contains("Agent/") || (line.contains("SIP/")) || (line.contains("Local/"))) && 
 			//(((has &&line.contains(keyword))) || (! has && !line.contains(keyword)) ||
-                         (isBusy && (line.contains("In use")) && (!line.contains("Not in use")))) {
+                         (isBusy && (line.contains("in call")) && (!line.contains("Not in use")))) {
 		    count++;
                     
                     // Agent/Member
