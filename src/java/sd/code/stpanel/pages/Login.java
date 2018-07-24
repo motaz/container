@@ -53,7 +53,9 @@ public class Login extends HttpServlet {
                 if (valid) {
                     
                     Cookie coo = new Cookie("user", configUser);
+                    coo.setMaxAge(60 * 60 * 24 * 7);                
                     response.addCookie(coo);
+
 
                     String spices;
                     String remoteAddress = request.getRemoteAddr();
@@ -62,6 +64,7 @@ public class Login extends HttpServlet {
                       remoteAddress + "77") + "0066");
            
                     Cookie coo2 = new Cookie("spices", spices);
+                    coo2.setMaxAge(60 * 60 * 24 * 7);                
                     response.addCookie(coo2);
                     
                     response.sendRedirect("Home");
