@@ -30,7 +30,7 @@ public class Web {
               page = "";
         }
 
-        String version  = "1.0.17";
+        String version  = "1.0.18";
         
         if (user == null){
             user = "";
@@ -40,11 +40,11 @@ public class Web {
         String selectedPBX = "";
         String fileName = "";
         if (displayTabs) {
-              fileName = getCookieValue(request, "file");
-              if (fileName != null) {
-                 String title = General.getConfigurationParameter("title", "", General.getPBXsDir() + fileName);
-                 selectedPBX = "<font color=lime><b>" + title + "</b></font>";
-              }
+            fileName = getCookieValue(request, "file");
+            if (fileName != null) {
+                String title = General.getConfigurationParameter("title", "", General.getPBXsDir() + fileName);
+                selectedPBX = "<font color=lime><b>" + title + "</b></font>";
+            }
             
         }
         
@@ -200,7 +200,7 @@ public class Web {
         out.println(">");
     }
    
-   public static void setFooter(PrintWriter out){
+    public static void setFooter(PrintWriter out){
 
        out.println("	</div>\n" +
                    "	</div>\n" +
@@ -211,7 +211,7 @@ public class Web {
                    "	</div>" +
                    "  </body>" +
                    "</html>");
-   }
+    }
    
     public static String getCookieValue(HttpServletRequest request, String cookieName) {
 

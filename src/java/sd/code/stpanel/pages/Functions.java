@@ -146,39 +146,70 @@ public class Functions extends HttpServlet {
 		    out.println("<tr><td><b>" + queue + "</b></td>");
 		    
 		}
-		
-		if ((line.contains("Agent/") || (line.contains("SIP/")) || (line.contains("Local/"))) && 
-			//(((has &&line.contains(keyword))) || (! has && !line.contains(keyword)) ||
-                         (isBusy && (line.contains("in call")) && (!line.contains("Not in use")))) {
+		boolean displayLine = false;
+                if (isBusy){
+                    displayLine = (line.contains("Agent/") || (line.contains("SIP/")) || (line.contains("Local/"))) && 
+                         (isBusy && (line.contains("in call")) && (!line.contains("Not in use")));
+                } else if (keyword.equals("paused")){
+                    displayLine = (line.contains("Agent/") || (line.contains("SIP/")) || (line.contains("Local/"))) && 
+			(((has &&line.contains(keyword))) || (! has && !line.contains(keyword)));
+                         
+                }
+                
+		if (displayLine) {
 		    count++;
-                    
+                
                     // Agent/Member
-		    String member = line.substring(line.indexOf("/")+1, line.indexOf("(")).trim(); 
+                    
+		    String member = "";
+                    // SIP/1010 (ringinuse disabled)[1;36;40m (dynamic)[0m[0m[0m[0m ([1;31;40mUnavailable[0m) has taken no calls yet
+                    //(Local/875@agents from Agent:875) (ringinuse disabled)[1;36;40m (dynamic)[0m[0m[0m[0m ([1;32;40mInvalid[0m) has taken no calls yet
+                    if (line.contains("/") && line.contains("(")){
+                        if (line.indexOf("(") < line.indexOf("/")){
+                            line = line.substring(line.indexOf("(")+1);
+
+                        }
+
+                        member = line.substring(line.indexOf("/")+1, line.indexOf("(")).trim();
+                        line = line.substring(line.indexOf("/") + 1, line.length());
+                        // Remove Member additional string
+                        //(Local/875@agents from Agent:875) (ringinuse disabled)
+                        if (line.indexOf(")") < line.indexOf("(")){
+                           line = line.substring(line.indexOf(")") + 1, line.length());
+                        }
+                    } 
 		    if (queue.isEmpty()) {
-			out.println("<tr><td>-</td>");
-			
+			out.println("<tr><td>-</td>");			
 		    }
 
 		    queue = "";
 		    
 		    out.println("<td>" + member + "</td>");
-		    line = line.substring(line.indexOf("("), line.length());
+                    if (line.contains("(")){
+		       line = line.substring(line.indexOf("("), line.length());
+                    }
 		    
 		    // Option
 		    //out.println("<td  style='font-size:12'>" + line.substring(0, line.indexOf(")") +1 ) + "</td>");
-		    line = line.substring(line.indexOf(")") + 1, line.length());
+                   
+                    if (line.contains(")")){
+		        line = line.substring(line.indexOf(")") + 1, line.length());
+                    }
 		    
 		    // Status
-		    String status  = line.substring(0, line.indexOf(")") +1 );
-		    line = line.substring(line.indexOf(")") + 1, line.length()).trim();
-		    if (line.startsWith("(")){
-			status = status + line.substring(0, line.indexOf(")") + 1);
-			line = line.substring(line.indexOf(")") + 1, line.length());
-		    }
-		    if (status.indexOf("(") > 3) {
-                        status = status.substring(status.indexOf("("), status.length());
+                    if (line.contains(")")){
+		        String status  = line.substring(0, line.indexOf(")") +1 );
+		        line = line.substring(line.indexOf(")") + 1, line.length()).trim();
+                    
+                        if (line.startsWith(")")){
+                            status = status + line.substring(0, line.indexOf(")") + 1);
+                            line = line.substring(line.indexOf(")") + 1, line.length());
+                        }
+                        if (status.indexOf("(") > 3) {
+                            status = status.substring(status.indexOf("("), status.length());
+                        }
+                        out.println("<td>" + status + "</td>");
                     }
-		    out.println("<td>" + status + "</td>");
 		    
 		    // Info
 		    out.println("<td style='font-size:12'>" + line + "</td>");
@@ -197,6 +228,7 @@ public class Functions extends HttpServlet {
 		    out.println("</tr>");
 		}
 	    }
+            
 	 
 	    out.println("</table>");
 	    if (count == 0) {
@@ -235,31 +267,36 @@ public class Functions extends HttpServlet {
 	    String lastQueue = "";
 	    for (String line: lines) {
 
-		if (line.contains("holdtime")) {
+		if (line.contains("holdtime") && line.contains(" ")) {
 		    queue = line.substring(0, line.indexOf(" ")).trim();
 		}
 		if (line.trim().isEmpty()) {
 		    started = false;
 		}
 		if (started) {
-		    String callid = line.substring(line.indexOf(".") + 1, line.indexOf("(")).trim();
+                    
+		    String callid = "";
+                    if (line.contains(".") && line.contains("(")) {
+                        callid = line.substring(line.indexOf(".") + 1, line.indexOf("(")).trim();
+                    }
+                    
  		    //String info[] = General.getCallInfo(pbxfile, callid);
 		    //if ((info != null) && (info.length > 30)){
-			//String callerID = getFieldValue("Caller ID", info);
-			//String application = getFieldValue("Data:", info);
+		    //String callerID = getFieldValue("Caller ID", info);
+		    //String application = getFieldValue("Data:", info);
 			 
-			out.print("<tr><td><b>");
-			if (!lastQueue.equals(queue)) {
+		    out.print("<tr><td><b>");
+		    if (!lastQueue.equals(queue)) {
 			    out.print(queue);
-			}
-			out.println("</b></td>");
-			lastQueue = queue;
-			out.println("<td>" + callid + "</td>");
-			line = line.substring(line.indexOf("("), line.length());
-			out.println("<td>" +  "</td>");
-			out.println("<td  style='font-size:12'>" + line + "</td>");
-			out.println("</tr>");
-			count++;
+		    }
+                    out.println("</b></td>");
+                    lastQueue = queue;
+                    out.println("<td>" + callid + "</td>");
+                    line = line.substring(line.indexOf("("), line.length());
+                    out.println("<td>" +  "</td>");
+                    out.println("<td  style='font-size:12'>" + line + "</td>");
+                    out.println("</tr>");
+                    count++;
 
 		   }
 		//}
