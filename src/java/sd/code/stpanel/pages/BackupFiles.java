@@ -40,18 +40,20 @@ public class BackupFiles extends HttpServlet {
                     out.println("<h2>Files</h2>");
 
                     String fileName = request.getParameter("file");
-                    
+                                       
                     if (fileName != null) {
                         JSONObject obj = new JSONObject();
                         obj.put("foldername", "/etc/asterisk/backup/");
                         String requestText = obj.toJSONString();                        
                         
-                         String url = General.getConfigurationParameter("url", "", pbxfile);
-                         
-                         if (fileName.equals("all")){
+                        String url = General.getConfigurationParameter("url", "", pbxfile);
+                                                    
+                        if (fileName.equals("all")){
                              displayBackupFilesList(out, url, requestText);
                          }else{
                             out.println("<h3>" + fileName + "</h3>");
+                            String originalFileName = fileName.substring(0 , fileName.indexOf("conf")+4);
+                            doRetrieve(request, originalFileName, url, out);
                             obj.put("filename", "/etc/asterisk/backup/"+fileName);
                             requestText = obj.toJSONString();
                             displayBackupFileContents(url, requestText, out, fileName);                             
@@ -76,10 +78,8 @@ public class BackupFiles extends HttpServlet {
         
         out.println("<h3>All configuration Backup files</h3>");
         
-        out.println("<form method=GET action=EditFile>");
-        //out.println("<input type=hidden name=filename value='" + fileName + "' />");
+        out.println("<form method=GET action=CompareFiles>");
         out.println("<input type=submit name=diff value= 'Diff' />");
-        out.println("</form>");
         
         out.println("<table><tr>");
         String resultText = General.restCallURL(url + "ListFiles", requestText);
@@ -94,7 +94,7 @@ public class BackupFiles extends HttpServlet {
                 
                 
            
-                out.println("<td><input type='checkbox' name='vehicle' value='"+afile+"'></td> ");
+                out.println("<td><input type='checkbox' name='backupfilename' value='"+afile+"'></td> ");
                 out.println("<td><a href='BackupFiles?file=" + afile + "'>" + afile + "</a></td>");
                 out.println("</tr><tr>");
 
@@ -102,22 +102,30 @@ public class BackupFiles extends HttpServlet {
             }
         }
         out.println("</tr></table>");
+        out.println("</form>");      
     }
 
     
     
     private void  displayBackupFileContents(String url, String requestText, final PrintWriter out, String fileName) throws IOException, ParseException {
         
+        
+        
         String resultText = General.restCallURL(url + "GetFile", requestText);
-        out.println("<form method=GET action=EditFile>");
-        out.println("<input type=hidden name=filename value='" + fileName + "' />");
-        out.println("<input type=submit name=edit value= 'Edit file' />");
-        out.println("</form>");
+        
         JSONParser parser = new JSONParser();
         JSONObject resObj = (JSONObject) parser.parse(resultText);
+            
+        
+        out.println("<form method=POST >");
+        out.println("<input type=hidden name=filename value='" + fileName + "' />");
+        out.println("<input type=submit name=retrieve value= 'Retrieve Backup File  ' /> <br/> " );
+         
+
+
         if (Boolean.valueOf(resObj.get("success").toString())) {
             String content = resObj.get("content").toString();
-            
+          
             // Display last updated time
             if (resObj.get("filetime") != null){
                 String fileTime = resObj.get("filetime").toString();
@@ -130,17 +138,47 @@ public class BackupFiles extends HttpServlet {
                 }
                 out.println("Last updated: <font size=-1>" + fileTime + "</font><br/>");
             }
-                    
+                              
+            //Web.displayIncludedFiles(content, out, "Files?file=");            
+            //out.println("<pre>" + content + "</pre>");
             
-            Web.displayIncludedFiles(content, out, "Files?file=");
+            out.println("<textarea  readonly cols=140 rows = 60 font name=content >");
+            out.print(content);
+            out.println("</textarea><br/>");
             
-            out.println("<pre>" + content + "</pre>");
+            out.println("</form>");   
         }
         else {
             out.println("<p class=errormessage>" + resObj.get("message") + "</p>");
         }
     }
 
+       private void doRetrieve(HttpServletRequest request, String fileName, String url, final PrintWriter out) {    
+        try {
+        if (request.getParameter("retrieve") != null) {
+            JSONObject saveobj = new JSONObject();
+            saveobj.put("filename", fileName);
+            saveobj.put("content", request.getParameter("content"));
+            String requestText = saveobj.toJSONString();
+            String resultText = General.restCallURL(url + "ReplaceFile", requestText);
+            JSONParser saveparser = new JSONParser();
+            JSONObject saveresObj = (JSONObject) saveparser.parse(resultText);
+            boolean res = (Boolean.valueOf(saveresObj.get("success").toString()));
+            if (res) {
+                out.println("<p class=infomessage>File Replaced</p>");
+                out.println("<a href='Files?file=" + fileName + "'>View (Read only)</a>");
+                Web.displayReloadLink(fileName, out);
+            }
+            else {
+                out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString() + "</p>");
+            }
+            
+        }
+        }
+        catch (Exception ex){
+                out.println("<p class=errormessage>Error: " + ex.toString() + "</p>");
+        }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
