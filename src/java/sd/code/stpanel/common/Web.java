@@ -392,5 +392,5 @@ public class Web {
             out.println("<a href='Commands?command=" + command + "&ret=1'>" + caption + "</a></br></p>");
         }
     }
-    
+     
 }

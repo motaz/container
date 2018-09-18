@@ -73,7 +73,8 @@ public class Files extends HttpServlet {
                         
                     }
                     else {
-                        out.println("<h3>" + fileName + "</h3>");
+                        out.print("<h3>" + fileName + " <a href='BackupFiles?file=" + fileName + "'> \t Revisions </a>  "+"</h3>");
+                       // out.println("<h3> <a href='BackupFiles?file=" + fileName + "'> Revisions </a></h3>");
                         displayFileContents(url, requestText, out, fileName);
                     }
                   }

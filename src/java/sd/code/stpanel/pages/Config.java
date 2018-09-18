@@ -46,7 +46,6 @@ public class Config extends HttpServlet {
                     String tab2Color =  "";
                     String tab3Color = "";
                     String tab4Color = "";
-                    String tab5Color =  "bgcolor=#AAAADD";
                     
                     if (command != null) {
                         
@@ -72,7 +71,6 @@ public class Config extends HttpServlet {
                     out.println("<td " + tab2Color + "><a href='UploadSound?command=peers'>Sound files</a></td>");
                     out.println("<td " + tab3Color + "><a href='AMIConfig'>Config AMI</a></td>");
                     out.println("<td " + tab4Color + "><a href='CDRConfig'>Config CDR</a></td>");
-                    out.println("<td " + tab5Color + "><a href='BackupFiles?file=all'>Backup Files</a></td>");
                     out.println("</tr></table>");
                                         
 		    

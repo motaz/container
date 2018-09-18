@@ -40,27 +40,30 @@ public class BackupFiles extends HttpServlet {
                     out.println("<h2>Files</h2>");
 
                     String fileName = request.getParameter("file");
-                                       
+                    String backupFileName = request.getParameter("backupfile"); 
+                    
+                    JSONObject obj = new JSONObject();
+                    String url = General.getConfigurationParameter("url", "", pbxfile);
+                    
                     if (fileName != null) {
-                        JSONObject obj = new JSONObject();
+                        
                         obj.put("foldername", "/etc/asterisk/backup/");
-                        String requestText = obj.toJSONString();                        
+                        String requestText = obj.toJSONString();                                              
+                        displayBackupFilesList(out, url, requestText, fileName );
                         
-                        String url = General.getConfigurationParameter("url", "", pbxfile);
-                                                    
-                        if (fileName.equals("all")){
-                             displayBackupFilesList(out, url, requestText);
-                         }else{
-                            out.println("<h3>" + fileName + "</h3>");
-                            String originalFileName = fileName.substring(0 , fileName.indexOf("conf")+4);
-                            doRetrieve(request, originalFileName, url, out);
-                            obj.put("filename", "/etc/asterisk/backup/"+fileName);
-                            requestText = obj.toJSONString();
-                            displayBackupFileContents(url, requestText, out, fileName);                             
-                         }
-                        
-                    }
+                    }else{
+                            if ((backupFileName != null)||(backupFileName != "")){
                               
+                                out.println("<h3>" + backupFileName + "</h3>");
+                                String originalFileName = backupFileName.substring(0 , backupFileName.indexOf("conf")+4);
+                                doRetrieve(request, originalFileName, url, out);
+                                obj.put("filename", "/etc/asterisk/backup/"+backupFileName);
+                                String requestText = obj.toJSONString();
+                                displayBackupFileContents(url, requestText, out, backupFileName);                                  
+                            }
+                                                   
+                         }
+                                                     
                     Web.setFooter(out);
                 } else {
                   response.sendRedirect("Login");
@@ -74,9 +77,9 @@ public class BackupFiles extends HttpServlet {
     
     } 
     
-    private void displayBackupFilesList(final PrintWriter out, String url, String requestText) throws ParseException, IOException {
+    private void displayBackupFilesList(final PrintWriter out, String url, String requestText, String fileName ) throws ParseException, IOException {
         
-        out.println("<h3>All configuration Backup files</h3>");
+        out.println("<h3>"+fileName+"  Revisions Backup files</h3>");
         
         out.println("<form method=GET action=CompareFiles>");
         out.println("<input type=submit name=diff value= 'Diff' />");
@@ -92,13 +95,12 @@ public class BackupFiles extends HttpServlet {
             for (Object file : files) {
                 String afile = file.toString();
                 
-                
-           
-                out.println("<td><input type='checkbox' name='backupfilename' value='"+afile+"'></td> ");
-                out.println("<td><a href='BackupFiles?file=" + afile + "'>" + afile + "</a></td>");
-                out.println("</tr><tr>");
-
-                    
+                String originalFileName = afile.substring(0 , fileName.indexOf("conf")+4);
+                   if (fileName.equals(originalFileName)){
+                        out.println("<td><input type='checkbox' name='backupfilename' value='"+afile+"'></td> ");
+                        out.println("<td><a href='BackupFiles?backupfile=" + afile + "'>" + afile + "</a></td>");
+                        out.println("</tr><tr>");                     
+                   }                     
             }
         }
         out.println("</tr></table>");

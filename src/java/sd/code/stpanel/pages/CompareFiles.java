@@ -40,20 +40,34 @@ public class CompareFiles extends HttpServlet {
                                          
                         if (fileNames != null) {
                             
-                            JSONObject obj = new JSONObject();
-                            obj.put("filename", "/etc/asterisk/backup/" + fileNames[0]);
-                            String requestText = obj.toJSONString();  
-                            
                             String url = General.getConfigurationParameter("url", "", pbxfile);
                             
-                            String resultText = General.restCallURL(url + "GetFile", requestText);
+                            JSONObject obj1 = new JSONObject();                            
+                            obj1.put("filename", "/etc/asterisk/backup/" + fileNames[0]);
+                            String requestText = obj1.toJSONString();                                                          
+                            String firstResultText = General.restCallURL(url + "GetFile", requestText);
+       
                             JSONParser parser = new JSONParser();
-                            JSONObject resObj = (JSONObject) parser.parse(resultText);
-   
-                          
-                            //out.println("<h2>"+resObj.toJSONString()+"</h2>");
+                            JSONObject resObj1 = (JSONObject) parser.parse(firstResultText);                            
                             
-                            displayCompareFile(out, resObj, fileNames[0]);
+                            JSONObject obj2 = new JSONObject(); 
+                            obj2.put("filename", "/etc/asterisk/backup/" + fileNames[1]);
+                            requestText = obj2.toJSONString();                                                          
+                            String secondResultText = General.restCallURL(url + "GetFile", requestText);                          
+                            
+                            JSONObject resObj2 = (JSONObject) parser.parse(secondResultText);      
+   
+                            
+                            String command = "diff -c "+ "/etc/asterisk/backup/" + fileNames[0] +" "+"/etc/asterisk/backup/" +fileNames[1] ;
+                            JSONObject diffobj = new JSONObject(); 
+                            diffobj.put("command", command );
+                            requestText = diffobj.toJSONString();                                                          
+                            String resultText = General.restCallURL(url + "Shell", requestText); 
+   
+                             out.println("<p>"+resultText +"</p>");
+                            
+                            //out.println("<h2>"+resObj.toJSONString()+"</h2>");                            
+                            displayCompareFile(out, resObj1,resObj2 ,  fileNames[0] , fileNames[1]);                                                       
                             
                         }
                    
@@ -70,21 +84,35 @@ public class CompareFiles extends HttpServlet {
         }
         
     }
-    private void displayCompareFile(final PrintWriter out, JSONObject resObj, String fileName) {
+    private void displayCompareFile(final PrintWriter out, JSONObject firstResObj,JSONObject secondResObj,  String firstFileName , String secondFileName) {
         
         
-        if (Boolean.valueOf(resObj.get("success").toString())) {
-            String content = resObj.get("content").toString();
+        if (Boolean.valueOf(firstResObj.get("success").toString())) {
+            String content = firstResObj.get("content").toString();
 
-            out.println("<br>");
             
-            out.println("<textarea cols=50 rows = 60 font name=content >");
+            out.println("<div style='float:left ; width:50%' >");
+            out.println("<br>");            
+            out.println("<textarea wrap='off'  cols=50 rows = 30 font name=content >");
             out.print(content);
             out.println("</textarea><br/>");
-
+            out.println("</div>");
+            
         }
-      
+
+        if (Boolean.valueOf(secondResObj.get("success").toString())) {
+            String content = secondResObj.get("content").toString();
+           
+            out.println("<br>");  
+            out.println("<div>");
+            out.println("<textarea wrap='off' cols=50 rows = 30 font name=content >");
+            out.print(content);
+            out.println("</textarea><br/>");
+            out.println("</div>");
+         
+        } 
     }
+  
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
