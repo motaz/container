@@ -59,7 +59,7 @@ public class BackupFiles extends HttpServlet {
                                 doRetrieve(request, originalFileName, url, out);
                                 obj.put("filename", "/etc/asterisk/backup/"+backupFileName);
                                 String requestText = obj.toJSONString();
-                                displayBackupFileContents(url, requestText, out, backupFileName);                                  
+                                displayBackupFileContents(url, requestText, out, originalFileName,  backupFileName);                                  
                             }
                                                    
                          }
@@ -81,8 +81,8 @@ public class BackupFiles extends HttpServlet {
         
         out.println("<h3>"+fileName+"  Revisions Backup files</h3>");
         
-        out.println("<form method=GET action=CompareFiles>");
-        out.println("<input type=submit name=diff value= 'Diff' />");
+        
+        //out.println("<input type=submit name=diff value= 'Diff' />");
         
         out.println("<table><tr>");
         String resultText = General.restCallURL(url + "ListFiles", requestText);
@@ -97,19 +97,19 @@ public class BackupFiles extends HttpServlet {
                 
                 String originalFileName = afile.substring(0 , fileName.indexOf("conf")+4);
                    if (fileName.equals(originalFileName)){
-                        out.println("<td><input type='checkbox' name='backupfilename' value='"+afile+"'></td> ");
+                        //out.println("<td><input type='checkbox' name='backupfilename' value='"+afile+"'></td> ");
                         out.println("<td><a href='BackupFiles?backupfile=" + afile + "'>" + afile + "</a></td>");
                         out.println("</tr><tr>");                     
                    }                     
             }
         }
         out.println("</tr></table>");
-        out.println("</form>");      
+            
     }
 
     
     
-    private void  displayBackupFileContents(String url, String requestText, final PrintWriter out, String fileName) throws IOException, ParseException {
+    private void  displayBackupFileContents(String url, String requestText, final PrintWriter out,String originalFileName, String fileName) throws IOException, ParseException {
         
         
         
@@ -118,13 +118,20 @@ public class BackupFiles extends HttpServlet {
         JSONParser parser = new JSONParser();
         JSONObject resObj = (JSONObject) parser.parse(resultText);
             
+        out.println("<form method=POST action=CompareFiles  >");
+        out.println("<input type=hidden name=backupfilename value='" + fileName + "' />");
+        out.println("<input type=hidden name=originalfilename value='" + originalFileName + "' />"); 
+        out.println("<input type=submit name=CompareFiles value= 'Compare to "+originalFileName+"' /> <br/> " ); 
+        out.println("</form>");  
         
-        out.println("<form method=POST >");
-        out.println("<input type=hidden name=filename value='" + fileName + "' />");
-        out.println("<input type=submit name=retrieve value= 'Retrieve Backup File  ' /> <br/> " );
-         
+        out.println("<form method=POST  >");
+        out.println("<input type=hidden name=backupfilename value='" + fileName + "' />");
+        out.println("<input type=hidden name=originalfilename value='" + originalFileName + "' />");
+        out.println("<input type=submit name=retrieve value= 'Retrieve Backup File' /> <br/> " );
+          
+        
 
-
+        
         if (Boolean.valueOf(resObj.get("success").toString())) {
             String content = resObj.get("content").toString();
           
@@ -148,7 +155,7 @@ public class BackupFiles extends HttpServlet {
             out.print(content);
             out.println("</textarea><br/>");
             
-            out.println("</form>");   
+           out.println("</form>");             
         }
         else {
             out.println("<p class=errormessage>" + resObj.get("message") + "</p>");
