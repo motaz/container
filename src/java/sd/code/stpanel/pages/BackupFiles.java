@@ -148,8 +148,6 @@ public class BackupFiles extends HttpServlet {
                 out.println("Last updated: <font size=-1>" + fileTime + "</font><br/>");
             }
                               
-            //Web.displayIncludedFiles(content, out, "Files?file=");            
-            //out.println("<pre>" + content + "</pre>");
             
             out.println("<textarea  readonly cols=140 rows = 60 font name=content >");
             out.print(content);
@@ -169,7 +167,7 @@ public class BackupFiles extends HttpServlet {
             saveobj.put("filename", fileName);
             saveobj.put("content", request.getParameter("content"));
             String requestText = saveobj.toJSONString();
-            String resultText = General.restCallURL(url + "ReplaceFile", requestText);
+            String resultText = General.restCallURL(url + "ModifyFile", requestText);
             JSONParser saveparser = new JSONParser();
             JSONObject saveresObj = (JSONObject) saveparser.parse(resultText);
             boolean res = (Boolean.valueOf(saveresObj.get("success").toString()));

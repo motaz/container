@@ -106,13 +106,16 @@ public class CompareFiles extends HttpServlet {
         
         
         String[] originalContentArr = originalContent.split("\n");
-        String[] backupContentArr = backupContent.split("\n");
+        String[] backupContentArr = backupContent.split("[\r\n|\n]");
+        
+        for (int i = 0 ; i < backupContentArr.length ; i++ ){
+            //out.println("<p>"+ i+"  "+backupContentArr[i]+"</p>");
+        }
         
         //int contentLength = (originalContentArr.length > backupContentArr.length)? originalContentArr.length:backupContentArr.length;
             
         out.println("<br><br><br>");
         out.println("<div>");
-          //out.println("<h3> "+ originalFileName +"</h3>");
         
             out.println("<table width='50%' style='float: left; display: inline-block;' >");
                 out.println("<tbody>");
@@ -176,8 +179,6 @@ public class CompareFiles extends HttpServlet {
 
                             
             out.println("<table width='50%'>");
-                out.println("<colgroup '> <colgroup>");
-                out.println("<colgroup> <colgroup>");
                 out.println("<tbody>");
                     out.println("<tr> <th>  </th> ");
                     out.println(" <th> <h3>"+backupFileName+"</h3></th> </tr>");
@@ -246,6 +247,7 @@ public class CompareFiles extends HttpServlet {
         while (token.hasMoreTokens()) {
             diffToken = token.nextToken();
             if ((diffToken.charAt(0) != '>') & (diffToken.charAt(0) != '<')& (diffToken.charAt(0) != '-')){                          
+                out.println("<p>"+diffToken+"</p>");
                 dpArr.add(extractLineNumbers(diffToken ));
             }
             

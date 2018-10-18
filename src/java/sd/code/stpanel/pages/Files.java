@@ -94,6 +94,7 @@ public class Files extends HttpServlet {
     private void displayFilesList(final PrintWriter out, String url, String requestText) throws ParseException, IOException {
         
         out.println("<h3>All configuration files</h3>");
+        out.println("<a  href='CreateFile'> Create New File </a><br><br>");
         out.println("<table><tr>");
         String resultText = General.restCallURL(url + "ListFiles", requestText);
         JSONParser parser = new JSONParser();
