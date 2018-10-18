@@ -28,15 +28,25 @@ public class Config {
         return lastError;
     }
     
+    
     public static String getConfigurationParameter(String parameterName, String defaultValue, String aFile) {
         
         Properties prop  = new Properties();
         try
 
         {
-            if ((!aFile.contains(File.separator)) && isUnixLike()){
-	       aFile = "/etc/code/" + aFile;
+            if (!aFile.contains(File.separator)) {
+                if (isUnixLike()){
+	            aFile = "/etc/code/" + aFile;
+                }
+                
+               else { // Windows: c:\\users\\currentuser\\code
+                  aFile =  System.getProperty("user.home") + "\\code\\" + aFile;
+
+                }
+                
 	    }
+ 
 
          
             String text;
@@ -71,7 +81,16 @@ public class Config {
 
                 }
             }
-         
+                 
+            // Check log directory existance
+            File f = new File(aFile);
+            String dirName = f.getParentFile().getName();
+            
+            File dir = new File(dirName);
+            
+            if (!dir.exists()){
+                dir.mkdir();
+            }      
 	    // Check file existence
             File confFile = new File(aFile);
             if (! confFile.exists()){

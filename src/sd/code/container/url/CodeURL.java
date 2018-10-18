@@ -37,21 +37,31 @@ public class CodeURL {
     }
     
     public static HTTPResponse callURL(String aURL, String contents, int waitSeconds, String contentType) throws 
-	    IOException, MalformedURLException {
+	    MalformedURLException {
 	
         HTTPResponse response = new HTTPResponse();
+      
 	if ((contentType == null) || (contentType.isEmpty())){
 	    contentType = "text/json";
 	}
     
         URL url = new URL(aURL);
-        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-        conn.setConnectTimeout(waitSeconds * 1000);            
-        conn.setReadTimeout(waitSeconds * 1000);        
-        conn.setRequestProperty("Content-Type", contentType);
-        conn.setDoOutput(true);
-        response.responseText =  actualCall(conn, contents, "UTF-8");
-        response.responsCode = conn.getResponseCode();
+        HttpURLConnection conn;
+        try {
+            conn = (HttpURLConnection)url.openConnection();
+
+            conn.setConnectTimeout(waitSeconds * 1000);            
+            conn.setReadTimeout(waitSeconds * 1000);        
+            conn.setRequestProperty("Content-Type", contentType);
+            conn.setDoOutput(true);
+            response.responseText = actualCall(conn, contents, "UTF-8");
+
+            response.responsCode = conn.getResponseCode();
+            
+          } catch (IOException ex) {
+            response.responsCode = 5;
+            response.responseText = "Error in callURL: " + ex.toString();
+        }
         return response;
     }     
 
