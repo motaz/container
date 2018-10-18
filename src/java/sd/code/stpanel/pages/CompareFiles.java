@@ -266,7 +266,6 @@ public class CompareFiles extends HttpServlet {
         while (token.hasMoreTokens()) {
             diffToken = token.nextToken();
             if ((diffToken.charAt(0) != '>') & (diffToken.charAt(0) != '<')& (diffToken.charAt(0) != '-')){                          
-                out.println("<p>"+diffToken+"</p>");
                 dpArr.add(extractLineNumbers(diffToken ));
             }
             
