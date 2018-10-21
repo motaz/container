@@ -27,6 +27,8 @@ public class CreateFile  extends HttpServlet {
  
     protected void processRequest(HttpServletRequest request , HttpServletResponse response ) throws IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
+        
         try (PrintWriter out = response.getWriter()){
             String user = Web.getCookieValue(request, "user");
             String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
@@ -78,21 +80,32 @@ public class CreateFile  extends HttpServlet {
             
             
             JSONObject fileCreateObj = new JSONObject();
-            fileCreateObj.put("command", "touch "+ fileName);
+            fileCreateObj.put("command", "touch /etc/asterisk/"+ fileName);
             String requestText = fileCreateObj.toJSONString();
-            String resultText = General.restCallURL(url + "Command", requestText);
+            String resultText = General.restCallURL(url + "Shell", requestText);
             
             JSONParser resultParser = new JSONParser();
             JSONObject resultObj = (JSONObject) resultParser.parse(resultText);
             boolean res = (Boolean.valueOf(resultObj.get("success").toString()));
             
-            if (res) {
+            JSONObject filePerObj = new JSONObject();
+            filePerObj.put("command", "chown asterisk:asterisk /etc/asterisk/" + fileName);
+            requestText = filePerObj.toJSONString();
+            String PermResultText = General.restCallURL(url + "Shell", requestText);           
+    
+            resultParser = new JSONParser();
+            JSONObject PermresultObj = (JSONObject) resultParser.parse(PermResultText);
+            boolean PermRes = (Boolean.valueOf(PermresultObj.get("success").toString()));
+            
+            if (res && PermRes) {
                 JSONObject fileContentObj = new JSONObject();
                 fileContentObj.put("filename", fileName);
                 fileContentObj.put("content", fileContent);
                 requestText = fileContentObj.toJSONString();
                 resultText = General.restCallURL(url + "ModifyFile", requestText);  
-              
+ 
+                
+                
                 resultParser = new JSONParser();
                 resultObj = (JSONObject) resultParser.parse(resultText);
                 res = (Boolean.valueOf(resultObj.get("success").toString()));

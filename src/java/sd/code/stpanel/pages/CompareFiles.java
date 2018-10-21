@@ -115,9 +115,9 @@ public class CompareFiles extends HttpServlet {
         //int contentLength = (originalContentArr.length > backupContentArr.length)? originalContentArr.length:backupContentArr.length;
             
         out.println("<br><br><br>");
-        out.println("<div>");
+        out.println("<div style=' margin:auto; overflow:hidden;' >");
         
-            out.println("<table width='50%' style='float: left; display: inline-block;' >");
+            out.println("<table width='50%' style='float: left; display: block;' >");
                 out.println("<tbody>");
                     
                     out.println("<tr> <th> </th>");
@@ -189,7 +189,7 @@ public class CompareFiles extends HttpServlet {
 
                             
                             
-            out.println("<table width='50%'>");
+            out.println("<table width='50%'; style='float: left; display: block';>");
                 out.println("<tbody>");
                     out.println("<tr> <th>  </th> ");
                     out.println(" <th> <h3>"+backupFileName+"</h3></th> </tr>");
@@ -248,7 +248,7 @@ public class CompareFiles extends HttpServlet {
                         }
                 out.println("</tbody>");
             out.println("</table>");  
-        out.println("</div>");    
+        out.println("</div> <br>");    
     }
        
     
