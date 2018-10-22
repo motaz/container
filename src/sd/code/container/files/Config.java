@@ -47,8 +47,7 @@ public class Config {
                 
 	    }
  
-
-         
+        
             String text;
 	    try (FileInputStream stream = new FileInputStream(aFile)) {
 	       prop.load(stream);
