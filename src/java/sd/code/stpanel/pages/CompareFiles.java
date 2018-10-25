@@ -67,7 +67,7 @@ public class CompareFiles extends HttpServlet {
                        
                             JSONObject resObj2 = (JSONObject) parser.parse(backupResultText);                            
                                                                
-                            String command = "diff " +"/etc/asterisk/backup/" +backupFileName +"  /etc/asterisk/" + originalFileName  ;
+                            String command = "diff -w -b " +"/etc/asterisk/backup/" +backupFileName +"  /etc/asterisk/" + originalFileName  ;
                             JSONObject diffobj = new JSONObject(); 
                             diffobj.put("command", command );
                             requestText = diffobj.toJSONString();                                                          
@@ -105,8 +105,8 @@ public class CompareFiles extends HttpServlet {
         }
         
         
-        String[] originalContentArr = originalContent.split("\n" , -1);
-        String[] backupContentArr = backupContent.split("\n" , -1);
+        String[] originalContentArr = originalContent.split("\\r?\\n" , -1);
+        String[] backupContentArr = backupContent.split("\\r?\\n" , -1);
         
         for (int i = 0 ; i < backupContentArr.length ; i++ ){
             //out.println("<p>"+ i+"  "+backupContentArr[i]+"</p>");
@@ -150,7 +150,8 @@ public class CompareFiles extends HttpServlet {
                                                     out.println("<td bgcolor='#B4FFB4'>"+originalContentArr[i] +" </td>");
                                                     break ;
                                                 case 'd':
-                                                    out.println("<td bgcolor='#FFA0B4'>"+originalContentArr[i] +" </td>");
+                                                    //out.println("<td bgcolor='#FFA0B4'>"+originalContentArr[i] +" </td>");
+                                                    out.println("<td>"+originalContentArr[i] +"<span style='color:#ff3658 ;'> ▼</span>  </td>");
                                                     break ;
                                                 case 'c':
                                                     out.println("<td bgcolor='#A0C8FF'>"+originalContentArr[i] +" </td>");
@@ -217,7 +218,8 @@ public class CompareFiles extends HttpServlet {
                                            out.println("<td>"+(i+1) +"</td>");
                                            switch(dpArr.get(backupCount).type){
                                                 case 'a':
-                                                    out.println("<td bgcolor='#B4FFB4'>"+backupContentArr[i] +" </td>");
+                                                    //out.println("<td bgcolor='#B4FFB4'>"+backupContentArr[i] +" </td>");
+                                                    out.println("<td>"+backupContentArr[i] +"<span style='color:#02a322 ;'> ▼</span>  </td>");
                                                     break ;
                                                 case 'd':
                                                     out.println("<td bgcolor='#FFA0B4'>"+backupContentArr[i] +" </td>");

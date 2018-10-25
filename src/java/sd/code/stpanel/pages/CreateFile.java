@@ -39,7 +39,7 @@ public class CreateFile  extends HttpServlet {
                     
                     String url = General.getConfigurationParameter("url", "", pbxfile);
                     
-                    doSave(request,url, out);
+                    doSave(request, response , url, out);
                     displayCreateFileform(out);  
                    
                     
@@ -70,7 +70,7 @@ public class CreateFile  extends HttpServlet {
         
     }
         
-     private void doSave(HttpServletRequest request,String url, final PrintWriter out) {
+     private void doSave(HttpServletRequest request, HttpServletResponse response ,String  url, final PrintWriter out) {
         
         try {
         if (request.getParameter("save") != null) {
@@ -113,9 +113,7 @@ public class CreateFile  extends HttpServlet {
                 out.println("<br>");
                    
                 if (res) {
-                    out.println("<p class=infomessage>File Added</p>");
-                    out.println("<a href='Files?file=" + fileName + "'>View (Read only)</a>");
-                    Web.displayReloadLink(fileName, out);
+                    response.sendRedirect("Files?file="+fileName);
                 }
                 else {
                     out.println("<p class=errormessage>Error: " + resultObj.get("message").toString() + "</p>");
