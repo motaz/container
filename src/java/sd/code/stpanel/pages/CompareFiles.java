@@ -139,6 +139,9 @@ public class CompareFiles extends HttpServlet {
                                     out.println("<td>"+originalContentArr[i] +" </td>");
                                     out.println("</tr>");                                   
                                 }else{
+                                    if (dpArr.get(originCount).secondFileEndPos  <= 0){
+                                        originCount++ ;
+                                    } 
                                     int startPoint = dpArr.get(originCount).secondFileStartPos -1  ;
                                     int endPoint = dpArr.get(originCount).secondFileEndPos    ;
                                     if (startPoint == i ){
@@ -160,7 +163,9 @@ public class CompareFiles extends HttpServlet {
 
                                             out.println("</tr>");
                                             startPoint++ ;
-                                            i++ ;
+                                           if (startPoint < endPoint){
+                                               i++ ;
+                                           }
 
                                         }
                                         if (originCount < dpArr.size()-1 ){
@@ -210,6 +215,9 @@ public class CompareFiles extends HttpServlet {
                                     out.println("<td>"+backupContentArr[i] +" </td>");
                                     out.println("</tr>");                                   
                                 }else{
+                                   if (dpArr.get(backupCount).firstFileEndPos  <= 0){
+                                        backupCount++ ;
+                                    } 
                                     int startpoint = dpArr.get(backupCount).firstFileStartPos -1  ;
                                     int endPoint = dpArr.get(backupCount).firstFileEndPos   ;
                                     if (startpoint== i ){
@@ -232,7 +240,10 @@ public class CompareFiles extends HttpServlet {
 
                                            out.println("</tr>");
                                            startpoint++ ;
-                                           i++ ;
+                                           if (startpoint < endPoint){
+                                               i++ ;
+                                           }
+                                           
                                         }
                                        if (backupCount < dpArr.size()-1){
                                            backupCount++ ;
