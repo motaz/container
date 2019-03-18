@@ -62,6 +62,17 @@ public class DateExtra {
         calendar.set(Calendar.MILLISECOND, 999);
 
         return  calendar.getTime();
-    }    
+    } 
     
+    public static Date increaseDay(Date aday, int increaseBy){
+	
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(aday);
+      cal.add(Calendar.HOUR, increaseBy * 24);
+      
+      return cal.getTime();
+      
+    }  
+    
+
 }
