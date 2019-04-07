@@ -59,8 +59,11 @@ public class CodeURL {
             response.responsCode = conn.getResponseCode();
             
           } catch (IOException ex) {
-            response.responsCode = 5;
-            response.responseText = "Error in callURL: " + ex.toString();
+            response.responsCode = 500;
+            if (ex.toString().contains("401")){
+                response.responsCode = 401;
+            }
+            response.responseText = ex.toString();
         }
         return response;
     }     
