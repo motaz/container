@@ -7,6 +7,7 @@ package sd.code.container.files;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import sd.code.container.url.CodeURL;
 
@@ -36,7 +37,7 @@ public class Web {
         
     }         
     
-    public static String actualCall(URLConnection conn, String contents, String encode) throws IOException {
+    public static String actualCall(HttpURLConnection conn, String contents, String encode) throws IOException {
         
        return CodeURL.actualCall(conn, contents, encode);
        

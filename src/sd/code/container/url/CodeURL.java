@@ -7,6 +7,7 @@ package sd.code.container.url;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -60,10 +61,12 @@ public class CodeURL {
             
           } catch (IOException ex) {
             response.responsCode = 500;
+             //response.responseText = ex.toString();
             if (ex.toString().contains("401")){
                 response.responsCode = 401;
+               //  response.responseText = "Invalid Authentication: " + ex.toString();
             }
-            response.responseText = ex.toString();
+           
         }
         return response;
     }     
@@ -91,7 +94,7 @@ public class CodeURL {
         return actualCall(conn, contents, encoding);
     }         
     
-    public static String actualCall(URLConnection conn, String contents, String encode) throws IOException {
+    public static String actualCall(HttpURLConnection conn, String contents, String encode) throws IOException {
         
         String outputText = "";
         BufferedReader reader;
@@ -105,18 +108,27 @@ public class CodeURL {
         }
         
         String line;
-
-        reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), encode));
+        InputStream is = null;  
+        int statusCode = conn.getResponseCode();        
+        if (statusCode >= 200 && statusCode < 400) {
+           // Create an InputStream in order to extract the response object
+           is = conn.getInputStream();
+        }
+        else {
+           is = conn.getErrorStream();
+        }
+        reader = new BufferedReader(new InputStreamReader(is, encode));
         while ((line = reader.readLine()) != null) {
             String text = new String(line.getBytes(encode));
             outputText = outputText + text;
 
         }
         
-        
         reader.close();
+        is.close();
         return outputText;
     }     
+    
     
     
     public static String callHTTPSURLWithMethod(String aURL, String contents, int waitSeconds, String contentType,
