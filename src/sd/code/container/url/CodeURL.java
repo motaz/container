@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -93,6 +94,41 @@ public class CodeURL {
         
         return actualCall(conn, contents, encoding);
     }         
+ 
+    public static String callHTTPSURLWithAuth(String aURL, String username, String password, String contents, int waitSeconds, String contentType,
+            String method, String encoding) throws IOException {
+        
+        disableSslVerification();
+        return callURLWithAuth(aURL, username, password, contents, waitSeconds, contentType, method, encoding);
+    }
+    
+    public static String callURLWithAuth(String aURL , String username, String password, String contents, int waitSeconds, String contentType, 
+            String method, String encoding) throws IOException {
+        
+        
+        String userCredentials = username + ":" + password;
+        String basicAuth = new String(Base64.getEncoder().encode(userCredentials.getBytes()));
+        
+        if ((contentType == null) || (contentType.isEmpty())){
+	    contentType = "text/json";
+	}
+        
+        URL url = new URL(aURL);
+        
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(waitSeconds * 1000);            
+        conn.setReadTimeout(waitSeconds * 1000);        
+        conn.setRequestProperty("Content-Type", contentType);
+        conn.setRequestProperty("Authorization", basicAuth);
+ 
+        
+        conn.setRequestProperty("method", method);
+        conn.setRequestMethod(method);
+        conn.setDoOutput(true);
+        
+        return actualCall(conn, contents, encoding);
+    }
+    
     
     public static String actualCall(HttpURLConnection conn, String contents, String encode) throws IOException {
         
