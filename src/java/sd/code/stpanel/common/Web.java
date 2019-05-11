@@ -30,7 +30,7 @@ public class Web {
               page = "";
         }
 
-        String version  = "1.0.20";
+        String version  = "1.0.21";
         
         if (user == null){
             user = "";
@@ -43,41 +43,21 @@ public class Web {
             fileName = getCookieValue(request, "file");
             if (fileName != null) {
                 String title = General.getConfigurationParameter("title", "", General.getPBXsDir() + fileName);
-                selectedPBX = "<font color=lime><b>" + title + "</b></font>";
+                selectedPBX = "<font color=green><b>" + title + "</b></font>";
             }
             
         }
         
-        out.println("<html lang=\"en\">\n" +
-            "	<head>\n" +
-            "		<meta charset=\"utf-8\">\n" +
-            "		<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-            "		<title>Simple Trunk Panel</title>\n" +
-            "		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-            "		<meta name=\"Description\" lang=\"en\" content=\"ADD SITE DESCRIPTION\">\n" +
-            "		<meta name=\"author\" content=\"ADD AUTHOR INFORMATION\">\n" +
-            "		<meta name=\"robots\" content=\"index, follow\">\n" +
-            "\n" +
-            "		<!-- icons -->\n" +
-            "		<link rel=\"apple-touch-icon\" href=\"img/apple-touch-icon.png\">\n" +
-            "		<link rel='shortcut icon' href='img/icon.png'>\n" +
-            "\n" +
-            "		<!-- Override CSS file - add your own CSS rules -->\n" +
-            "		<link rel=\"stylesheet\" href=\"css/styles.css\">\n" +
-            "	</head>\n" +
-            "	<body>\n" +
-            "	<div class=header>\n" +
-            "	<div class=container>\n" +
-            "<table ><tr bgcolor=#77779999><td class=titletd><img src='img/title.jpg' /> </td>" + 
-            "<td class=titletd><td bgcolor=#88AAAA>" +
-            "" + logoutText + "</td><td bgcolor=#77779999>" + 
-		       selectedPBX + "</td>" +
-            "<td bgcolor=#88AAAA style=vertical-align:bottom>Version " +
-                version + "</td></tr></table>	</div>\n" +
-            "	</div>\n" +
-            "	<div class=\"nav-bar\">\n" +
-            "	<div class=\"container\">\n" +
-            "	<ul class=\"nav\"> ");
+
+        request.setAttribute("version", version);
+        request.setAttribute("selectedpbx", selectedPBX);
+        request.setAttribute("logouttext", logoutText);
+        
+        try {
+            request.getRequestDispatcher("header.jsp").include(request, response);
+        } catch (Exception ex){
+            General.writeEvent("Error in header.jsp: " + ex.toString());
+        }
 
         // Tabs
         if (displayTabs) {

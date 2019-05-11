@@ -173,15 +173,15 @@ Layout styles
 
 .container
 {
-	max-width: 90%;
+	max-width: 100%;
 	margin: 0 auto;
 }
 
 .header
 {
 	color: #fff;
-	background: #585858;
-	padding: 0.5em 1.25em;
+	background: #99aa99;
+	padding: 0.2em 1em;
 }
 
 .header-heading { margin: 0; }
@@ -437,8 +437,8 @@ Wide styles
 
 @media (min-width: 42em)
 {
-	.header { padding: 1.5em 3em; }
-	.nav-bar { padding: 0.2em 3em; }
+	.header { padding: 0.5em 3em; }
+	.nav-bar { padding: 0.1em 3em; }
 	.content { padding: 2em 3em; }
 	.footer { padding: 0.5em 8em}
 	

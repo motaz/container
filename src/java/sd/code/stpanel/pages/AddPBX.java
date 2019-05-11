@@ -35,30 +35,28 @@ public class AddPBX extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-           try{ 
-              Web.setHeader(true, request, response, out, "", "");
-            
-              String user = Web.getCookieValue(request, "user");
+        try{ 
+            Web.setHeader(true, request, response, out, "", "");
 
-              if (Web.checkSession(request, user)){
-                
-                 addNewPBX(request, out, response); 
-                 out.println("<h2>Add new PBX for administration</h2>");
-               
-                 displayAdd(out);
-              }
-              else
-              {
-                 response.sendRedirect("Login");
-              }
-        
-              Web.setFooter(out);
+            String user = Web.getCookieValue(request, "user");
+
+            if (Web.checkSession(request, user)){
+
+               addNewPBX(request, out, response); 
+               out.println("<h2>Add new PBX for administration</h2>");
+
+               displayAdd(out);
+            }
+            else
+            {
+               response.sendRedirect("Login");
+            }
+
+            Web.setFooter(out);
            
         } catch (Exception ex){
             out.println("<p class=errormessage>" + ex.toString() + "</p>");
         }
-           
-        
         
     }
 
@@ -113,7 +111,7 @@ public class AddPBX extends HttpServlet {
         out.println("<tr><td>Config file name </td>");
         out.println("<td><input type=text name=file /></td></td>");
 	
-        out.println("<tr><td>STAgent URL</td>");
+        out.println("<tr><td>SimpleTrunk Agent URL</td>");
         out.println("<td><input type=text name=url size=30 value='" +
                       "http://localhost:9091/' /></td></tr>");
 	
