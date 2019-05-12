@@ -68,7 +68,7 @@ public class ChangePassword extends HttpServlet {
             }
                   
               
-           Web.setFooter(out);
+            Web.setFooter(request, response);
         
     
     }

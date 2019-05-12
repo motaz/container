@@ -8,7 +8,6 @@ package sd.code.stpanel.pages;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
@@ -44,10 +43,10 @@ public class CreateFile  extends HttpServlet {
                    
                     
                                                      
-                    Web.setFooter(out);
+                    Web.setFooter(request, response);
                 } else {
-                  response.sendRedirect("Login");
-              }
+                   response.sendRedirect("Login");
+                }
             }
             catch (Exception ex){
 		out.println(ex.toString());

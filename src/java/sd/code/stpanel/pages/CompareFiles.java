@@ -80,8 +80,9 @@ public class CompareFiles extends HttpServlet {
                             
                         }
                    }
-                    Web.setFooter(out);
-                }else{
+                   Web.setFooter(request, response);
+                   
+                } else {
                     response.sendRedirect("Login");
                 }
                 

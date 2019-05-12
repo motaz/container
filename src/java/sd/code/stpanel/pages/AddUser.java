@@ -31,20 +31,20 @@ public class AddUser extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-            String user = Web.getCookieValue(request, "user");
-            
-            if (Web.checkSession(request, user)) {
-                Web.setHeader(true, request, response, out, "", "");
+        String user = Web.getCookieValue(request, "user");
 
-                out.println("<h2>Users Management</h2>");
-                
-                Web.setFooter(out);
-                
-          }   
+        if (Web.checkSession(request, user)) {
+            Web.setHeader(true, request, response, out, "", "");
+
+            out.println("<h2>Users Management</h2>");
+
+            Web.setFooter(request, response);      
+        }   
          
-        }
+    }
     
 
 

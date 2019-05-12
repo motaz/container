@@ -34,22 +34,22 @@ public class Pbx extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try{ 
-              String page= request.getParameter("page");
-              Web.setHeader(true, request, response, out, "pbx", page);
+                String page= request.getParameter("page");
+                Web.setHeader(true, request, response, out, "pbx", page);
             
-              String user = Web.getCookieValue(request, "user");
+                String user = Web.getCookieValue(request, "user");
 
-              if (Web.checkSession(request, user)){
+                if (Web.checkSession(request, user)){
 
-                  out.println("<p class=infomessage>Asterisk PBX configuration and monitoring</p>");
+                    out.println("<p class=infomessage>Asterisk PBX configuration and monitoring</p>");
                  
-              }
-              else
-              {
-                 response.sendRedirect("Login");
-              }
+                }
+                else
+                {
+                   response.sendRedirect("Login");
+                }
         
-              Web.setFooter(out);
+                Web.setFooter(request, response);
            
         } catch (Exception ex){
             out.println("<p class=errormessage>" + ex.toString() + "</p>");

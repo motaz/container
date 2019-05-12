@@ -36,76 +36,75 @@ public class Monitor extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	response.setContentType("text/html;charset=UTF-8");
-	try {
-            PrintWriter out = response.getWriter();
-            try {
-              String user = Web.getCookieValue(request, "user");
-              String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
-	      String url = General.getConfigurationParameter("url", "", pbxfile);	      
-              if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "pbx", "monitor");
-                  out.println("<h2>Monitor</h2>");
+	
+        PrintWriter out = response.getWriter();
+        try {
+            String user = Web.getCookieValue(request, "user");
+            String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+            String url = General.getConfigurationParameter("url", "", pbxfile);	      
+            if (Web.checkSession(request, user)) {
+                Web.setHeader(true, request, response, out, "pbx", "monitor");
+                out.println("<h2>Monitor</h2>");
 
-		  String function = request.getParameter("function");
-		  if (function == null){
-		      function = "system";
-		  }
-		  
-                  out.println("<table><tr>");
-                  out.println("<td ");
-		  if (function.equals("system")) {
-		      out.println("bgcolor=#AAAADD");
-		  }
-		  out.println("><a href='Monitor?function=system'>System</a></td>");
-		  
-                  out.println("<td ");
-		  if (function.equals("calls")) {
-		      out.println("bgcolor=#AAAADD");
-		  }
-		  out.println("><a href='Monitor?function=calls'>Active Channels</a></td>");
-		  
-                  out.println("<td ");
-		  if (function.equals("cdr")) {
-		      out.println("bgcolor=#AAAADD");
-		  }
-		  out.println("><a href='Monitor?function=cdr'>Last CDRs</a></td>");
-		  
-		  out.println("</tr></table>");
-		  
-		  
-		  
-		  Date now = new Date();
-		  out.println(now.toString());
-		  out.println("<a href='Monitor?function=" + function + "' class=button >Refresh</a>");
-		  out.println("<br/><br/>");
-		  
-		  if (function.equals("system")){
-		      displaySystemStatus(url, out);
-		  }
-		  else if (function.equals("calls")) {
-		  
-		      displayActiveChannels(pbxfile, url, out);
-		  }
-		  else if (function.equals("cdr")){
-		      displayCDR(pbxfile, url, out);
-		  }
-		  
-		  out.println("<script type=\"text/javascript\">\n" +
-			      "  var timeout = setTimeout(\"location.reload(true);\", 50000);\n" +
-			      "</script>");
-		  
-		  Web.setFooter(out);
+                String function = request.getParameter("function");
+                if (function == null){
+                    function = "system";
+                }
 
-              }
-              else {
-                  response.sendRedirect("Login");
-              }
+                out.println("<table><tr>");
+                out.println("<td ");
+                if (function.equals("system")) {
+                    out.println("bgcolor=#AAAADD");
+                }
+                out.println("><a href='Monitor?function=system'>System</a></td>");
+
+                out.println("<td ");
+                if (function.equals("calls")) {
+                    out.println("bgcolor=#AAAADD");
+                }
+                out.println("><a href='Monitor?function=calls'>Active Channels</a></td>");
+
+                out.println("<td ");
+                if (function.equals("cdr")) {
+                    out.println("bgcolor=#AAAADD");
+                }
+                out.println("><a href='Monitor?function=cdr'>Last CDRs</a></td>");
+
+                out.println("</tr></table>");
+
+
+
+                Date now = new Date();
+                out.println(now.toString());
+                out.println("<a href='Monitor?function=" + function + "' class=button >Refresh</a>");
+                out.println("<br/><br/>");
+
+                if (function.equals("system")){
+                  displaySystemStatus(url, out);
+                }
+                else if (function.equals("calls")) {
+
+                  displayActiveChannels(pbxfile, url, out);
+                }
+                else if (function.equals("cdr")){
+                  displayCDR(pbxfile, url, out);
+                }
+
+                out.println("<script type=\"text/javascript\">\n" +
+                          "  var timeout = setTimeout(\"location.reload(true);\", 50000);\n" +
+                          "</script>");
+
+                Web.setFooter(request, response);
+
             }
-            catch (Exception ex){
-                out.println(ex.toString());
+            else {
+              response.sendRedirect("Login");
             }
-	} finally {
-	}
+        }
+        catch (Exception ex){
+            out.println(ex.toString());
+        }
+        
     }
 
     private void displayActiveChannels(String pbxfile, String url, PrintWriter out) throws IOException, ParseException {

@@ -36,104 +36,103 @@ public class Status extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-          String user = Web.getCookieValue(request, "user");
-          String pbxfile = General.getPBXsDir() + Web.getCookieValue(request, "file");
-            try {
-                if (Web.checkSession(request, user)) {
-                    Web.setHeader(true, request, response, out, "advanced", "status");
+        String user = Web.getCookieValue(request, "user");
+        String pbxfile = General.getPBXsDir() + Web.getCookieValue(request, "file");
+        try {
+            if (Web.checkSession(request, user)) {
+                Web.setHeader(true, request, response, out, "advanced", "status");
 
-                    out.println("<h2>Status</h2>");
+                out.println("<h2>Status</h2>");
 
-                    String command = request.getParameter("command");
-                    
-                    String commandLine = "";
-                    String chColor =  "";
-                    String peerColor = "";
-                    String usersColor = "";
-                    String codecColor = "";
-                    String statusColor = "";
-                    String queueColor = "";
-                    String agentColor = "";
-                    
-                    if (command != null) {
-                        
-                        if (command.equals("channels")){
-                                commandLine = "core show channels";
-                                chColor = "bgcolor=#AAAADD";
-			}
-			else if (command.equals("peers")){
-                                commandLine = "sip show peers";
-                                peerColor = "bgcolor=#AAAADD";
-			}
-			else if (command.equals("users")){
-                                commandLine = "sip show users";
-                                usersColor = "bgcolor=#AAAADD";
-			}
-			else if (command.equals("codecs")){
-                                commandLine = "core show codecs";
-                                codecColor = "bgcolor=#AAAADD";
-			}
-			else if (command.equals("stats")){
-                                commandLine = "sip show channelstats";
-                                statusColor = "bgcolor=#AAAADD";
-			}
-			else if (command.equals("queues")){
-                                commandLine = "queue show";
-                                queueColor = "bgcolor=#AAAADD";
-                                
-			}
-			else if (command.equals("agents")){
-                                commandLine = "agent show";
-                                agentColor = "bgcolor=#AAAADD";
-                                
-                        }
+                String command = request.getParameter("command");
+
+                String commandLine = "";
+                String chColor =  "";
+                String peerColor = "";
+                String usersColor = "";
+                String codecColor = "";
+                String statusColor = "";
+                String queueColor = "";
+                String agentColor = "";
+
+                if (command != null) {
+
+                    if (command.equals("channels")){
+                            commandLine = "core show channels";
+                            chColor = "bgcolor=#AAAADD";
                     }
-                    
-                    
-                    out.println("<table><tr>");
-                    out.println("<td " + chColor + "><a href='Status?command=channels'>Channels</a></td>");
-                    out.println("<td " + peerColor + "><a href='Status?command=peers'>Peers</a></td>");
-                    out.println("<td " + usersColor + "><a href='Status?command=users'>Users</a></td>");
-                    out.println("<td " + statusColor + "><a href='Status?command=stats'>Channel stats.</a></td>");
-                    out.println("<td " + queueColor + "><a href='Status?command=queues'>Queue</a></td>");
-                    out.println("<td " + agentColor + "><a href='Status?command=agents'>Agents</a></td>");
-                    out.println("<td " + codecColor + "><a href='Status?command=codecs'>Codecs</a></td>");
-                    out.println("</tr></table>");
-                    
-                    if (command != null){
-
-                        out.println("<h3>" + command + "</h3>");
-                        out.println("<form method=post>");
-                        out.println("<input type=submit value=Refresh class=btn />");
-                        out.println("</form>");
-
-                        JSONObject obj = new JSONObject();
-                        obj.put("command", commandLine);
-                        String requestText = obj.toJSONString();
-
-                        String url = General.getConfigurationParameter("url", "", pbxfile);
-
-                        String resultText = General.restCallURL(url + "Command", requestText);
-                        JSONParser parser = new JSONParser();
-                        JSONObject resObj = (JSONObject) parser.parse(resultText);
-                        if (Boolean.valueOf(resObj.get("success").toString())) {
-                            String text = resObj.get("result").toString();
-                            out.println("<pre>" + text + "</pre>");
-                        }
-                        else {
-                           out.println("<p class=errormessage>" + resObj.get("message") + "</p>");
-                        }
+                    else if (command.equals("peers")){
+                            commandLine = "sip show peers";
+                            peerColor = "bgcolor=#AAAADD";
                     }
+                    else if (command.equals("users")){
+                            commandLine = "sip show users";
+                            usersColor = "bgcolor=#AAAADD";
+                    }
+                    else if (command.equals("codecs")){
+                            commandLine = "core show codecs";
+                            codecColor = "bgcolor=#AAAADD";
+                    }
+                    else if (command.equals("stats")){
+                            commandLine = "sip show channelstats";
+                            statusColor = "bgcolor=#AAAADD";
+                    }
+                    else if (command.equals("queues")){
+                            commandLine = "queue show";
+                            queueColor = "bgcolor=#AAAADD";
 
-                    Web.setFooter(out);
+                    }
+                    else if (command.equals("agents")){
+                            commandLine = "agent show";
+                            agentColor = "bgcolor=#AAAADD";
+
+                    }
                 }
-                else {
-                    response.sendRedirect("Login");
+
+
+                out.println("<table><tr>");
+                out.println("<td " + chColor + "><a href='Status?command=channels'>Channels</a></td>");
+                out.println("<td " + peerColor + "><a href='Status?command=peers'>Peers</a></td>");
+                out.println("<td " + usersColor + "><a href='Status?command=users'>Users</a></td>");
+                out.println("<td " + statusColor + "><a href='Status?command=stats'>Channel stats.</a></td>");
+                out.println("<td " + queueColor + "><a href='Status?command=queues'>Queue</a></td>");
+                out.println("<td " + codecColor + "><a href='Status?command=codecs'>Codecs</a></td>");
+                out.println("</tr></table>");
+
+                if (command != null){
+
+                    out.println("<h3>" + command + "</h3>");
+                    out.println("<form method=post>");
+                    out.println("<input type=submit value=Refresh class=btn />");
+                    out.println("</form>");
+
+                    JSONObject obj = new JSONObject();
+                    obj.put("command", commandLine);
+                    String requestText = obj.toJSONString();
+
+                    String url = General.getConfigurationParameter("url", "", pbxfile);
+
+                    String resultText = General.restCallURL(url + "Command", requestText);
+                    JSONParser parser = new JSONParser();
+                    JSONObject resObj = (JSONObject) parser.parse(resultText);
+                    if (Boolean.valueOf(resObj.get("success").toString())) {
+                        String text = resObj.get("result").toString();
+                        out.println("<pre>" + text + "</pre>");
+                    }
+                    else {
+                       out.println("<p class=errormessage>" + resObj.get("message") + "</p>");
+                    }
                 }
+
+                Web.setFooter(request, response);
             }
-            catch (Exception ex){
-                out.println(ex.toString());
+            else {
+                response.sendRedirect("Login");
             }
+        }
+        catch (Exception ex){
+            out.println(ex.toString());
+        }
         out.close();
         
     }

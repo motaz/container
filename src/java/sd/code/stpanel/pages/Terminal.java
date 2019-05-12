@@ -34,46 +34,45 @@ public class Terminal extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
 	response.setContentType("text/html;charset=UTF-8");
-	try {
-            PrintWriter out = response.getWriter();
-            try {
-              String user = Web.getCookieValue(request, "user");
-              String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
-              if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "advanced", "terminal");
-                  out.println("<h2>Terminal</h2>");
+	
+        PrintWriter out = response.getWriter();
+        try {
+            String user = Web.getCookieValue(request, "user");
+            String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+            if (Web.checkSession(request, user)) {
+                Web.setHeader(true, request, response, out, "advanced", "terminal");
+                out.println("<h2>Terminal</h2>");
 
-		  
-		  String url = General.getConfigurationParameter("url", "", pbxfile);
-		  String commandText = request.getParameter("command");
-		  if (commandText == null){
-		      commandText = "";
-		  }
-                  out.println("<br/><form method=POST >");
-                  out.println("Command <input type=text name=command size = 40 value = '" + commandText + "' /> &emsp;");
-                  out.println("<input type=submit name=execute value='Execute' class=btn />");
-                  out.println("</form>");
-		  
-		  if (request.getParameter("execute") != null) {
-		      String result = General.executeShell(commandText, url);
-		      out.println("<pre>");
-		      out.println(result);
-		      out.println("</pre>");
-		  }
-		  
-		  
-		  Web.setFooter(out);
 
-              }
-              else {
-                  response.sendRedirect("Login");
-              }
+                String url = General.getConfigurationParameter("url", "", pbxfile);
+                String commandText = request.getParameter("command");
+                if (commandText == null){
+                    commandText = "";
+                }
+                out.println("<br/><form method=POST >");
+                out.println("Command <input type=text name=command size = 40 value = '" + commandText + "' /> &emsp;");
+                out.println("<input type=submit name=execute value='Execute' class=btn />");
+                out.println("</form>");
+
+                if (request.getParameter("execute") != null) {
+                  String result = General.executeShell(commandText, url);
+                  out.println("<pre>");
+                  out.println(result);
+                  out.println("</pre>");
+                }
+
+
+                Web.setFooter(request, response);
+
             }
-            catch (Exception ex){
-                out.println(ex.toString());
+            else {
+              response.sendRedirect("Login");
             }
-	} finally {
-	}
+        }
+        catch (Exception ex){
+            out.println(ex.toString());
+        }
+	
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

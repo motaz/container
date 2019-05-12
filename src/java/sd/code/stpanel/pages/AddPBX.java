@@ -52,7 +52,7 @@ public class AddPBX extends HttpServlet {
                response.sendRedirect("Login");
             }
 
-            Web.setFooter(out);
+            Web.setFooter(request, response);
            
         } catch (Exception ex){
             out.println("<p class=errormessage>" + ex.toString() + "</p>");

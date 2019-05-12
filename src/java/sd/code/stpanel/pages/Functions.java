@@ -103,14 +103,13 @@ public class Functions extends HttpServlet {
                         default:
                             break;
                     }
-		    
                     
 		}
 	    }
 	    catch (Exception ex){
 		out.println(ex.toString());
 	    }
-	    Web.setFooter(out);
+	    Web.setFooter(request, response);
 	}
     }
 

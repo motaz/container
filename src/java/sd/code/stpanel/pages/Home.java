@@ -53,9 +53,8 @@ public class Home extends HttpServlet {
                 {
                     response.sendRedirect("Login");
                 }
-                
-                
-                Web.setFooter(out);
+                    
+                Web.setFooter(request, response);
             }
             catch (Exception ex){
                 out.println("<p class=errormessage>" + ex.toString() + "</p>");
@@ -81,11 +80,11 @@ public class Home extends HttpServlet {
                     }
                     String color;
                     if (counter % 2 == 0) {
-                        color = "#aaddaa";
+                        color = "#eeaa99";
                     }
                     else
                     {
-                        color = "#77AAAA";
+                        color = "#ffeeaa";
                     }
                     String link = "<a href='SelectPBX?pbx=" + fileName + "'>" + title + "</a>";
                     String editLink = "<font >" + 

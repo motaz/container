@@ -107,7 +107,7 @@ public class UploadSound extends HttpServlet {
 		    out.println("<input type=submit name=uploadfile value='Upload' />");
 		    out.println("</form>");
 		    
-		    Web.setFooter(out);
+		    Web.setFooter(request, response);
 		}
 	    }
 	    catch (Exception ex){

@@ -92,7 +92,7 @@ public class Extensions extends HttpServlet {
 
                 }
         
-              Web.setFooter(out);
+              Web.setFooter(request, response);
            
         } catch (Exception ex){
             out.println("<p class=errormessage>" + ex.toString() + "</p>");

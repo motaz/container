@@ -74,7 +74,7 @@ public class Config extends HttpServlet {
                     out.println("</tr></table>");
                                         
 		    
-		    Web.setFooter(out);
+		    Web.setFooter(request, response);
 		}
 	    }
 	    catch (Exception ex){

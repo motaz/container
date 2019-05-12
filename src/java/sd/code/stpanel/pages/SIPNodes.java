@@ -82,7 +82,7 @@ public class SIPNodes extends HttpServlet {
                       }
                     }
                     out.println("</table>");
-                    Web.setFooter(out);
+                    Web.setFooter(request, response);
                 }
               
             }

@@ -120,12 +120,15 @@ public class CDRConfig extends HttpServlet {
                     {
                         out.println("<p class=errormessage >Error in CDR configuration: "+res.get("message").toString()+"</p>");
                     }
-              }
+                }
               
-          }
-          else
+            }
+            else {
               response.sendRedirect("Login");
-          Web.setFooter(out);
+            }
+           
+            Web.setFooter(request, response);
+            
         }catch(Exception e){
             out.println("<p class=errormessage>" + e.toString()+"</p>");
         }

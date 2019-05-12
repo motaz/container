@@ -27,7 +27,7 @@ public class Web {
         
         String user = getCookieValue(request, "user");
         if (page == null){
-              page = "";
+            page = "";
         }
 
         String version  = "1.0.21";
@@ -47,7 +47,6 @@ public class Web {
             }
             
         }
-        
 
         request.setAttribute("version", version);
         request.setAttribute("selectedpbx", selectedPBX);
@@ -61,34 +60,34 @@ public class Web {
 
         // Tabs
         if (displayTabs) {
-              String font = "style='color:lime;font-weight: bold;'";
-              out.print("<li><a href=Home><font ");
-              if (parent.equals("home")){
-                  out.print(font);
-              }
-              out.println(">Home</font></a></li>");
+            String font = "style='color:lime;font-weight: bold;'";
+            out.print("<li><a href=Home><font ");
+            if (parent.equals("home")){
+                out.print(font);
+            }
+            out.println(">Home</font></a></li>");
               
-              out.print("<li><a href=Advanced><font ");
-              if (parent.equals("advanced")){
-                  out.print(font);
-              }
-              out.println(">Advanced</font></a></li>");
+            out.print("<li><a href=Advanced><font ");
+            if (parent.equals("advanced")){
+                out.print(font);
+            }
+            out.println(">Advanced</font></a></li>");
               
               
-              out.print("<li><a href=Pbx?sub=" + parent + "><font ");
-              if (parent.equals("pbx")){
-                  out.print(font);
-              }
-              out.println(">PBX</font></a></li>");
+            out.print("<li><a href=Pbx?sub=" + parent + "><font ");
+            if (parent.equals("pbx")){
+                out.print(font);
+            }
+            out.println(">PBX</font></a></li>");
               
-              out.println("<li><a href=ChangePassword><font ");
-              if (parent.equals("myadmin")){
-                  out.print(font);
-              }
-              out.println(">My Admin</font></a></li>");
+            out.println("<li><a href=ChangePassword><font ");
+            if (parent.equals("myadmin")){
+                out.print(font);
+            }
+            out.println(">My Admin</font></a></li>");
               
-              out.println("&emsp;");
-              displayPbxsBox(out, fileName);
+            out.println("&emsp;");
+            displayPbxsBox(out, fileName);
              
         }
          
@@ -106,8 +105,7 @@ public class Web {
         }
         else if (parent.equals("pbx")) {
             pbxTab(page, out);
-        }
-        
+        }      
         
     }
 
@@ -142,7 +140,6 @@ public class Web {
         
         selectTabPage(out, page, "config");
         out.println("<a href='Config'>Configuration</a></td>");
-
 	
         out.println("</tr></table>");
     }
@@ -165,7 +162,6 @@ public class Web {
 	
         selectTabPage(out, page, "monitor");
         out.println("<a href='Monitor'>Monitor</a></td>");
-	
 
 	out.println("</tr></table>");
     }
@@ -180,17 +176,15 @@ public class Web {
         out.println(">");
     }
    
-    public static void setFooter(PrintWriter out){
+    public static void setFooter(HttpServletRequest request, HttpServletResponse response){
 
-       out.println("	</div>\n" +
-                   "	</div>\n" +
-                   "	</div>\n" +
-                   "	<div class='footer'>" +
-                   "        &copy; Code for computer software 2015-2017 " + 
-                   "        <img src='img/small-code.png' width=40 />" +
-                   "	</div>" +
-                   "  </body>" +
-                   "</html>");
+        try {
+            request.getRequestDispatcher("footer.jsp").include(request, response);
+        } catch (Exception ex){
+            General.writeEvent("Error in setFoot: " + ex.toString());
+            
+        }
+       
     }
    
     public static String getCookieValue(HttpServletRequest request, String cookieName) {

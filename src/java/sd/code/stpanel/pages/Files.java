@@ -79,7 +79,7 @@ public class Files extends HttpServlet {
                     }
                   }
                 
-                  Web.setFooter(out);
+                  Web.setFooter(request, response);
               }
               else {
                   response.sendRedirect("Login");

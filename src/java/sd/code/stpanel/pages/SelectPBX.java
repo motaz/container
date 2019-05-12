@@ -34,21 +34,21 @@ public class SelectPBX extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-            Web.setHeader(true, request, response, out, "home", "");
-            
-            String user = Web.getCookieValue(request, "user");
+        Web.setHeader(true, request, response, out, "home", "");
 
-            if (Web.checkSession(request, user)){
-                Cookie co = new Cookie("file", request.getParameter("pbx"));
-                co.setMaxAge(60 * 60 * 24 * 7);                
-                response.addCookie(co);
-                
-                response.sendRedirect("Status");
-            }
-            else {
-                response.sendRedirect("Login");
-            }
-            Web.setFooter(out);
+        String user = Web.getCookieValue(request, "user");
+
+        if (Web.checkSession(request, user)){
+            Cookie co = new Cookie("file", request.getParameter("pbx"));
+            co.setMaxAge(60 * 60 * 24 * 7);                
+            response.addCookie(co);
+
+            response.sendRedirect("Status");
+        }
+        else {
+            response.sendRedirect("Login");
+        }
+        Web.setFooter(request, response);
         out.close();
     }
 

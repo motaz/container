@@ -34,32 +34,32 @@ public class Setup extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-            Web.setHeader(false, request, response, out, "", "");
-            String currentLogin = General.getConfigurationParameter("login", null, null);
-            if (request.getParameter("login") != null){
-                try {
-                    General.setConfigurationParameter("login", request.getParameter("login"), "");
-                    String pass = General.getMD5(request.getParameter("pass"));
-                    General.setConfigurationParameter("pass", pass, "");
-                    response.sendRedirect("Login");
-                }
-                catch (Exception ex){
-                    out.println("<p class=errormessage>" + ex.toString() + "</p>");
-                }
-                
+        Web.setHeader(false, request, response, out, "", "");
+        String currentLogin = General.getConfigurationParameter("login", null, null);
+        if (request.getParameter("login") != null){
+            try {
+                General.setConfigurationParameter("login", request.getParameter("login"), "");
+                String pass = General.getMD5(request.getParameter("pass"));
+                General.setConfigurationParameter("pass", pass, "");
+                response.sendRedirect("Login");
             }
-            if (currentLogin == null){
-                out.println("<h3>SimpleTrunk Panel setup");
-                out.println("<h3><font color=blue>Create New Admin Login</font></h3>");
-                out.println("<form method=POST>");
-                out.println("<table><tr>");
-                out.println("<td>Login </td><td><input type=text name=login id=login /></td></tr>");
-                out.println("<tr><td>Password </td><td><input type=password name=pass /></td></tr>");
-                out.println("<tr><td><input type=submit name=log value=Login /></td></tr>");
-                out.println("</table></form>");
-                out.println("<script>document.getElementById('login').focus();</script>");            
+            catch (Exception ex){
+                out.println("<p class=errormessage>" + ex.toString() + "</p>");
             }
-            Web.setFooter(out);
+
+        }
+        if (currentLogin == null){
+            out.println("<h3>SimpleTrunk Panel setup");
+            out.println("<h3><font color=blue>Create New Admin Login</font></h3>");
+            out.println("<form method=POST>");
+            out.println("<table><tr>");
+            out.println("<td>Login </td><td><input type=text name=login id=login /></td></tr>");
+            out.println("<tr><td>Password </td><td><input type=password name=pass /></td></tr>");
+            out.println("<tr><td><input type=submit name=log value=Login /></td></tr>");
+            out.println("</table></form>");
+            out.println("<script>document.getElementById('login').focus();</script>");            
+        }
+        Web.setFooter(request, response);
 
         out.close();
     }

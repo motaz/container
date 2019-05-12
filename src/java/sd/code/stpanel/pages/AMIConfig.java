@@ -36,49 +36,49 @@ public class AMIConfig extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-          try{
-              String user = Web.getCookieValue(request, "user");
-              String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
-               String url = General.getConfigurationParameter("url", "", pbxfile);
-              if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "advanced", "config");
-                  out.println("<h2>AMI Configurations</h2>");
-                  if(paramStatus(request)){
+            try{
+                String user = Web.getCookieValue(request, "user");
+                String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+                String url = General.getConfigurationParameter("url", "", pbxfile);
+                if (Web.checkSession(request, user)) {
+                    Web.setHeader(true, request, response, out, "advanced", "config");
+                    out.println("<h2>AMI Configurations</h2>");
+                    if(paramStatus(request)){
                       displayAMIUsers(out, url,pbxfile);
                       displayAMIStatus(out,url);
-                  }
-                  if(request.getParameter("adf")!=null)
-                  {
+                    }
+                    if(request.getParameter("adf")!=null)
+                    {
                       addAMIUserForm(out);
-                  }
-                  if(request.getParameter("edf")!=null)
-                  {
+                    }
+                    if(request.getParameter("edf")!=null)
+                    {
                       editAMIUserForm(out, url, request.getParameter("edf"));
-                  }
-                  if(request.getParameter("aok")!=null)
-                  {
-                      doAddAMIUser(request, response, out, url);
-                  }
-                  if(request.getParameter("mok")!=null)
-                  {
-                      doModAMIUser(request, response, out, url);
-                  }
-                  if(request.getParameter("def")!=null)
-                  {
-                      setDefault(out, url, pbxfile,response,request.getParameter("def"));
-                  }
-              }
-              else{
-                  response.sendRedirect("Login");
-              }
-              Web.setFooter(out);
-          }catch(Exception e){
-             out.println("<p class=errormessage >Error : "+e.toString()+"</p>");
-          }
+                    }
+                    if(request.getParameter("aok")!=null)
+                    {
+                       doAddAMIUser(request, response, out, url);
+                    }
+                    if(request.getParameter("mok")!=null)
+                    {
+                       doModAMIUser(request, response, out, url);
+                    }
+                    if(request.getParameter("def")!=null)
+                    {
+                       setDefault(out, url, pbxfile,response,request.getParameter("def"));
+                    }
+                }
+                else{
+                    response.sendRedirect("Login");
+                }
+                Web.setFooter(request, response);
+            }catch(Exception e){
+               out.println("<p class=errormessage >Error : "+e.toString()+"</p>");
+            }
         }
     }
-    private void displayAMIStatus(PrintWriter out,String url) throws Exception
-    {
+    
+    private void displayAMIStatus(PrintWriter out,String url) throws Exception {
               String spl[];
               String ami,amiht,http;
               String Requestres = General.restCallURL(url + "GetAMIStatus", "");

@@ -14,29 +14,32 @@
 %>
 
 <html lang="en">
-            	<head>
-            		<meta charset="utf-8">
-            		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-            		<title>Simple Trunk Panel</title>
-            		<meta name="viewport" content="width=device-width, initial-scale=1">
-            		<meta name="Description" lang="en" content="ADD SITE DESCRIPTION">
-            		<meta name="author" content="Code for Computer Software">
-            		<meta name="robots" content="index, follow">
-            
-            		<!-- icons -->
-            		<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-            		<link rel='shortcut icon' href='img/icon.png'>
-            
-            		<!-- Override CSS file - add your own CSS rules -->
-            		<link rel="stylesheet" href="css/styles.css">
-            	</head>
-            	<body>
-            	<div class=header>
-            	<div class=container>
-            <table ><tr bgcolor=#ffffff ><td class=titletd><img src='img/title.jpg' /> </td>
-            <td class=titletd><td bgcolor=#FFFFDD style='color:black;vertical-align:bottom;'><%=logouttext%></td>
-            <td bgcolor=#fffaa7 style='vertical-align:bottom;'><%=selectedpbx%></td>
-            <td bgcolor=#FFFFDD style='vertical-align:bottom;font-size:12px; color:black;'>
+    <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <title>Simple Trunk Panel</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="Description" lang="en" content="ADD SITE DESCRIPTION">
+            <meta name="author" content="Code for Computer Software">
+            <meta name="robots" content="index, follow">
+
+            <!-- icons -->
+            <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+            <link rel='shortcut icon' href='img/icon.png'>
+
+            <!-- Override CSS file - add your own CSS rules -->
+            <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <body>
+    <div class=header>
+    <div class=container>
+            <table ><tr bgcolor=#ffffff >
+                    <td class=titletd style="color:red;background-color: #FFFFaa; vertical-align:bottom;font-size:30px;">
+                        &emsp;Simple Trunk&emsp; </td>
+            <td class=titletd><td bgcolor=#EEEEaa style='color:black;vertical-align:bottom;'>
+                <%=logouttext%></td>
+            <td bgcolor=#EEEEaa style='vertical-align:bottom;'><%=selectedpbx%></td>
+            <td bgcolor=#EEEEaa style='vertical-align:bottom;font-size:12px; color:black;'>
                 Version <%=version%> 
             </td>
                 </tr>

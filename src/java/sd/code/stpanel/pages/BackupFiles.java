@@ -64,7 +64,7 @@ public class BackupFiles extends HttpServlet {
                                                    
                          }
                                                      
-                    Web.setFooter(out);
+                    Web.setFooter(request, response);
                 } else {
                   response.sendRedirect("Login");
               }

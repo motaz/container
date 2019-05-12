@@ -97,7 +97,7 @@ public class Logs extends HttpServlet {
                            out.println("<p class=errormessage>" + resObj.get("message") + "</p>");
                         }                        
                     }
-                    Web.setFooter(out);
+                    Web.setFooter(request, response);
                 }
                 else {
                     response.sendRedirect("Login");

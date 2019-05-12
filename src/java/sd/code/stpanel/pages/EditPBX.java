@@ -54,7 +54,7 @@ public class EditPBX extends HttpServlet {
 		response.sendRedirect("Login");
 	     }
 	    
-	     Web.setFooter(out);
+	     Web.setFooter(request, response);
 	}
         
     }

@@ -33,26 +33,26 @@ public class Advanced extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-           try{ 
-              String page= request.getParameter("page");
-              Web.setHeader(true, request, response, out, "advanced", page);
-            
-              String user = Web.getCookieValue(request, "user");
+        try{ 
+            String page= request.getParameter("page");
+            Web.setHeader(true, request, response, out, "advanced", page);
 
-              if (Web.checkSession(request, user)){
+            String user = Web.getCookieValue(request, "user");
 
-                  out.println("<p class=infomessage>Asterisk Advanced configuration<br/>");
-                  out.println("<font size=-1>"
-                            + "Requires administrative previlege for STPanel application server"
-                            + "</font></p>");
-                 
-              }
-              else
-              {
-                 response.sendRedirect("Login");
-              }
-        
-              Web.setFooter(out);
+            if (Web.checkSession(request, user)){
+
+                out.println("<p class=infomessage>Asterisk Advanced configuration<br/>");
+                out.println("<font size=-1>" +
+                             "Requires administrative previlege for goagent to access Asterisk" +
+                             "</font></p>");
+
+            }
+            else
+            {
+                response.sendRedirect("Login");
+            }
+
+            Web.setFooter(request, response);
            
         } catch (Exception ex){
             out.println("<p class=errormessage>" + ex.toString() + "</p>");

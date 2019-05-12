@@ -34,42 +34,40 @@ public class Dialplans extends HttpServlet {
 	    throws ServletException, IOException {
 	response.setContentType("text/html;charset=UTF-8");
 	PrintWriter out = response.getWriter();
-           try{ 
+            try{ 
 	       
-              Web.setHeader(true, request, response, out, "pbx", "dialplans");
+                Web.setHeader(true, request, response, out, "pbx", "dialplans");
             
-              String user = Web.getCookieValue(request, "user");
+                String user = Web.getCookieValue(request, "user");
             
-	      String action = request.getParameter("action");
-	      if (action == null){
-		  action ="";
-	      }
-	      boolean isDisplayAdd = action.equals("displayadd");
-	      out.println("<h3>Dialplans</h3>");
-	      if (isDisplayAdd){
+	        String action = request.getParameter("action");
+	        if (action == null){
+		   action ="";
+	        }
+	        boolean isDisplayAdd = action.equals("displayadd");
+	        out.println("<h3>Dialplans</h3>");
+	        if (isDisplayAdd){
 		    out.println("<table class=dtable><tr><td>");
 		    displayAdd(out);
-	      }
-	      else
-	      {
-		out.println("<a href='Dialplans?action=displayadd'>Add new dialplan wizard</a>");
+  	        }
+                else {
+		   out.println("<a href='Dialplans?action=displayadd'>Add new dialplan wizard</a>");
 		  
-	      }
-	      addNewContext(request, out);
-	      if (isDisplayAdd) {
-	        out.println("</td><td>");
-	      }
-	      Web.displayDialplans(request, user, out);
-	      if (isDisplayAdd){
-	        out.println("</td></tr></table>");
-	      }
-	      Web.setFooter(out);
+	        }
+	        addNewContext(request, out);
+	        if (isDisplayAdd) {
+	            out.println("</td><td>");
+	        }
+	        Web.displayDialplans(request, user, out);
+	        if (isDisplayAdd){
+	            out.println("</td></tr></table>");
+	        }
+	        Web.setFooter(request, response);
 	    }
 	    catch (Exception ex){
 		out.println(ex.toString());      
 	   }
-  
-	
+  	
     }
 
     private void addNewContext(HttpServletRequest request, final PrintWriter out) throws IOException, ServletException {

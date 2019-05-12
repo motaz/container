@@ -89,7 +89,7 @@ public class Login extends HttpServlet {
                 out.println("</table></form>");
                 out.println("<script>document.getElementById('login').focus();</script>");            
             }
-            Web.setFooter(out);
+            Web.setFooter(request, response);
 	    out.close();
         }
     

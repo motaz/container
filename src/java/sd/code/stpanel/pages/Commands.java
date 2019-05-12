@@ -130,7 +130,7 @@ public class Commands extends HttpServlet {
                     if (request.getParameter("ret") != null){
                         response.sendRedirect(request.getHeader("referer"));
                     }
-                    Web.setFooter(out);
+                    Web.setFooter(request, response);
                 }
                 else {
                     response.sendRedirect("Login");
