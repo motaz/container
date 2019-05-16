@@ -80,11 +80,11 @@ public class Home extends HttpServlet {
                     }
                     String color;
                     if (counter % 2 == 0) {
-                        color = "#eeaa99";
+                        color = "#AADDCC";
                     }
                     else
                     {
-                        color = "#ffeeaa";
+                        color = "#eeeeaa";
                     }
                     String link = "<a href='SelectPBX?pbx=" + fileName + "'>" + title + "</a>";
                     String editLink = "<font >" + 
