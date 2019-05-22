@@ -221,49 +221,47 @@ public class Web {
         
     }     
     
-      public static void displayDialplans(HttpServletRequest request, String user, final PrintWriter out
+    public static void displayDialplans(HttpServletRequest request, String user, final PrintWriter out
 	      ) throws IOException, ParseException {
 	
-	    String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
-	    String url = General.getConfigurationParameter("url", "", pbxfile);
-	    JSONObject obj = new JSONObject();
-	    obj.put("filename", "extensions.conf");
-	    String requestText = obj.toJSONString();
-	    
-	    String resultText = General.restCallURL(url + "GetFile", requestText);
-	    JSONParser parser = new JSONParser();
-	    JSONObject resObj = (JSONObject) parser.parse(resultText);
-	    if (Boolean.valueOf(resObj.get("success").toString())) {
-		String content = resObj.get("content").toString();
-		String[] arr = content.split("\n");
-		
-		ContextParser cparser = new ContextParser(arr, "extensions.conf");
-		ArrayList<String> nodes = cparser.getNodes();
-		
-		String reverseStr = Web.getCookieValue(request, "reverse");
-		boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
-		
-		out.println("<table class=dtable>");
-                //<tr><th>Node</th><th></th></tr>");
+        String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+        String url = General.getConfigurationParameter("url", "", pbxfile);
+        JSONObject obj = new JSONObject();
+        obj.put("filename", "extensions.conf");
+        String requestText = obj.toJSONString();
 
-		    
-                int count = 0;
-                out.println("<tr>");
-                for (String node: nodes) {
-                    out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + node + "'>" +
-                            node + "</a></td>");
-                    count++;
-                    if (count % 6 == 0) {
-                      out.println("</tr><tr>");
-                      
-                        
-                    }
+        String resultText = General.restCallURL(url + "GetFile", requestText);
+        JSONParser parser = new JSONParser();
+        JSONObject resObj = (JSONObject) parser.parse(resultText);
+        if (Boolean.valueOf(resObj.get("success").toString())) {
+            String content = resObj.get("content").toString();
+            String[] arr = content.split("\n");
+
+            ContextParser cparser = new ContextParser(arr, "extensions.conf");
+            ArrayList<String> nodes = cparser.getNodes();
+
+            String reverseStr = Web.getCookieValue(request, "reverse");
+            boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
+
+            out.println("<table class=dtable>");
+            //<tr><th>Node</th><th></th></tr>");
+
+
+            int count = 0;
+            out.println("<tr>");
+            for (String node: nodes) {
+                out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + node + "'>" +
+                        node + "</a></td>");
+                count++;
+                if (count % 6 == 0) {
+                    out.println("</tr><tr>");
+
                 }
-                
-                out.println("</tr>");
-                
+            }
 
-		out.println("</table>");
+            out.println("</tr>");
+
+            out.println("</table>");
 		
 	}
     }    
@@ -286,7 +284,7 @@ public class Web {
             }
             else {
                 out.println("<p class=errormessage>Error: " + saveresObj.get("message").toString()
-			+ "</p>");
+			  + "</p>");
             }
     }      
     
@@ -355,6 +353,7 @@ public class Web {
     }
     
     public static void displayReloadLink(String fileName, final PrintWriter out) {
+        
         if (fileName.equals("extensions.conf") || fileName.equals("sip.conf")) {
             String command = "dialplanreload";
             String caption = "Reload Dialplan";
