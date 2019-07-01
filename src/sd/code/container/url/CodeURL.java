@@ -55,6 +55,10 @@ public class CodeURL {
             conn.setConnectTimeout(waitSeconds * 1000);            
             conn.setReadTimeout(waitSeconds * 1000);        
             conn.setRequestProperty("Content-Type", contentType);
+            if (contentType.toLowerCase().contains("json")) {
+                conn.setRequestProperty("method", "POST");
+            }
+
             conn.setDoOutput(true);
             response.responseText = actualCall(conn, contents, "UTF-8");
 
