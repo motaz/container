@@ -80,7 +80,7 @@ public class Home extends HttpServlet {
                     }
                     String color;
                     if (counter % 2 == 0) {
-                        color = "#AADDCC";
+                        color = "#AAaa77";
                     }
                     else
                     {

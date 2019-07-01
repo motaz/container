@@ -168,7 +168,7 @@ public class Web {
     
     private static void selectTabPage(PrintWriter out, String page, String compare) {
         
-        String selected = " bgcolor='#99ccBB'";
+        String selected = " bgcolor='#FFFFcc'";
         out.print("<td ");
         if (page.equals(compare)){
             out.println(selected);

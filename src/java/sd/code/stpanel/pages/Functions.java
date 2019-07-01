@@ -58,23 +58,24 @@ public class Functions extends HttpServlet {
 		    Date now = new Date();
 		    out.println(now.toString());
 		    
+                    String selectedColor = "bgcolor=#FFFFcc";
                     out.println("<table><tr>");
                     out.println("<td ");
 		    if (function.equals("active")) {
-  		      out.println("bgcolor=#AAAADD");
+  		       out.println(selectedColor);
 		    }
 		    out.println("><a href='Functions?function=active'>Queue-Active</a></td>");
 		    
                     out.println("<td ");
   		    if (function.equals("paused")) {
-  		        out.println("bgcolor=#AAAADD");
+  		        out.println(selectedColor);
 	 	    }
 		    out.println("><a href='Functions?function=paused'>Queue-Paused</a></td>");
 		    
   
                     out.println("<td ");
   		    if (function.equals("talk")) {
-  		        out.println("bgcolor=#AAAADD");
+  		        out.println(selectedColor);
 	 	    }
 		    out.println("><a href='Functions?function=talk'>Talking/Waiting</a></td>");
 		   		    

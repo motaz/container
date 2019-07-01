@@ -53,44 +53,45 @@ public class Status extends HttpServlet {
                 String codecColor = "";
                 String statusColor = "";
                 String queueColor = "";
-                String agentColor = "";
+              
+                String selectedColor = "bgcolor=#FFFFcc";
 
                 if (command != null) {
 
                     if (command.equals("channels")){
                             commandLine = "core show channels";
-                            chColor = "bgcolor=#AAAADD";
+                            chColor = selectedColor;
                     }
                     else if (command.equals("peers")){
                             commandLine = "sip show peers";
-                            peerColor = "bgcolor=#AAAADD";
+                            peerColor = selectedColor;
                     }
                     else if (command.equals("users")){
                             commandLine = "sip show users";
-                            usersColor = "bgcolor=#AAAADD";
+                            usersColor = selectedColor;
                     }
                     else if (command.equals("codecs")){
                             commandLine = "core show codecs";
-                            codecColor = "bgcolor=#AAAADD";
+                            codecColor = selectedColor;
                     }
                     else if (command.equals("stats")){
                             commandLine = "sip show channelstats";
-                            statusColor = "bgcolor=#AAAADD";
+                            statusColor = selectedColor;
                     }
                     else if (command.equals("queues")){
                             commandLine = "queue show";
-                            queueColor = "bgcolor=#AAAADD";
+                            queueColor = selectedColor;
 
                     }
-                    else if (command.equals("agents")){
+                   /* else if (command.equals("agents")){
                             commandLine = "agent show";
-                            agentColor = "bgcolor=#AAAADD";
+                            agentColor = selectedColor;
 
-                    }
+                    }*/
                 }
 
 
-                out.println("<table><tr>");
+                out.println("<table><tr bgcolor=#eeeecc>");
                 out.println("<td " + chColor + "><a href='Status?command=channels'>Channels</a></td>");
                 out.println("<td " + peerColor + "><a href='Status?command=peers'>Peers</a></td>");
                 out.println("<td " + usersColor + "><a href='Status?command=users'>Users</a></td>");

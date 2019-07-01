@@ -34,7 +34,7 @@
     <div class=header>
     <div class=container>
             <table ><tr bgcolor=#cccc88 >
-                    <td class=titletd style="color:red;background-color: #cccc88; vertical-align:bottom;font-size:30px;">
+                    <td class=titletd style="color:black;background-color: #cccc88; vertical-align:bottom;font-size:30px;">
                         &emsp;Simple Trunk&emsp; </td>
             <td class=titletd><td bgcolor=#cccc88 style='color:black;vertical-align:bottom;'>
                 <%=logouttext%></td>

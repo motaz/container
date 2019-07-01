@@ -50,23 +50,25 @@ public class Monitor extends HttpServlet {
                 if (function == null){
                     function = "system";
                 }
+                   
+                String selectedColor = "bgcolor=#FFFFcc";
 
                 out.println("<table><tr>");
                 out.println("<td ");
                 if (function.equals("system")) {
-                    out.println("bgcolor=#AAAADD");
+                    out.println(selectedColor);
                 }
                 out.println("><a href='Monitor?function=system'>System</a></td>");
 
                 out.println("<td ");
                 if (function.equals("calls")) {
-                    out.println("bgcolor=#AAAADD");
+                    out.println(selectedColor);
                 }
                 out.println("><a href='Monitor?function=calls'>Active Channels</a></td>");
 
                 out.println("<td ");
                 if (function.equals("cdr")) {
-                    out.println("bgcolor=#AAAADD");
+                    out.println(selectedColor);
                 }
                 out.println("><a href='Monitor?function=cdr'>Last CDRs</a></td>");
 
