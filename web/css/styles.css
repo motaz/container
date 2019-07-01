@@ -194,6 +194,7 @@ Layout styles
 	color: #fff;
 	background: #bbbb88;
 	padding: 0.2em 1em;
+        	background:url(../img/header.jpg) left top;
 }
 
 .header-heading { margin: 0; }

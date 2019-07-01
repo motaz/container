@@ -30,7 +30,7 @@ public class Web {
             page = "";
         }
 
-        String version  = "1.0.21";
+        String version  = "1.0.22";
         
         if (user == null){
             user = "";
@@ -111,7 +111,7 @@ public class Web {
 
     private static void advancedTab(String page, PrintWriter out) {
         
-        out.println("<table><tr bgcolor='#AADDCC'>");
+        out.println("<table><tr bgcolor='#eeeecc'>");
         
         selectTabPage(out, page, "status");
         out.println("<a href='Status'>Status</a></td>");
@@ -146,7 +146,7 @@ public class Web {
 
     private static void pbxTab(String page, PrintWriter out) {
         
-        out.println("<table><tr bgcolor='#AADDCC'>");
+        out.println("<table><tr bgcolor='#eeeecc'>");
         
         selectTabPage(out, page, "ext");
         out.println("<a href='Extensions'>Extensions</a></td>");

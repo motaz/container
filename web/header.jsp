@@ -33,13 +33,13 @@
     <body>
     <div class=header>
     <div class=container>
-            <table ><tr bgcolor=#ffffff >
-                    <td class=titletd style="color:red;background-color: #FFFFaa; vertical-align:bottom;font-size:30px;">
+            <table ><tr bgcolor=#cccc88 >
+                    <td class=titletd style="color:red;background-color: #cccc88; vertical-align:bottom;font-size:30px;">
                         &emsp;Simple Trunk&emsp; </td>
-            <td class=titletd><td bgcolor=#EEEEaa style='color:black;vertical-align:bottom;'>
+            <td class=titletd><td bgcolor=#cccc88 style='color:black;vertical-align:bottom;'>
                 <%=logouttext%></td>
-            <td bgcolor=#EEEEaa style='vertical-align:bottom;'><%=selectedpbx%></td>
-            <td bgcolor=#EEEEaa style='vertical-align:bottom;font-size:12px; color:black;'>
+            <td bgcolor=#cccc88 style='vertical-align:bottom;'><%=selectedpbx%></td>
+            <td bgcolor=#cccc88 style='vertical-align:bottom;font-size:12px; color:black;'>
                 Version <%=version%> 
             </td>
                 </tr>
