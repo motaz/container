@@ -85,7 +85,8 @@ public class UploadSound extends HttpServlet {
 				 out.print("<td><a href='PlaySound?filename=" + dir + fileName +"'>Play</a></td>");
 			     }
 			     else {
-				 out.print("<td><button onclick = setSubdirectory('" + fileName + "')>Enter</button></td>");
+				 out.print("<td><button onclick = setSubdirectory('" + fileName + 
+                                         "' class='btn'  )>Enter</button></td>");
 			     }
 			     out.println("</tr>");
 			     
@@ -104,7 +105,7 @@ public class UploadSound extends HttpServlet {
 		    out.println("<br/>Upload file");
 		    out.println("<input type=hidden name=dir value='" + dir + "' />");
 		    out.println("<input type=file name=file />");
-		    out.println("<input type=submit name=uploadfile value='Upload' />");
+		    out.println("<input type=submit name=uploadfile value='Upload' class='button'  />");
 		    out.println("</form>");
 		    
 		    Web.setFooter(request, response);

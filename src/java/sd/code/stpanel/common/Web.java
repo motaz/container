@@ -29,8 +29,6 @@ public class Web {
         if (page == null){
             page = "";
         }
-
-        String version  = "1.0.22";
         
         if (user == null){
             user = "";
@@ -48,7 +46,8 @@ public class Web {
             
         }
 
-        request.setAttribute("version", version);
+        
+        request.setAttribute("version", General.VERSION);
         request.setAttribute("selectedpbx", selectedPBX);
         request.setAttribute("logouttext", logoutText);
         
@@ -106,7 +105,7 @@ public class Web {
         else if (parent.equals("pbx")) {
             pbxTab(page, out);
         }      
-        
+        out.println("<br/>");
     }
 
     private static void advancedTab(String page, PrintWriter out) {

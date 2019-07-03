@@ -56,10 +56,10 @@ public class Functions extends HttpServlet {
 			        "var timeout = setTimeout('location.reload(true);', 50000);\n" +
 			        "</script>");
 		    Date now = new Date();
-		    out.println(now.toString());
+		    out.println("<font size=2>" + now.toString() + "</font>");
 		    
                     String selectedColor = "bgcolor=#FFFFcc";
-                    out.println("<table><tr>");
+                    out.println("<table><tr bgcolor=#eeeecc>");
                     out.println("<td ");
 		    if (function.equals("active")) {
   		       out.println(selectedColor);
@@ -132,7 +132,7 @@ public class Functions extends HttpServlet {
 	    String text = resObj.get("result").toString();
 	    out.println("<font color=green><b><label id=count></label></b></font> Members");
 	    out.println("<table class=tform>");
-	    out.println("<tr><th>Queue</th><th>Agent</th><th>Status</th><th>Info</th>");
+	    out.println("<tr  bgcolor=#eeeecc><th>Queue</th><th>Agent</th><th>Status</th><th>Info</th>");
 	    if (!isBusy) { 
 		out.println("<th>Action</th>");
 	    }

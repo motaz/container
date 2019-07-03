@@ -53,7 +53,7 @@ public class Monitor extends HttpServlet {
                    
                 String selectedColor = "bgcolor=#FFFFcc";
 
-                out.println("<table><tr>");
+                out.println("<table><tr bgcolor=#eeeecc>");
                 out.println("<td ");
                 if (function.equals("system")) {
                     out.println(selectedColor);
@@ -74,33 +74,32 @@ public class Monitor extends HttpServlet {
 
                 out.println("</tr></table>");
 
-
+                out.println("<a href='Monitor?function=" + function + "' class=btn >Refresh</a>");
 
                 Date now = new Date();
-                out.println(now.toString());
-                out.println("<a href='Monitor?function=" + function + "' class=button >Refresh</a>");
+                out.println("<font size=2>" + now.toString() + "</font>");
                 out.println("<br/><br/>");
 
                 if (function.equals("system")){
-                  displaySystemStatus(url, out);
+                    displaySystemStatus(url, out);
                 }
                 else if (function.equals("calls")) {
 
-                  displayActiveChannels(pbxfile, url, out);
+                   displayActiveChannels(pbxfile, url, out);
                 }
                 else if (function.equals("cdr")){
-                  displayCDR(pbxfile, url, out);
+                   displayCDR(url, out);
                 }
 
                 out.println("<script type=\"text/javascript\">\n" +
-                          "  var timeout = setTimeout(\"location.reload(true);\", 50000);\n" +
-                          "</script>");
+                        "  var timeout = setTimeout(\"location.reload(true);\", 50000);\n" +
+                        "</script>");
 
                 Web.setFooter(request, response);
 
             }
             else {
-              response.sendRedirect("Login");
+                response.sendRedirect("Login");
             }
         }
         catch (Exception ex){
@@ -124,7 +123,7 @@ public class Monitor extends HttpServlet {
 	String lines[] = text.split("\n");
 	    
 	out.println("<b><lable id='channels'></lablel></b> Active channels");
-	out.println("<table class=tform><tr><th>ID</th><th>Caller ID</th><th>Extension</th>");
+	out.println("<table class=tform><tr ><th>ID</th><th>Caller ID</th><th>Extension</th>");
 	out.println("<th>Duration</th><th>Application</th></tr>");
 	int count=0;
 	for (String line: lines) {
@@ -155,7 +154,7 @@ public class Monitor extends HttpServlet {
 	
     }
     
-    private void displayCDR(String pbxfile, String url, PrintWriter out) throws IOException, ParseException {
+    private void displayCDR(String url, PrintWriter out) throws IOException, ParseException {
 	
 	try {
 	     String resultText = General.restCallURL(url + "GetLastCDR", "");
@@ -203,10 +202,7 @@ public class Monitor extends HttpServlet {
 	}
     }
     
-
-    
-
-    
+ 
     private void displaySystemStatus(String url, PrintWriter out) {
 	
 	// CPU Utilization

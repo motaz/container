@@ -44,7 +44,7 @@ public class Home extends HttpServlet {
                     
                     out.println("<h3>Select PBX</h3>");
                     
-                    out.println("<a href='AddPBX'>Insert new PBX</a>");
+                    out.println("<a href='AddPBX' class='linkbutton'>Insert new PBX</a>");
                     
                     displayFiles(out);
                     

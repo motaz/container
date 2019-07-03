@@ -68,11 +68,12 @@ public class Extensions extends HttpServlet {
 		  // Display add SIP link
 		  if (! isDisplayAdd){
 		      if (type.equals("ext")) {
-                         out.println("<a href='Extensions?file=" + fileName + "&add=1'>Add new SIP Extension</a>");
+                         out.println("<a href='Extensions?file=" + fileName + "&add=1' class=linkbutton>Add new SIP Extension</a>");
 		      }
 		      else
 		      {
-                        out.println("<a href='Extensions?file=" + fileName + "&add=2&type=trunk'>Add new SIP Trunk</a>");
+                        out.println("<a href='Extensions?file=" + fileName + 
+                                "&add=2&type=trunk' class='linkbutton'>Add new SIP Trunk</a>");
 			  
 		      }
 		    
@@ -237,7 +238,8 @@ public class Extensions extends HttpServlet {
 	out.println("nat=force_rport,comedia");
 	out.println("</textarea></td></tr>");
 
-	out.println("<tr><td><input type=submit name=addnode value='Add " + title + "' /></td></tr>");
+	out.println("<tr><td><input type=submit name=addnode value='Add " + 
+                title + "'  class='button' /></td></tr>");
 	out.println("</table>");
 	out.println("</form>");
 	

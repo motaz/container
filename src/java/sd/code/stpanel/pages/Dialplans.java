@@ -51,7 +51,7 @@ public class Dialplans extends HttpServlet {
 		    displayAdd(out);
   	        }
                 else {
-		   out.println("<a href='Dialplans?action=displayadd'>Add new dialplan wizard</a>");
+		   out.println("<a href='Dialplans?action=displayadd' class='linkbutton'>Add new dialplan wizard</a>");
 		  
 	        }
 	        addNewContext(request, out);
@@ -162,7 +162,7 @@ public class Dialplans extends HttpServlet {
 	out.println("<input type=checkbox name=dial value=1 />Dial ");
 	out.println("<input type=text name=dialto value = 'SIP/${EXTEN},,120'/><br/>");
 	
-	out.println("<br/><input type=submit name=addcontext value='Add Context'  />");
+	out.println("<br/><input type=submit name=addcontext value='Add Context'  class='button'  />");
 	out.println("</form>");
     }
 

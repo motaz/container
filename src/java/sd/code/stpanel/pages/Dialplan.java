@@ -36,17 +36,18 @@ public class Dialplan extends HttpServlet {
             try {
               String user = Web.getCookieValue(request, "user");
               
-              if (Web.checkSession(request, user)) {
-                  Web.setHeader(true, request, response, out, "advanced", "dialplan");
-		  out.println("<h3>Dialplans</h3>");
-		  out.println("<a href='EditNode?filename=extensions.conf'>Add new dial-plan</a>");
-		  Web.displayDialplans(request, user, out);
+                if (Web.checkSession(request, user)) {
+                    Web.setHeader(true, request, response, out, "advanced", "dialplan");
+		    out.println("<h3>Dialplans</h3>");
+		    out.println("<a href='EditNode?filename=extensions.conf'>Add new dial-plan</a>");
+		    Web.displayDialplans(request, user, out);
 	  
                 }
-                }
-                catch (Exception ex){
-                    out.println(ex.toString());
-                }
+                Web.setFooter(request, response);
+            }
+            catch (Exception ex){
+                out.println(ex.toString());
+            }
             
 	    out.close();
             

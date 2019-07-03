@@ -83,7 +83,10 @@ public class AMI extends HttpServlet {
                       
                     }
 
+
                 }
+                Web.setFooter(request, response);
+
             }
             else {
               response.sendRedirect("Login");

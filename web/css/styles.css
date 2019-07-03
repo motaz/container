@@ -174,7 +174,7 @@ td
 
 
 a:link { color: royalblue; }
-a:visited { color: purple; }
+a:visited { color: navy; }
 a:focus { color: black; }
 a:hover { color: green; }
 a:active { color: red; }
@@ -444,6 +444,30 @@ td {
     background:#FFDCDC;
 }
 
+.linkbutton {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    margin-left: 5px;
+    background-color: #eeeeff;
+    color: #FFFfff;
+    border:1px solid #666;
+    font-weight:bold;
+    cursor:pointer;
+     padding: 0.1em 1em;
+
+}
+
+.button {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 22px;
+    margin-left: 5px;
+    text-shadow: #000 -1px -1px 1px;
+    background-color: #66cc66;
+    color: #FFFaaa;
+    border:1px solid #666;
+    font-weight:bold;
+    cursor:pointer;
+}
 /* -----------------------
 Wide styles
 ------------------------*/
@@ -452,7 +476,7 @@ Wide styles
 {
 	.header { padding: 0.5em 3em; }
 	.nav-bar { padding: 0.1em 3em; }
-	.content { padding: 2em 3em; }
+	.content { padding: 0.5em 2em; }
 	.footer { padding: 0.5em 8em}
 	
 	.nav li

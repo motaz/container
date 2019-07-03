@@ -76,7 +76,7 @@ public class EditFile extends HttpServlet {
             //String[] arr = content.split("\n");
             
             out.println("<input type=hidden name=filename value='" + fileName + "' />");
-            out.println("<input type=submit value='Save modifications' name=save />");
+            out.println("<input type=submit value='Save modifications' name=save class='button' />");
             out.println("<textarea cols=140 rows = 60 font name=content >");
             out.print(content);
             out.println("</textarea><br/>");

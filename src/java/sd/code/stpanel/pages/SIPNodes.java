@@ -35,26 +35,27 @@ public class SIPNodes extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException
            {
         response.setContentType("text/html;charset=UTF-8");
-         PrintWriter out = response.getWriter();
-         try {
-          String user = Web.getCookieValue(request, "user");
-          String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
-          if (Web.checkSession(request, user)) {
+        PrintWriter out = response.getWriter();
+        try {
+            String user = Web.getCookieValue(request, "user");
+            String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+            if (Web.checkSession(request, user)) {
               
-              Web.setHeader(true, request, response, out, "advanced", "sip");
-              out.println("<h2>SIP Nodes</h2>");
-              
-              out.println("<a href='EditNode?filename=sip.conf'>Add new SIP node</a>");
-              
-              String url = General.getConfigurationParameter("url", "", pbxfile);
-              JSONObject obj = new JSONObject();
-              obj.put("filename", "sip.conf");
-              String requestText = obj.toJSONString();
+                Web.setHeader(true, request, response, out, "advanced", "sip");
+                out.println("<h2>SIP Nodes</h2>");
 
-              String resultText = General.restCallURL(url + "GetFile", requestText);
-              JSONParser parser = new JSONParser();
-              JSONObject resObj = (JSONObject) parser.parse(resultText);
-              if (Boolean.valueOf(resObj.get("success").toString())) {
+                out.println("<a href='EditNode?filename=sip.conf' class='linkbutton'>");
+                out.println("Add new SIP node</a>");
+
+                String url = General.getConfigurationParameter("url", "", pbxfile);
+                JSONObject obj = new JSONObject();
+                obj.put("filename", "sip.conf");
+                String requestText = obj.toJSONString();
+
+                String resultText = General.restCallURL(url + "GetFile", requestText);
+                JSONParser parser = new JSONParser();
+                JSONObject resObj = (JSONObject) parser.parse(resultText);
+                if (Boolean.valueOf(resObj.get("success").toString())) {
                     String content = resObj.get("content").toString();
                     String[] arr = content.split("\n");
 
@@ -63,7 +64,7 @@ public class SIPNodes extends HttpServlet {
 
                     String reverseStr = Web.getCookieValue(request, "reverse");
                     boolean reverse = (reverseStr != null) && (reverseStr.equals("yes"));
-                    
+
                     out.println("<table class=dtable><tr><th>Node</th><th></th></tr>");
                     if (reverse) {
                         for (int i= nodes.size() -1; i >= 0; i--) {
@@ -71,28 +72,27 @@ public class SIPNodes extends HttpServlet {
                             out.println("<tr>");
                             out.println("<td><a href='EditNode?filename=sip.conf&nodename=" + node + "'>" + node + "</a></td>");
                             out.println("</tr>");
-                            
+
                         }
                     }
                     else {
-                      for (String node: nodes) {
-                          out.println("<tr>");
-                          out.println("<td><a href='EditNode?filename=sip.conf&nodename=" + node + "'>" + node + "</a></td>");
-                          out.println("</tr>");
-                      }
+                        for (String node: nodes) {
+                            out.println("<tr>");
+                            out.println("<td><a href='EditNode?filename=sip.conf&nodename=" + node + "'>" + node + "</a></td>");
+                            out.println("</tr>");
+                        }
                     }
                     out.println("</table>");
                     Web.setFooter(request, response);
                 }
-              
+
             }
-            }
-            catch (Exception ex){
-                out.println(ex.toString());
-            }
-            out.close();
-            
-        
+        }
+        catch (Exception ex){
+            out.println(ex.toString());
+        }
+        out.close();
+ 
         
     }
 

@@ -53,6 +53,8 @@ public class Commands extends HttpServlet {
                     String versionColor = "";
                     String helpColor = "";
                     
+                    String selectedColor = "bgcolor=#FFFFcc";
+                  
                     String commandText = request.getParameter("commandtext");
                     if (commandText == null){
                         commandText = "";
@@ -62,25 +64,25 @@ public class Commands extends HttpServlet {
                   
                         if (command .equals("corereload")){
                                 commandLine = "core reload";
-                                chColor = "bgcolor=#AAAADD";
+                                chColor = selectedColor;
 			
 			}
 			else if (command.equals("sipreload")){
                                 commandLine = "sip reload";
-                                peerColor = "bgcolor=#AAAADD";
+                                peerColor = selectedColor;
 			}
 			else if (command.equals("dialplanreload")){
                                 commandLine = "dialplan reload";
-                                usersColor = "bgcolor=#AAAADD";
+                                usersColor = selectedColor;
 			}
 			else if (command.equals("version")){
                                 commandLine = "core show version";
-                                versionColor = "bgcolor=#AAAADD";
+                                versionColor = selectedColor;
                                 
 			}
 			else if (command.equals("help")){
                                 commandLine = "core show help";
-                                helpColor = "bgcolor=#AAAADD";
+                                helpColor = selectedColor;
                                 
 			}
 			else if (command.equals("text")){
@@ -89,7 +91,7 @@ public class Commands extends HttpServlet {
                         }
                     }
                     
-                    out.println("<table><tr>");
+                    out.println("<table><tr bgcolor=#eeeecc>");
                     out.println("<td " + chColor + "><a href='Commands?command=corereload'>core reload</a></td>");
                     out.println("<td " + peerColor + "><a href='Commands?command=sipreload'>sip reload</a></td>");
                     out.println("<td " + usersColor + "><a href='Commands?command=dialplanreload'>dialplan reload</a></td>");

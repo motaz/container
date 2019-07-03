@@ -62,7 +62,7 @@ public class EditNode extends HttpServlet {
 		   out.println("Node name<input type=text name=nodename /><br/>");
 		   out.println("Text <br/><textarea cols=100 rows=10 name=content >");
 		   out.println("</textarea></br>");
-		   out.println("<input type=submit name=add value='Add Node' />");
+		   out.println("<input type=submit name=add value='Add Node' class='button' />");
 		   out.println("</form>");
 		}
 		else {
@@ -141,10 +141,10 @@ public class EditNode extends HttpServlet {
 
     private void displayEditSaveButton(boolean edit, final PrintWriter out) {
 	if (edit) {
-	    out.println("<br/><input type=submit value=Save name=save id=button />");
+	    out.println("<br/><input type=submit value=Save name=save id=button class='button' />");
 	    
 	}else {
-	    out.println("<input type=submit value=Edit name=edit />");
+	    out.println("<input type=submit value=Edit name=edit  class='button'  />");
 	}
 	out.println("<br/>");
     }

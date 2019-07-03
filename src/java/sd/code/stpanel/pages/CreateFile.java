@@ -34,7 +34,7 @@ public class CreateFile  extends HttpServlet {
             
             try {
                 if (Web.checkSession(request, user)){
-                    Web.setHeader(true, request, response, out, "advanced", "tools");
+                    Web.setHeader(true, request, response, out, "advanced", "files");
                     
                     String url = General.getConfigurationParameter("url", "", pbxfile);
                     
@@ -58,13 +58,13 @@ public class CreateFile  extends HttpServlet {
     
     private void displayCreateFileform(final PrintWriter out) {
         
-        out.println("<br><p> Adding new File </p>");
+        out.println("<br><h3>Add new File</h3>");
         out.println("<form method=POST>");        
         out.println("File Name: <input type=text name=filename /><br/>");
-        out.println("File Content :  <br>");
-        out.println("<textarea cols=100 rows = 60 font name=filecontent >");
+        out.println("File Contents :  <br>");
+        out.println("<textarea cols=70 rows = 30 font name=filecontent >");
         out.println("</textarea><br/>");    
-        out.println("<input type=submit name=save value='Save file'  /> <br>");
+        out.println("<input type=submit name=save value='Save file' class='button' /> <br>");
         out.println("</form>");
         
     }
