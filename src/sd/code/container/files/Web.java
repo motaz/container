@@ -8,7 +8,6 @@ package sd.code.container.files;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URLConnection;
 import sd.code.container.url.CodeURL;
 
 /**
