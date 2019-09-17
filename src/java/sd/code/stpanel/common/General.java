@@ -37,7 +37,7 @@ import sd.code.stpanel.types.Operation;
  */
 final public class General {
     
-    public static final String VERSION = "1.0.23";
+    public static final String VERSION = "1.0.25";
     
     public static void writeEvent(String eventText){
         
@@ -422,14 +422,21 @@ final public class General {
 
 	String resultText = General.restCallURL(url + "ListFiles", requestText);
 	JSONParser parser = new JSONParser();
-	JSONObject resObj = (JSONObject) parser.parse(resultText);
-	if (Boolean.valueOf(resObj.get("success").toString())) {
-	    String files = resObj.get("files").toString();
-	    return files;
-	}
-	else {
-	    return "Error: " + resObj.get("message").toString();
-	}
+        if (resultText != null && resultText.contains("{")){
+            JSONObject resObj = (JSONObject) parser.parse(resultText);
+            if (Boolean.valueOf(resObj.get("success").toString())) {
+                String files = "";
+                if (resObj.get("files") != null) {
+                    files = resObj.get("files").toString();
+                }
+                return files;
+            }
+            else {
+                return "Error: " + resObj.get("message").toString();
+            }
+        } else {
+            return "";
+        }
     }
 
     public static String addSlash(String folderName) {
@@ -439,6 +446,12 @@ final public class General {
 	return folderName;
     }
     
+    public static String removeSlash(String folderName) {
+	if (folderName.charAt(folderName.length()-1) == '/') {
+	    folderName = folderName.substring(0, folderName.length() -1);
+	}
+	return folderName;
+    }
     
     public static Operation saveRemoteFile(String url, String filename, String content) throws IOException, ParseException {
 	

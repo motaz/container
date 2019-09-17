@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -59,7 +60,6 @@ public class UploadSoundFile extends HttpServlet {
 	    String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
 	    String agenturl = General.getConfigurationParameter("url", "", pbxfile);	
 	    String uploadurl = agenturl + "ReceiveFile";
-	    //uploadurl = "http://localhost:9090";
 	    System.out.println(uploadurl);
 
 	    String dir = request.getParameter("dir");
@@ -141,10 +141,11 @@ public class UploadSoundFile extends HttpServlet {
 		   result = result + line + "\n";
 		
 	    }
-	    if (result.contains("written")) {
-		response.sendRedirect("UploadSound");
-	    }
-		
+
+            String rdir = URLEncoder.encode( dir, "UTF-8");
+            String amessage = URLEncoder.encode( result, "UTF-8");
+            response.sendRedirect("UploadSound?rdir=" + rdir + "&message=" + amessage);
+	    		
 	}
 
     }

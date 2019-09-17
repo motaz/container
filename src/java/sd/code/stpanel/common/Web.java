@@ -73,7 +73,7 @@ public class Web {
             out.println(">Advanced</font></a></li>");
               
               
-            out.print("<li><a href=Pbx?sub=" + parent + "><font ");
+            out.print("<li><a href='Pbx?sub=" + parent + "'><font ");
             if (parent.equals("pbx")){
                 out.print(font);
             }

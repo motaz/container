@@ -66,7 +66,7 @@ public class Config extends HttpServlet {
                     
                     out.println("<table><tr  bgcolor=#eeeecc>");
                     out.println("<td " + tab1Color + "><a href='Backup'>Configuration Backup</a></td>");
-                    out.println("<td " + tab2Color + "><a href='UploadSound?command=peers'>Sound files</a></td>");
+                    out.println("<td " + tab2Color + "><a href='UploadSound'>Sound files</a></td>");
                     out.println("<td " + tab3Color + "><a href='AMIConfig'>Config AMI</a></td>");
                     out.println("<td " + tab4Color + "><a href='CDRConfig'>Config CDR</a></td>");
                     out.println("</tr></table>");
