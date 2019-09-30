@@ -5,6 +5,8 @@
  */
 package sd.code.container.date;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -74,5 +76,16 @@ public class DateExtra {
       
     }  
     
+    public static Date getDateWithoutTime(Date aday){
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(aday);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
 
 }
