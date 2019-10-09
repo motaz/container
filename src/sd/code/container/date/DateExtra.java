@@ -76,6 +76,16 @@ public class DateExtra {
       
     }  
     
+    public static Date increaseMonths(Date aday, int increaseBy){
+	
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(aday);
+      cal.add(Calendar.MONTH, increaseBy);
+      
+      return cal.getTime();
+      
+    }  
+    
     public static Date getDateWithoutTime(Date aday){
         
         Calendar calendar = Calendar.getInstance();
