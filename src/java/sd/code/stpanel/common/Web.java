@@ -249,7 +249,10 @@ public class Web {
             int count = 0;
             out.println("<tr>");
             for (String node: nodes) {
-                out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + node + "'>" +
+                String nodeLink = node.replace("[", "");
+                nodeLink = nodeLink.replace("]", "");
+                out.println("<td><a href='EditNode?filename=extensions.conf&nodename=" + 
+                        nodeLink + "'>" +
                         node + "</a></td>");
                 count++;
                 if (count % 6 == 0) {
@@ -288,25 +291,26 @@ public class Web {
     }      
     
     public static String callAMICommand(String pbxfile, String command){
+        
 	try {
-              String url = General.getConfigurationParameter("url", "", pbxfile);
-              JSONObject obj = new JSONObject();
-              String username = General.getConfigurationParameter("amiuser", "admin", pbxfile);
-              String secret = General.getConfigurationParameter("amipass", "", pbxfile);
-              obj.put("username", username);
-              obj.put("secret", secret);
-              obj.put("command", "action:command\ncommand:" + command);	
+                String url = General.getConfigurationParameter("url", "", pbxfile);
+                JSONObject obj = new JSONObject();
+                String username = General.getConfigurationParameter("amiuser", "admin", pbxfile);
+                String secret = General.getConfigurationParameter("amipass", "", pbxfile);
+                obj.put("username", username);
+                obj.put("secret", secret);
+                obj.put("command", "action:command\ncommand:" + command);	
 
-              String requestText = obj.toJSONString();
+                String requestText = obj.toJSONString();
 
-              String resultText = General.restCallURL(url + "CallAMI", requestText);
-              JSONParser parser = new JSONParser();
-              JSONObject resObj = (JSONObject) parser.parse(resultText);
+                String resultText = General.restCallURL(url + "CallAMI", requestText);
+                JSONParser parser = new JSONParser();
+                JSONObject resObj = (JSONObject) parser.parse(resultText);
 
-              String content = resObj.get("message").toString();
-              return content;
+                String content = resObj.get("message").toString();
+                return content;
 	    }
-	     catch (Exception ex){
+	    catch (Exception ex){
 	           return null;
 	    }
 	

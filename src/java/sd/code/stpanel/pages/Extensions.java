@@ -40,60 +40,59 @@ public class Extensions extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-           try{ 
-              String title = "Trunk";
-              boolean isExten = false;
-              String type = request.getParameter("type");
-              if ((type == null) || (type.equals("ext"))){
-                  type = "ext";
-                  title = "Extension";
-                  isExten = true;
-              }
-              String fileName = request.getParameter("file");
-              if (fileName == null){
-                  fileName = "sip.conf";
-              }
-              Web.setHeader(true, request, response, out, "pbx", type);
-            
-              String user = Web.getCookieValue(request, "user");
-              
-
-              String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
-              if (Web.checkSession(request, user)) {
-
-		  // Insert SIP node
-
-		  doAddNode(request, out);
-		  boolean isDisplayAdd = (request.getParameter("add") != null);
-		  // Display add SIP link
-		  if (! isDisplayAdd){
-		      if (type.equals("ext")) {
-                         out.println("<a href='Extensions?file=" + fileName + "&add=1' class=linkbutton>Add new SIP Extension</a>");
-		      }
-		      else
-		      {
-                        out.println("<a href='Extensions?file=" + fileName + 
-                                "&add=2&type=trunk' class='linkbutton'>Add new SIP Trunk</a>");
-			  
-		      }
-		    
-		  }  // Display add SIP form
-		  else {
-		        out.println("<table class=dtable><tr><td>");
-		      	displayAddSIPNode(out, title, type, fileName);
-			out.println("</td><td>");
-		  }
-		  
-                  
-
-                  displayExtensions(pbxfile, fileName, request, out, title, isExten, type);
-		  if (isDisplayAdd){
-		      out.println("</td></tr></table>");
-		  }
-
+        try{ 
+                String title = "Trunk";
+                boolean isExten = false;
+                String type = request.getParameter("type");
+                if ((type == null) || (type.equals("ext"))){
+                    type = "ext";
+                    title = "Extension";
+                    isExten = true;
                 }
-        
-              Web.setFooter(request, response);
+                String fileName = request.getParameter("file");
+                if (fileName == null){
+                    fileName = "sip.conf";
+                }
+                Web.setHeader(true, request, response, out, "pbx", type);
+
+                String user = Web.getCookieValue(request, "user");
+
+
+                String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
+                if (Web.checkSession(request, user)) {
+
+                    // Insert SIP node
+
+                    doAddNode(request, out);
+                    boolean isDisplayAdd = (request.getParameter("add") != null);
+                    // Display add SIP link
+                    if (! isDisplayAdd){
+                        if (type.equals("ext")) {
+                            out.println("<a href='Extensions?file=" + fileName + "&add=1' class=linkbutton>Add new SIP Extension</a>");
+                        }
+                        else
+                        {
+                            out.println("<a href='Extensions?file=" + fileName + 
+                                "&add=2&type=trunk' class='linkbutton'>Add new SIP Trunk</a>");
+
+                        }
+
+                    }  // Display add SIP form
+                    else {
+                        out.println("<table class=dtable><tr><td>");
+                        displayAddSIPNode(out, title, type, fileName);
+                        out.println("</td><td>");
+                    }
+
+
+                    displayExtensions(pbxfile, fileName, request, out, title, isExten, type);
+                    if (isDisplayAdd){
+                        out.println("</td></tr></table>");
+                    }
+
+            }
+
+            Web.setFooter(request, response);
            
         } catch (Exception ex){
             out.println("<p class=errormessage>" + ex.toString() + "</p>");
@@ -249,8 +248,8 @@ public class Extensions extends HttpServlet {
 	
         if ((displayExtension &&node.isExtension()) || (! displayExtension && node.isTrunk())) {
             out.println("<tr>");
-            out.println("<td><a href='EditNode?filename=" + fileName + "&nodename=[" + 
-                    node.getNodeName() + "]'>" +
+            out.println("<td><a href='EditNode?filename=" + fileName + "&nodename=" + 
+                    node.getNodeName() + "'>" +
                     node.getNodeName() + "</a></td>");
             out.println("<td>" + node.getProperty("username") + "</td>");
             out.println("<td>" + node.getProperty("host") + "</td>");

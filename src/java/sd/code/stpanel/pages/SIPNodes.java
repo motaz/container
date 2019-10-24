@@ -10,6 +10,8 @@ import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -69,16 +71,20 @@ public class SIPNodes extends HttpServlet {
                     if (reverse) {
                         for (int i= nodes.size() -1; i >= 0; i--) {
                             String node = nodes.get(i);
+                            String link = encodeLink(node);
+                                    
                             out.println("<tr>");
-                            out.println("<td><a href='EditNode?filename=sip.conf&nodename=" + node + "'>" + node + "</a></td>");
+                            out.println("<td>" + link + "</td>");
                             out.println("</tr>");
 
                         }
                     }
                     else {
                         for (String node: nodes) {
+                            String link = encodeLink(node);
+
                             out.println("<tr>");
-                            out.println("<td><a href='EditNode?filename=sip.conf&nodename=" + node + "'>" + node + "</a></td>");
+                            out.println("<td>" + link + "</td>");
                             out.println("</tr>");
                         }
                     }
@@ -92,8 +98,16 @@ public class SIPNodes extends HttpServlet {
             out.println(ex.toString());
         }
         out.close();
- 
         
+    }
+
+    public String encodeLink(String node) throws UnsupportedEncodingException {
+        
+        String nodelink = node.replace("[", "");
+        nodelink = nodelink.replace("]", "");
+        String parameters = "filename=sip.conf&nodename=" + URLEncoder.encode(nodelink, "UTF-8");
+        String link = "<a href='EditNode?" + parameters + "'>" + node + "</a>";
+        return link;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
