@@ -5,8 +5,6 @@
  */
 package sd.code.container.date;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -54,6 +52,21 @@ public class DateExtra {
         int lastDay =  cal.getActualMaximum(Calendar.DAY_OF_MONTH);
         return lastDay;
     }
+    
+    public static Date getFirstDayInMonth(Date aday){
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.YEAR, getYear(aday));
+        calendar.set(Calendar.MONTH, getMonth(aday) - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        
+        return calendar.getTime();
+    }
+    
     
     public static Date getEndOfToday() {
 
