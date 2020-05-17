@@ -111,4 +111,16 @@ public class DateExtra {
         return calendar.getTime();
     }
 
+    public static double getDurationYears(Date first, Date last) {
+
+        double duration = (first.getTime() - last.getTime()) / 1000 / 60 / 60/ 24/ 365.25;
+        duration = Math.abs(duration);
+
+        return duration;
+    }
+
+
+
 }
+
+
