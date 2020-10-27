@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.Base64;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +23,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import javax.xml.bind.DatatypeConverter;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -111,7 +111,8 @@ public class UploadSoundFile extends HttpServlet {
 			    while ((len = is.read(data)) != -1) {
 				    byte buf[] = Arrays.copyOf(data, len);
 				    System.arraycopy(data, 0, buf, 0, len -1);
-				    String content =  DatatypeConverter.printBase64Binary(buf);
+                                    String content = Base64.getEncoder().encodeToString(buf);
+				    //String content =  DatatypeConverter.printBase64Binary(buf);
 				    arr.add(content);				  
 			    }
 			    jsonrequest.put("content", arr);
