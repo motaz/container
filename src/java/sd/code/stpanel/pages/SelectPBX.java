@@ -40,7 +40,7 @@ public class SelectPBX extends HttpServlet {
 
         if (Web.checkSession(request, user)){
             Cookie co = new Cookie("file", request.getParameter("pbx"));
-            co.setMaxAge(60 * 60 * 24 * 7);                
+            co.setMaxAge(60 * 60 * 24 * 30);                
             response.addCookie(co);
 
             response.sendRedirect("Status");

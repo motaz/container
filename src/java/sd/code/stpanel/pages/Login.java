@@ -40,6 +40,7 @@ public class Login extends HttpServlet {
             if (request.getParameter("log") != null) {
                 
                 String password = request.getParameter("pass");
+                boolean rememberMe = request.getParameter("rememberme") != null;
                 
                 String configUser = General.getConfigurationParameter("login", "", null);
                 String configPass = General.getConfigurationParameter("pass", "", null);
@@ -53,18 +54,22 @@ public class Login extends HttpServlet {
                 if (valid) {
                     
                     Cookie coo = new Cookie("user", configUser);
-                    coo.setMaxAge(60 * 60 * 24 * 7);                
+                    if (rememberMe) {
+                        coo.setMaxAge(60 * 60 * 24 * 30);
+                    }
                     response.addCookie(coo);
-
-
+                    
                     String spices;
                     String remoteAddress = request.getRemoteAddr();
                     String userAgent = request.getHeader("user-agent");
-                    spices = General.getMD5(General.getMD5(userAgent + "7n1" + General.getMD5(password) +
+                    spices = General.getMD5(General.getMD5(userAgent + "7n1" + 
+                            General.getMD5(password) +
                       remoteAddress + "77") + "0066");
            
                     Cookie coo2 = new Cookie("spices", spices);
-                    coo2.setMaxAge(60 * 60 * 24 * 7);                
+                    if (rememberMe) {
+                        coo2.setMaxAge(60 * 60 * 24 * 30);      
+                    }   
                     response.addCookie(coo2);
                     
                     response.sendRedirect("Home");
@@ -83,9 +88,11 @@ public class Login extends HttpServlet {
                 out.println("<h2>Login</h2>");
                 out.println("<form method=POST>");
                 out.println("<table><tr>");
-                out.println("<td>Login </td><td><input type=text name=login id=login /></td></tr>");
+                out.println("<td>Login </td><td><input type=text name=login id=login autofocus /></td></tr>");
                 out.println("<tr><td>Password </td><td><input type=password name=pass /></td></tr>");
-                out.println("<tr><td><input type=submit name=log value=Login /></td></tr>");
+                out.println("<tr><td><input type=checkbox name=rememberme value=1 /></td>");
+                out.println("<td>Remember Me</td></tr>");
+                out.println("<tr><td><input type=submit name=log value=Login class=button /></td></tr>");
                 out.println("</table></form>");
                 out.println("<script>document.getElementById('login').focus();</script>");            
             }

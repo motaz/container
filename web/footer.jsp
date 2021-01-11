@@ -6,11 +6,11 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 	</div>
-                   	</div>
-                   	</div>
-                   	<div class='footer'>
-                           &copy; Code for computer software 2015-2019
-                           <img src='img/small-code.png' width=40 />
-                   	</div>
-                     </body>
-                   </html>
+            </div>
+            </div>
+            <div class='footer'>
+               &copy; Code for computer software 2015-2021
+               <img src='img/small-code.png' width=40 />
+            </div>
+         </body>
+       </html>

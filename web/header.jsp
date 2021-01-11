@@ -19,7 +19,7 @@
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <title>Simple Trunk Panel</title>
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <meta name="Description" lang="en" content="ADD SITE DESCRIPTION">
+            <meta name="Description" lang="en" content="Asterisk SimpleTrunk, GUI admin">
             <meta name="author" content="Code for Computer Software">
             <meta name="robots" content="index, follow">
 
@@ -33,13 +33,13 @@
     <body>
     <div class=header>
     <div class=container>
-            <table ><tr bgcolor=#cccc88 >
-                    <td class=titletd style="color:black;background-color: #cccc88; vertical-align:bottom;font-size:30px;">
+            <table ><tr bgcolor=#CFCFCF >
+                    <td class=titletd style="color:black;background-color: #DDDDFF; vertical-align:bottom;font-size:30px;">
                         &emsp;Simple Trunk&emsp; </td>
-            <td class=titletd><td bgcolor=#cccc88 style='color:black;vertical-align:bottom;'>
+            <td class=titletd><td bgcolor=#DDDDFF style='color:black;vertical-align:bottom;'>
                 <%=logouttext%></td>
-            <td bgcolor=#cccc88 style='vertical-align:bottom;'><%=selectedpbx%></td>
-            <td bgcolor=#cccc88 style='vertical-align:bottom;font-size:12px; color:black;'>
+            <td bgcolor=#DDDDFF style='vertical-align:bottom;'><%=selectedpbx%></td>
+            <td bgcolor=#DDDDFF style='vertical-align:bottom;font-size:12px; color:gray;'>
                 Version <%=version%> 
             </td>
                 </tr>

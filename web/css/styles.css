@@ -201,7 +201,7 @@ Layout styles
 
 .nav-bar
 {
-	background: #000000;
+	background: gray;
 	padding: 0;
 }
 
@@ -214,7 +214,7 @@ Layout styles
 .footer
 {
 	color: #fff;
-	background: #000000;
+	background: gray;
         
 }
 
