@@ -67,7 +67,19 @@ public class DateExtra {
         return calendar.getTime();
     }
     
-    
+      public static Date getLastDayInMonthAsDate(Date aday){
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.YEAR, getYear(aday));
+        calendar.set(Calendar.MONTH, getMonth(aday) - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, getLastDayInMonth(aday));
+        
+        return calendar.getTime();
+    }  
     public static Date getEndOfToday() {
 
         Calendar calendar = Calendar.getInstance();
