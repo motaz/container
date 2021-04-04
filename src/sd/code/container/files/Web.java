@@ -8,6 +8,7 @@ package sd.code.container.files;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import sd.code.container.types.OperationResult;
 import sd.code.container.url.CodeURL;
 
 /**
@@ -29,13 +30,33 @@ public class Web {
 	  return CodeURL.callURL(methodURL, contents, waitSeconds, contentType).responseText;
     }     
 
-    public static String callURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType, 
-            String method, String encoding) throws IOException {
-	
-	return CodeURL.callURLWithMethod(methodURL, contents, waitSeconds, contentType, method, encoding);
+    public static OperationResult callURLWithMethodEx(String methodURL, String contents, int waitSeconds, String contentType, 
+            String method, String encoding)  {
         
+	OperationResult op = new OperationResult();
+        try {
+	   String result = CodeURL.callURLWithMethod(methodURL, contents, waitSeconds, contentType, method, encoding);
+           op.success = true;
+           op.message = result;
+           
+        } catch (Exception ex){
+            op.success = false;
+            op.message = ex.toString();
+            
+        }
+
+        return op;
     }         
     
+    public static String callURLWithMethod(String methodURL, String contents, int waitSeconds, String contentType, 
+            String method, String encoding) throws IOException {
+        
+          
+        String  result = CodeURL.callURLWithMethod(methodURL, contents, waitSeconds, contentType, method, encoding);
+   
+        return result;
+    }    
+        
     public static String actualCall(HttpURLConnection conn, String contents, String encode) throws IOException {
         
        return CodeURL.actualCall(conn, contents, encode);
