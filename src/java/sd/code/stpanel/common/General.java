@@ -37,7 +37,7 @@ import sd.code.stpanel.types.Operation;
  */
 final public class General {
     
-    public static final String VERSION = "1.0.26";
+    public static final String VERSION = "1.0.28";
     
     public static void writeEvent(String eventText){
         

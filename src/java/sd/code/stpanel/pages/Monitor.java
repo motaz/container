@@ -237,29 +237,50 @@ public class Monitor extends HttpServlet {
 	
 	out.println("</table><br/>");
 	
-	out.println("Server time");
+	out.println("<h3>Server time</h3>");
 	result = General.executeShell( "date", url);
 	out.println("<pre>" + result + "</pre>");
 	
 	out.println("<br/>");
 	
-	out.println("Processors count");
+	out.println("<h3>Processors count</h3>");
 	
 	out.println("<pre>" + procCount + "</pre>");
 	
 	out.println("<br/>");
-	out.println("Uptime");
+ 
+        	
+        String ipsStr = General.executeShell("ip a", url);
+        
+        out.println("<h3>IPs</h3>");
+        
+        out.println("<pre>");
+        String []ipList = ipsStr.split("\n");
+        for (String ip: ipList) {
+            if (ip.contains("inet ") && !ip.contains("127.0.")) {
+                ip = ip.trim();
+                ip = ip.substring(ip.indexOf(" "), ip.length()).trim();
+                ip = ip.substring(0, ip.indexOf(" "));
+                out.println(ip);
+            }
+        }
+        
+        out.println("</pre>");
+        out.println("<br/>");
+
+        
+	out.println("<h3>Uptime</h3>");
 	
 	
 	out.println("<pre>" + loadStr + "</pre>");
 	
 	out.println("<br/>");
-	out.println("Memory (In Megabytes)");
+	out.println("<h3>Memory (In Megabytes)</h3>");
 	result = General.executeShell("free -m", url);
 	out.println("<pre>" + result + "</pre>");
 	
 	out.println("<br/>");
-	out.println("Disk usage");
+	out.println("<h3>Disk usage</h3>");
 	result = General.executeShell("df -h", url);
 	String lines[] = result.split("\n");
 	out.println("<pre>");
