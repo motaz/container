@@ -45,6 +45,7 @@ public class EditPBX extends HttpServlet {
 	     if (Web.checkSession(request, user)){
 		
 		doUpdate(request, out, selectedFileName, response);
+                doRemove(request, out, selectedFileName, response);
 		out.println("<h2>Edit PBX configuration</h2>");
 		
 		displayEdit(out, selectedFileName);
@@ -62,6 +63,8 @@ public class EditPBX extends HttpServlet {
     private void doUpdate(HttpServletRequest request, final PrintWriter out, String selectedFileName, HttpServletResponse response) throws IOException {
 	
         if (request.getParameter("update") != null) {
+            
+            String index = request.getParameter("index");
             String title = request.getParameter("title");
             String url = request.getParameter("url");
             String fileName = request.getParameter("file");
@@ -69,9 +72,10 @@ public class EditPBX extends HttpServlet {
 	    String amipass = request.getParameter("amipass");
             
             if ((title.trim().isEmpty()) || (url.trim().isEmpty()) || (fileName.trim().isEmpty())) {
+                
                 out.println("<p class=errormessage>Empty parameter</p>");
-            }
-            else {                 
+                
+            } else {                 
                 String dir = General.getPBXsDir();
                 
                 File theDir = new File(dir);
@@ -80,7 +84,7 @@ public class EditPBX extends HttpServlet {
                     boolean added = theDir.mkdir();
                     
                     if (! added) {
-                        out.println("<p class=errormessage>Unable to create " + dir + "</p>");
+                          out.println("<p class=errormessage>Unable to create " + dir + "</p>");
                     }
                     
                 }
@@ -98,6 +102,8 @@ public class EditPBX extends HttpServlet {
                 boolean success = General.setConfigurationParameter("url", url, fileName);
                 if (success) {
                     success = General.setConfigurationParameter("title", title, fileName);
+                    General.setConfigurationParameter("index", index, fileName);
+
 		    General.setConfigurationParameter("amiuser", amiuser, fileName);
 		    General.setConfigurationParameter("amipass", amipass, fileName);
 		    
@@ -121,19 +127,40 @@ public class EditPBX extends HttpServlet {
                     response.sendRedirect("Home");
                 }
                 else {
-                    out.println("<p class=errormessage>Unable to write configuration</p>");
-                    
+                    out.println("<p class=errormessage>Unable to write configuration</p>");                 
                 }
                 
             }
         }
     }
 
+    private void doRemove(HttpServletRequest request, final PrintWriter out, String selectedFileName, HttpServletResponse response) throws IOException {
+	
+        if (request.getParameter("remove") != null && !request.getParameter("filetoremove").trim().isEmpty()) {
+            
+            
+                String dir = General.getPBXsDir();
+                String fileName =  request.getParameter("filetoremove");
+                if (!fileName.contains("/")) {
+                File f= new File(dir + fileName);
+                File b = new File(dir + fileName + ".bk");
+                boolean deleted = f.renameTo(b);
+                if (! deleted) {
+                   out.println("<p class=errormessage>Unable to delete file: " + dir + fileName + "</p>");
+                } else {
+                    response.sendRedirect("Home");
+                }
+                   
+                }
+        }
+    }
 
 
     private void displayEdit(final PrintWriter out, String fileName) {
         
         String pbxFileName = General.getPBXsDir() + fileName;
+        String index = General.getConfigurationParameter("index", "", pbxFileName);
+
         String title = General.getConfigurationParameter("title", "", pbxFileName);
         String url = General.getConfigurationParameter("url", "", pbxFileName);
        
@@ -142,10 +169,12 @@ public class EditPBX extends HttpServlet {
 	
         out.println("<form method=POST>");
         out.println("<table>");
+        out.println("<tr><td>Index</td><td><input type=number name=index value='" + index + 
+		    "' /></td></tr>");
         out.println("<tr><td>Title </td><td><input type=text name=title value='" + title + 
-		    "' /></td></td>");
+		    "' /></td></tr>");
         out.println("<tr><td>Config file name </td>");
-        out.println("<td><input type=text name=file value='" + fileName + "' /></td></td>");
+        out.println("<td><input type=text name=file value='" + fileName + "' /></td></tr>");
         
         out.println("<tr><td>STAgent URL</td>");
         out.println("<td><input type=text name=url size=30 value='" + url + "' /></td></tr>");
@@ -159,28 +188,35 @@ public class EditPBX extends HttpServlet {
 	if (url != null) {
 	    try
 	    {
-	      String result = General.getRemoteFile(url, "/etc/simpletrunk/stagent.ini");
-	      if (result != null && result.contains("FileNotFoundException")){
-		  result = "";
-	      }
-	      if (result != null && result.trim().isEmpty()){
-		  result = "amiurl=http://localhost:8088/rawman\n" +
+	        String result = General.getRemoteFile(url, "/etc/simpletrunk/stagent.ini");
+	        if (result != null && result.contains("FileNotFoundException")){
+		    result = "";
+	        }
+	        if (result != null && result.trim().isEmpty()){
+		    result = "amiurl=http://localhost:8088/rawman\n" +
 			    "cdrdbserver=\n" +
 			    "cdrdatabase=\n" +
 			    "cdruser=\n" +
 			    "cdrpass=\n" +
 			    "cdrtable=\n" +
                             "cdrkeyfield=";
-	      }
-	      out.println("<tr><td>Remote STAgent config</td>");
-	      out.println("<td><textarea cols=80 rows=8 name=remoteconfig >" + result + "</textarea></td></tr>");
+	        }
+	        out.println("<tr><td>Remote STAgent config</td>");
+	        out.println("<td><textarea cols=80 rows=8 name=remoteconfig >" + 
+                        result + "</textarea></td></tr>");
 	      
 	    } catch (Exception ex){
 		out.println(ex.toString());
 	    }
 	}
 
-	out.println("<tr><td><input type=submit name=update value=Update /></td></tr>");
+	out.println("<tr><td><input type=submit name=update value=Update class=button /></td></tr>");
+        out.println("<tr><td><font color=red><b>Remove PBX</b></font><br/>");
+        out.println("Enter file name: ");
+        out.println("<input type=text name=filetoremove  />");
+        out.println("<input type=submit name=remove value=Remove class=redbutton /></td>");
+
+
         out.println("</table>");
         out.println("</form>");
     }

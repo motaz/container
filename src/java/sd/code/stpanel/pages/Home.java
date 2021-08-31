@@ -8,6 +8,7 @@ package sd.code.stpanel.pages;
 import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -35,6 +36,7 @@ public class Home extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 	try(PrintWriter out = response.getWriter()) {
+            
             try{
                 Web.setHeader(true, request, response, out, "home", "home");
                 
@@ -48,9 +50,8 @@ public class Home extends HttpServlet {
                     
                     displayFiles(out);
                     
-                }
-                else
-                {
+                }  else  {
+                    
                     response.sendRedirect("Login");
                 }
                     
@@ -66,37 +67,69 @@ public class Home extends HttpServlet {
     private void displayFiles(PrintWriter out) {
         
         File folder = new File(General.getPBXsDir());
+       
         File[] listOfFiles = folder.listFiles();
-        out.println("<table><tr>");
-        int counter = 0;
         if (listOfFiles != null){
+       
+            out.println("<table><tr>");
+            int counter = 0;
+            boolean done = false;
+
+            while (!done ){
+
+               done = true;
+               for (int i=0; i<listOfFiles.length-1; i++){
+                   String index1Str = General.getConfigurationParameter("index", "0", listOfFiles[i].getAbsolutePath());
+                   String index2Str = General.getConfigurationParameter("index", "0", listOfFiles[i+1].getAbsolutePath());
+                   int index1 = Integer.parseInt(index1Str);
+                   int index2 = Integer.parseInt(index2Str);
+                   if (index1 > index2) {
+
+                       File temp;
+                       temp = listOfFiles[i];
+                       listOfFiles[i] = listOfFiles[i+1];
+                       listOfFiles[i+1] = temp;
+                       done = false;
+                   }
+
+               }
+            }
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
                     String fileName = listOfFile.getName();
-                    String title = General.getConfigurationParameter("title", "", listOfFile.getAbsolutePath());
-
+                    String title = General.getConfigurationParameter("title", 
+                            "", listOfFile.getAbsolutePath());
+                    if (fileName.endsWith(".stc")) {
                     if (counter % 5 == 0){
                         out.println("</tr><tr>");
                     }
                     String color;
                     if (counter % 2 == 0) {
-                        color = "#AAaa77";
+                        color = "#dAbaa7";
+                    } else {
+                        color = "#dececa";
                     }
-                    else
-                    {
-                        color = "#eeeeaa";
-                    }
+                    String url = General.getConfigurationParameter("url", 
+                            "", listOfFile.getAbsolutePath());
+                    String ip = url.substring(url.indexOf("//") + 2, url.length());
+                    ip = ip.substring(0, ip.indexOf(":"));
                     String link = "<a href='SelectPBX?pbx=" + fileName + "'>" + title + "</a>";
                     String editLink = "<font >" + 
-                            "<a style='font-size:57%'  href='EditPBX?pbx=" + fileName + "'>Edit" +
+                            "<a style='font-size:80%'  href='EditPBX?pbx=" + fileName + "'>Edit" +
                             "</a></font>";
                     out.println("<td width=20% bgcolor=" + color  + 
-                                "><b>" + link + "</b><br/>" + fileName + "<br/" + editLink + "</td>");
-                    }
+                                "><b>" + link + "<br/>" + 
+                            ip + "</b><br/>" +
+                            fileName + "<br/" + editLink + "</td>");
+                    
                     counter++;
+                }
+                }
             }
+        
             
         }
+    
         out.println("</tr></table>");
     }
 

@@ -468,6 +468,18 @@ td {
     font-weight:bold;
     cursor:pointer;
 }
+
+.redbutton {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 22px;
+    margin-left: 5px;
+    text-shadow: #000 -1px -1px 1px;
+    background-color: #ff6666;
+    color: #FFFaaa;
+    border:1px solid #666;
+    font-weight:bold;
+    cursor:pointer;
+}
 /* -----------------------
 Wide styles
 ------------------------*/

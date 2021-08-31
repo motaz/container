@@ -63,6 +63,7 @@ public class AddPBX extends HttpServlet {
     private void addNewPBX(HttpServletRequest request, final PrintWriter out, HttpServletResponse response) throws IOException {
         
         if (request.getParameter("add") != null) {
+	    String index = request.getParameter("index");
             String title = request.getParameter("title");
             String url = request.getParameter("url");
             String fileName = request.getParameter("file");
@@ -87,6 +88,7 @@ public class AddPBX extends HttpServlet {
                 configFile.createNewFile();
                 boolean success = General.setConfigurationParameter("url", url, fileName);
                 if (success) {
+                    General.setConfigurationParameter("index", index, fileName);
                     success = General.setConfigurationParameter("title", title, fileName);
 		    General.setConfigurationParameter("amiuser", amiuser, fileName);
 		    General.setConfigurationParameter("amipass", amipass, fileName);
@@ -106,10 +108,13 @@ public class AddPBX extends HttpServlet {
         
         out.println("<form method=POST>");
         out.println("<table>");
-        out.println("<tr><td>Title </td><td><input type=text name=title /></td></td>");
+        out.println("<tr><td>Index </td>");
+        out.println("<td><input type=number name=index /></td></tr>");
+
+        out.println("<tr><td>Title </td><td><input type=text name=title /></td></tr>");
 	
         out.println("<tr><td>Config file name </td>");
-        out.println("<td><input type=text name=file /></td></td>");
+        out.println("<td><input type=text name=file /></td></tr>");
 	
         out.println("<tr><td>SimpleTrunk Agent URL</td>");
         out.println("<td><input type=text name=url size=30 value='" +
@@ -122,7 +127,7 @@ public class AddPBX extends HttpServlet {
         out.println("<tr><td>AMI Password</td>");
         out.println("<td><input type=text name=amipass size=30 /></td></tr>");
 	
-        out.println("<tr><td><input type=submit name=add value=Add /></td></tr>");
+        out.println("<tr><td><input type=submit name=add value=Add class=button /></td></tr>");
         out.println("</table>");
         out.println("</form>");
         
