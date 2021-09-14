@@ -37,47 +37,7 @@ public class Login extends HttpServlet {
         PrintWriter out = response.getWriter();
             Web.setHeader(false, request, response, out, "", "");
             
-            if (request.getParameter("log") != null) {
-                
-                String password = request.getParameter("pass");
-                boolean rememberMe = request.getParameter("rememberme") != null;
-                
-                String configUser = General.getConfigurationParameter("login", "", null);
-                String configPass = General.getConfigurationParameter("pass", "", null);
-                
-                boolean valid = configUser.toLowerCase().equals(request.getParameter("login").toLowerCase());
-                
-                if (valid){
-                    valid = configPass.equals(General.getMD5(password));
-                }
-                
-                if (valid) {
-                    
-                    Cookie coo = new Cookie("user", configUser);
-                    if (rememberMe) {
-                        coo.setMaxAge(60 * 60 * 24 * 30);
-                    }
-                    response.addCookie(coo);
-                    
-                    String spices;
-                    String remoteAddress = request.getRemoteAddr();
-                    String userAgent = request.getHeader("user-agent");
-                    spices = General.getMD5(General.getMD5(userAgent + "7n1" + 
-                            General.getMD5(password) +
-                      remoteAddress + "77") + "0066");
-           
-                    Cookie coo2 = new Cookie("spices", spices);
-                    if (rememberMe) {
-                        coo2.setMaxAge(60 * 60 * 24 * 30);      
-                    }   
-                    response.addCookie(coo2);
-                    
-                    response.sendRedirect("Home");
-                }
-                else {
-                    out.println("<p class=errormessage>Invalid login/password</p>");
-                }
-            }
+            doLogin(request, response, out);
             
             String user = General.getConfigurationParameter("login", null, null);
             if (user == null) {
@@ -99,6 +59,50 @@ public class Login extends HttpServlet {
             Web.setFooter(request, response);
 	    out.close();
         }
+
+    private void doLogin(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws IOException {
+      
+        if (request.getParameter("log") != null) {
+            
+            String password = request.getParameter("pass");
+            boolean rememberMe = request.getParameter("rememberme") != null;
+            
+            String configUser = General.getConfigurationParameter("login", "", null);
+            String configPass = General.getConfigurationParameter("pass", "", null);
+            
+            boolean valid = configUser.toLowerCase().equals(request.getParameter("login").toLowerCase());
+            
+            if (valid){
+                valid = configPass.equals(General.getMD5(password));
+            }
+            
+            if (valid) {
+                
+                Cookie coo = new Cookie("user", configUser);
+                if (rememberMe) {
+                    coo.setMaxAge(60 * 60 * 24 * 30);
+                }
+                response.addCookie(coo);
+                
+                String spices;
+                String remoteAddress = request.getRemoteAddr();
+                String userAgent = request.getHeader("user-agent");
+                spices = General.getMD5(General.getMD5(userAgent + "7n1" +
+                        General.getMD5(password) +
+                        remoteAddress + "77") + "0066");
+                
+                Cookie coo2 = new Cookie("spices", spices);
+                if (rememberMe) {
+                    coo2.setMaxAge(60 * 60 * 24 * 30);
+                }
+                response.addCookie(coo2);
+                response.sendRedirect("Home");
+            }
+            else {
+                out.println("<p class=errormessage>Invalid login/password</p>");
+            }
+        }
+    }
     
     
 
