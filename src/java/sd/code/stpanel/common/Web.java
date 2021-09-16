@@ -208,12 +208,11 @@ public class Web {
         String spices = getCookieValue(request, "spices");
         String userAgent = request.getHeader("user-agent");
         String password = General.getConfigurationParameter("pass", "", null);
-        String remoteAddress = request.getRemoteAddr();
         
         String currentSpices;
 
-        currentSpices = General.getMD5(General.getMD5(userAgent + "7n1" + password +
-                remoteAddress + "77") + "0066");
+        currentSpices = General.getMD5(General.getMD5(userAgent + "7n1" + 
+                password + "77") + "0066");
         result = currentSpices.equals(spices);
         
         return(result);

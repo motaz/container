@@ -85,11 +85,9 @@ public class Login extends HttpServlet {
                 response.addCookie(coo);
                 
                 String spices;
-                String remoteAddress = request.getRemoteAddr();
                 String userAgent = request.getHeader("user-agent");
                 spices = General.getMD5(General.getMD5(userAgent + "7n1" +
-                        General.getMD5(password) +
-                        remoteAddress + "77") + "0066");
+                        General.getMD5(password) + "77") + "0066");
                 
                 Cookie coo2 = new Cookie("spices", spices);
                 if (rememberMe) {
