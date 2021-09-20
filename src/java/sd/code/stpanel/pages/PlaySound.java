@@ -51,9 +51,6 @@ public class PlaySound extends HttpServlet {
 	       String requestText = obj.toJSONString();
 	       OutputStream output = response.getOutputStream();
 	       File file = new File(filename);
-	       
-	       System.out.println(url);
-	       System.out.println(requestText);
 
 	       response.setHeader("Content-Disposition", "attachment;filename=" + file.getName());
 	       Operation op = General.downloadFile(url + "DownloadFile", requestText, contenttype, output);

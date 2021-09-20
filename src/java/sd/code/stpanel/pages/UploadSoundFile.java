@@ -60,10 +60,8 @@ public class UploadSoundFile extends HttpServlet {
 	    String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
 	    String agenturl = General.getConfigurationParameter("url", "", pbxfile);	
 	    String uploadurl = agenturl + "ReceiveFile";
-	    System.out.println(uploadurl);
 
 	    String dir = request.getParameter("dir");
-	    System.out.println("Dir in middleware: " + dir);
 		 
 	    URL serverUrl = new URL(uploadurl);
 	    HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
@@ -84,7 +82,6 @@ public class UploadSoundFile extends HttpServlet {
 	    // Read
 	    
 	    if (ServletFileUpload.isMultipartContent(request)) {
-		System.out.println("First: Is multipart");
 		for (Part part : request.getParts()) {
 		    
 		    String name = part.getName();

@@ -310,7 +310,8 @@ public class Web {
                 return content;
 	    }
 	    catch (Exception ex){
-	           return null;
+              
+	           return "";
 	    }
 	
     }

@@ -46,33 +46,7 @@ public class Monitor extends HttpServlet {
                 Web.setHeader(true, request, response, out, "pbx", "monitor");
                 out.println("<h2>Monitor</h2>");
 
-                String function = request.getParameter("function");
-                if (function == null){
-                    function = "system";
-                }
-                   
-                String selectedColor = "bgcolor=#FFFFcc";
-
-                out.println("<table><tr bgcolor=#eeeecc>");
-                out.println("<td ");
-                if (function.equals("system")) {
-                    out.println(selectedColor);
-                }
-                out.println("><a href='Monitor?function=system'>System</a></td>");
-
-                out.println("<td ");
-                if (function.equals("calls")) {
-                    out.println(selectedColor);
-                }
-                out.println("><a href='Monitor?function=calls'>Active Channels</a></td>");
-
-                out.println("<td ");
-                if (function.equals("cdr")) {
-                    out.println(selectedColor);
-                }
-                out.println("><a href='Monitor?function=cdr'>Last CDRs</a></td>");
-
-                out.println("</tr></table>");
+                String function = displayHeader(request, out);
 
                 out.println("<a href='Monitor?function=" + function + "' class=btn >Refresh</a>");
 
@@ -85,7 +59,7 @@ public class Monitor extends HttpServlet {
                 }
                 else if (function.equals("calls")) {
 
-                   displayActiveChannels(pbxfile, url, out);
+                   displayActiveChannels(pbxfile, out);
                 }
                 else if (function.equals("cdr")){
                    displayCDR(url, out);
@@ -108,10 +82,36 @@ public class Monitor extends HttpServlet {
         
     }
 
-    private void displayActiveChannels(String pbxfile, String url, PrintWriter out) throws IOException, ParseException {
+    private String displayHeader(HttpServletRequest request, PrintWriter out) {
+        String function = request.getParameter("function");
+        if (function == null){
+            function = "system";
+        }
+        String selectedColor = "bgcolor=#FFFFcc";
+        out.println("<table><tr bgcolor=#eeeecc>");
+        out.println("<td ");
+        if (function.equals("system")) {
+            out.println(selectedColor);
+        }
+        out.println("><a href='Monitor?function=system'>System</a></td>");
+        out.println("<td ");
+        if (function.equals("calls")) {
+            out.println(selectedColor);
+        }
+        out.println("><a href='Monitor?function=calls'>Active Channels</a></td>");
+        out.println("<td ");
+        if (function.equals("cdr")) {
+            out.println(selectedColor);
+        }
+        out.println("><a href='Monitor?function=cdr'>Last CDRs</a></td>");
+        out.println("</tr></table>");
+        return function;
+    }
+
+    private void displayActiveChannels(String pbxfile,  PrintWriter out) throws IOException, ParseException {
 	
 	String text = Web.callAMICommand(pbxfile, "core show channels concise");
-	    
+
 	if (text.length() < 150){
 	    if (text.contains("Privilege")){
 		out.println("<p class=infomessage>No active channels</p>");
@@ -206,14 +206,20 @@ public class Monitor extends HttpServlet {
     private void displaySystemStatus(String url, PrintWriter out) {
 	
 	// CPU Utilization
-	String loadStr = General.executeShell("uptime", url);
-	String cpuloadStr = loadStr.substring(loadStr.indexOf("load average:"), loadStr.length());
-	cpuloadStr = cpuloadStr.substring(cpuloadStr.indexOf(":") + 1, cpuloadStr.indexOf(",")).trim();
-	double cpuload = Double.parseDouble(cpuloadStr);
-	String result = General.executeShell("cat /proc/cpuinfo | grep processor | wc -l", url);
+	String loadStr = General.executeShell("top -b  | head -14 ", url);
+        String toplines[] = loadStr.split("\n");
+        String percent = "-1";
+        if (toplines.length >2) {
+          percent = toplines[2];
+        }
+        //%Cpu(s): 31.3 us, 9.0 sy, 0.0 ni, 59.7 id, 0.0 wa, 0.0 hi, 0.0 si, 0.0 st %
+        percent = percent.substring(0, percent.indexOf("id"));
+        percent = percent.substring(percent.lastIndexOf(",")+1).trim();
+        double utilization = 100 - Double.parseDouble(percent);
+        
+       	String result = General.executeShell("nproc", url);
 	int procCount = Integer.parseInt(result.trim());
 	
-	double utilization = (cpuload * 100) / procCount;
 	String bgcolor = "#AAFFAA";
 	if (utilization > 100) {
 	    bgcolor = "#990000";
@@ -243,7 +249,7 @@ public class Monitor extends HttpServlet {
 	
 	out.println("<br/>");
 	
-	out.println("<h3>Processors count</h3>");
+	out.println("<h3>Processor cores count</h3>");
 	
 	out.println("<pre>" + procCount + "</pre>");
 	
@@ -269,10 +275,13 @@ public class Monitor extends HttpServlet {
         out.println("<br/>");
 
         
-	out.println("<h3>Uptime</h3>");
+	out.println("<h3>Top Processes</h3>");
+	out.println("<pre>");
+        for (int i=6;i<toplines.length; i++){
+            out.println(toplines[i]);
+        }
 	
-	
-	out.println("<pre>" + loadStr + "</pre>");
+	out.println("</pre>");
 	
 	out.println("<br/>");
 	out.println("<h3>Memory (In Megabytes)</h3>");
