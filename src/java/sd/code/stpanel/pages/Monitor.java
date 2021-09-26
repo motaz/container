@@ -210,7 +210,7 @@ public class Monitor extends HttpServlet {
         String toplines[] = loadStr.split("\n");
         String percent = "-1";
         if (toplines.length >2) {
-          percent = toplines[2];
+            percent = toplines[2];
         }
         //%Cpu(s): 31.3 us, 9.0 sy, 0.0 ni, 59.7 id, 0.0 wa, 0.0 hi, 0.0 si, 0.0 st %
         percent = percent.substring(0, percent.indexOf("id"));
