@@ -8,7 +8,6 @@ package sd.code.stpanel.pages;
 import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -66,9 +65,7 @@ public class Home extends HttpServlet {
 
     private void displayFiles(PrintWriter out) {
         
-        File folder = new File(General.getPBXsDir());
-       
-        File[] listOfFiles = folder.listFiles();
+        File[] listOfFiles = getPbxFiles();
         if (listOfFiles != null){
        
             out.println("<table><tr>");
@@ -131,6 +128,12 @@ public class Home extends HttpServlet {
         }
     
         out.println("</tr></table>");
+    }
+
+    public static File[] getPbxFiles() {
+        File folder = new File(General.getPBXsDir());
+        File[] listOfFiles = folder.listFiles();
+        return listOfFiles;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

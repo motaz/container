@@ -36,12 +36,17 @@ public class Setup extends HttpServlet {
         PrintWriter out = response.getWriter();
         Web.setHeader(false, request, response, out, "", "");
         String currentLogin = General.getConfigurationParameter("login", null, null);
+        
         if (request.getParameter("login") != null){
             try {
-                General.setConfigurationParameter("login", request.getParameter("login"), "");
-                String pass = General.getMD5(request.getParameter("pass"));
-                General.setConfigurationParameter("pass", pass, "");
-                response.sendRedirect("Login");
+                boolean success = General.setConfigurationParameter("login", request.getParameter("login"), "");
+                if (success) {
+                    String pass = General.getMD5(request.getParameter("pass"));
+                    General.setConfigurationParameter("pass", pass, "");
+                    response.sendRedirect("Login");
+                } else {
+                out.println("<p class=errormessage>Error: </p>");
+                }
             }
             catch (Exception ex){
                 out.println("<p class=errormessage>" + ex.toString() + "</p>");

@@ -37,7 +37,7 @@ import sd.code.stpanel.types.Operation;
  */
 final public class General {
     
-    public static final String VERSION = "1.0.34";
+    public static final String VERSION = "1.0.36";
     
     public static void writeEvent(String eventText){
         
@@ -65,7 +65,8 @@ final public class General {
  
             String logdir = "log";
             if (System.getProperty("os.name").toLowerCase().contains("linux")){
-              logdir = "/var/log/simpletrunk";
+                logdir = "/home/" + System.getProperty("user.name") + "/simpletrunk/log/";
+
             }
             if ((logname == null) || (logname.equals(""))) {
                 fileName = logdir + "/simpletrunk-" + day + ".log";
@@ -118,11 +119,11 @@ final public class General {
        {
          String dir = "";
          if (System.getProperty("os.name").toLowerCase().contains("linux")){
-              dir = "/etc/simpletrunk/";
+                dir = "/home/" + System.getProperty("user.name") + "/simpletrunk/";
          } 
          if ((aFile == null) || (aFile.equals(""))){
              
-           aFile = dir + "simpletrunk.ini";
+            aFile = dir + "simpletrunk.ini";
          }
          else
          {
@@ -132,18 +133,18 @@ final public class General {
              
          }
          
-         String text;
-         FileInputStream stream = new FileInputStream(aFile);
-         prop.load(stream);
-         text = prop.getProperty(parameterName, defaultValue);
-	 stream.close();
+           String text;
+           FileInputStream stream = new FileInputStream(aFile);
+           prop.load(stream);
+           text = prop.getProperty(parameterName, defaultValue);
+	   stream.close();
            
          return(text);
          
        }
        catch (IOException ex) {
-         General.writeEvent("Error in getConfiguration: " + ex.toString(), null);
-         return(defaultValue);
+           General.writeEvent("Error in getConfiguration: " + ex.toString(), null);
+           return(defaultValue);
        }
      
     }  
@@ -152,16 +153,17 @@ final public class General {
     public static boolean setConfigurationParameter(String parameterName, String aValue, String aFile) {
         
        Properties prop  = new Properties();
+       boolean success;
        try
        {
            
          String dir = "";
          if (System.getProperty("os.name").toLowerCase().contains("linux")){
-              dir = "/etc/simpletrunk/";
+                dir = "/home/" + System.getProperty("user.name") + "/simpletrunk/";
          } 
          File directory = new File(dir);
          if (!directory.exists()){
-             directory.mkdir();
+             success = directory.mkdir();
          }
          if ((aFile == null) || (aFile.equals(""))){
              
@@ -169,32 +171,33 @@ final public class General {
          }
          else
          {
-             if (!aFile.contains("/")){
-                 aFile = dir + aFile;
-             }
+            if (!aFile.contains("/")){
+                aFile = dir + aFile;
+            }
          }
          
          File confFile = new File(aFile);
          if (! confFile.exists()){
-             confFile.createNewFile();
+             success = confFile.createNewFile();
+         } else {
+             success = true;
          }
          
            FileInputStream stream = new FileInputStream(aFile);
 	   
-               prop.load(stream);
-               prop.setProperty(parameterName, aValue);
-	       stream.close();
-               FileOutputStream output = new FileOutputStream(aFile);
-               prop.store(output, "STPanel");
-               output.close();
-           
-         return(true);
-         
+           prop.load(stream);
+           prop.setProperty(parameterName, aValue);
+           stream.close();
+           FileOutputStream output = new FileOutputStream(aFile);
+           prop.store(output, "SimpleTrunk");
+           output.close();      
+                 
        }
        catch (IOException ex) {
          General.writeEvent("Error in setConfiguration: " + ex.toString(), null);
-         return(false);
+         success = false;
        }
+       return success;
      
     }  
     
@@ -202,7 +205,7 @@ final public class General {
         
         String dir = "pbxs/";
         if (System.getProperty("os.name").toLowerCase().contains("linux")){
-            dir = "/etc/simpletrunk/pbxs/";
+                dir = "/home/" + System.getProperty("user.name") + "/simpletrunk/pbxs/";
         }
         File directory = new File(dir);
         if (! directory.exists()){

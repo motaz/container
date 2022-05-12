@@ -77,6 +77,7 @@ public class AddPBX extends HttpServlet {
             else { // Create new file
                 
                 String dir = General.getPBXsDir();
+
             
                 if (!fileName.contains(".")) {
                     fileName = fileName + ".stc";
@@ -105,13 +106,15 @@ public class AddPBX extends HttpServlet {
     }
 
     private void displayAdd(final PrintWriter out) {
-        
+    
+        File []files = Home.getPbxFiles();
+        int count = files.length + 1;
         out.println("<form method=POST>");
         out.println("<table>");
         out.println("<tr><td>Index </td>");
-        out.println("<td><input type=number name=index /></td></tr>");
+        out.println("<td><input type=number name=index value=" + count + " /></td></tr>");
 
-        out.println("<tr><td>Title </td><td><input type=text name=title /></td></tr>");
+        out.println("<tr><td>Title </td><td><input type=text name=title autofocus /></td></tr>");
 	
         out.println("<tr><td>Config file name </td>");
         out.println("<td><input type=text name=file /></td></tr>");
