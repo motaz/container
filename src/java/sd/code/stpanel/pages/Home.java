@@ -109,7 +109,11 @@ public class Home extends HttpServlet {
                     String url = General.getConfigurationParameter("url", 
                             "", listOfFile.getAbsolutePath());
                     String ip = url.substring(url.indexOf("//") + 2, url.length());
+                    if (ip.contains(":")) {
                     ip = ip.substring(0, ip.indexOf(":"));
+                    } else {
+                        ip = ip.substring(0, ip.indexOf("/"));
+                    }
                     String link = "<a href='SelectPBX?pbx=" + fileName + "'>" + title + "</a>";
                     String editLink = "<font >" + 
                             "<a style='font-size:80%'  href='EditPBX?pbx=" + fileName + "'>Edit" +
