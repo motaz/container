@@ -7,6 +7,7 @@ package sd.code.stpanel.pages;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +19,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
+import sd.code.stpanel.types.CallInfoType;
+import sd.code.stpanel.types.Operation;
 
 /**
  *
@@ -132,7 +135,8 @@ public class Functions extends HttpServlet {
 	    String text = resObj.get("result").toString();
 	    out.println("<font color=green><b><label id=count></label></b></font> Members");
 	    out.println("<table class=tform>");
-	    out.println("<tr  bgcolor=#eeeecc><th>Queue</th><th>Agent</th><th>Status</th><th>Info</th>");
+	    out.println("<tr  bgcolor=#eeeecc><th>Queue</th><th>Agent</th><th>Caller ID</th>");
+            out.println("<th>Duration</th><th>Info</th>");
 	    if (!isBusy) { 
 		out.println("<th>Action</th>");
 	    }
@@ -143,8 +147,7 @@ public class Functions extends HttpServlet {
 	    for (String line: lines) {
 		if (line.contains("holdtime")){
 		    queue = line.substring(0, line.trim().indexOf(" ")).trim();
-		    out.println("<tr><td><b>" + queue + "</b></td>");
-		    
+		    out.println("<tr><td><b>" + queue + "</b></td>");    
 		}
 		boolean displayLine = false;
                 if (isBusy){
@@ -172,6 +175,9 @@ public class Functions extends HttpServlet {
 
                         member = line.substring(line.indexOf("/")+1, line.indexOf("(")).trim();
                         line = line.substring(line.indexOf("/") + 1, line.length());
+                        if (member.contains("@")) {
+                            member = member.substring(0, member.indexOf("@"));
+                        }
                         // Remove Member additional string
                         //(Local/875@agents from Agent:875) (ringinuse disabled)
                         if (line.indexOf(")") < line.indexOf("(")){
@@ -195,21 +201,24 @@ public class Functions extends HttpServlet {
                     if (line.contains(")")){
 		        line = line.substring(line.indexOf(")") + 1, line.length());
                     }
-		    
-		    // Status
-                    if (line.contains(")")){
-		        String status  = line.substring(0, line.indexOf(")") +1 );
-		        line = line.substring(line.indexOf(")") + 1, line.length()).trim();
-                    
-                        if (line.startsWith(")")){
-                            status = status + line.substring(0, line.indexOf(")") + 1);
-                            line = line.substring(line.indexOf(")") + 1, line.length());
+		    CallInfoType callInfo = new CallInfoType();
+                    callInfo.callerID = "-";
+                    callInfo.time = "-";
+                    ArrayList<String> channelIDs = getChannelID(url, queue, member);
+                    if (!channelIDs.isEmpty()){
+                        for (String channelID: channelIDs) {
+                             CallInfoType call = getCallInfo(url, channelID); 
+                             if (call.callerID.length() > callInfo.callerID.length()){
+                                 callInfo = call;
+                             }
                         }
-                        if (status.indexOf("(") > 3) {
-                            status = status.substring(status.indexOf("("), status.length());
-                        }
-                        out.println("<td>" + status + "</td>");
                     }
+	
+                    out.println("<td>" + callInfo.callerID  +"  </td>");
+                    
+                    out.println("<td>" + callInfo.time  +  "</td>");
+                    
+                    
 		    
 		    // Info
 		    out.println("<td style='font-size:12'>" + line + "</td>");
@@ -244,21 +253,63 @@ public class Functions extends HttpServlet {
 	}
     }
     
+    private CallInfoType getCallInfo(String url, String channel){
+
+        CallInfoType callInfo = new CallInfoType();
+        callInfo.callerID = "";
+        Operation op = callAMI("core show channel " + channel, url);
+   	if (op.success) {
+ 	    String lines[] = op.message.split("\n");
+            for (String line: lines) {
+                if (line.contains("Caller ID Name:")) {
+                    callInfo.callerID = line.substring(line.indexOf(":")+1, line.length()).trim();
+                }
+                if (line.contains("Application")) {
+                    callInfo.application = line.substring(line.indexOf(":")+1, line.length()).trim();
+                }     
+                if (line.contains("Elapsed")) {
+                    callInfo.time = line.substring(line.indexOf(":")+1, line.length()).trim();
+                }      
+                
+                if (line.contains("Connected Line ID:") && callInfo.callerID.contains("N/A")) {
+                    callInfo.callerID = line.substring(line.indexOf(":")+1, line.length()).trim();                   
+                }
+                
+                if (line.contains("DNID Digits:") && callInfo.callerID.contains("N/A")) {
+                    callInfo.callerID = line.substring(line.indexOf(":")+1, line.length()).trim();            
+                }                
+            }
+        }
+        return callInfo;
+
+    }
+    
+    private ArrayList<String> getChannelID(String url, String queue, String agent){
+
+        ArrayList<String> channelIDs = new ArrayList<>();
+        Operation op = callAMI("core show channels concise", url);
+   	if (op.success) {
+ 	    String lines[] = op.message.split("\n");
+            for (String line: lines) {
+                if (line.contains(queue) && line.contains(agent) && (!line.contains(";1"))){
+                    channelIDs.add(line.substring(0, line.indexOf("!")));
+                }
+                         
+            }
+        }
+        return channelIDs;
+
+    }
+        
     private void displayWaiting(String pbxfile, String url, final PrintWriter out) throws IOException, ParseException {
 	
-	JSONObject obj = new JSONObject();
-	obj.put("command", "queue show");
-	String requestText = obj.toJSONString();
-	
-	String resultText = General.restCallURL(url + "Command", requestText);
-	JSONParser parser = new JSONParser();
-	JSONObject resObj = (JSONObject) parser.parse(resultText);
-	if (Boolean.valueOf(resObj.get("success").toString())) {
-	    String text = resObj.get("result").toString();
+	Operation op = callAMI("queue show", url);
+	if (op.success) {
+	    String text = op.message;
 	    out.println("<h3>Waiting</h3>");
 	    out.println("<font color=green><b><label id=waitcount></label></b></font> Customers");
 	    out.println("<table class=tform>");
-	    out.println("<tr><th>Queue</th><th>Caller ID</th><th>Application</th><th>Info</th></tr>");
+	    out.println("<tr><th>Queue</th><th>Channel</th><th>Caller ID</th><th>Application</th><th>Info</th></tr>");
 	    String queue = "";
 	    
 	    String lines[] = text.split("\n");
@@ -275,9 +326,9 @@ public class Functions extends HttpServlet {
 		}
 		if (started) {
                     
-		    String callid = "";
+		    String channel = "";
                     if (line.contains(".") && line.contains("(")) {
-                        callid = line.substring(line.indexOf(".") + 1, line.indexOf("(")).trim();
+                        channel = line.substring(line.indexOf(".") + 1, line.indexOf("(")).trim();
                     }
                     
  		    //String info[] = General.getCallInfo(pbxfile, callid);
@@ -290,10 +341,14 @@ public class Functions extends HttpServlet {
 			    out.print(queue);
 		    }
                     out.println("</b></td>");
+                                        
                     lastQueue = queue;
-                    out.println("<td>" + callid + "</td>");
+                    out.println("<td>" + channel + "</td>");
+                    
+                    CallInfoType caller = getCallInfo(url, channel);
+                    out.println("<td>" + caller.callerID + "</td>");
                     line = line.substring(line.indexOf("("), line.length());
-                    out.println("<td>" +  "</td>");
+                    out.println("<td>" + caller.application + "</td>");
                     out.println("<td  style='font-size:12'>" + line + "</td>");
                     out.println("</tr>");
                     count++;
@@ -307,8 +362,7 @@ public class Functions extends HttpServlet {
 		out.println("</tr>");
 	    
 	    }
-	    
-	 
+	    	 
 	    out.println("</table>");
 	    if (count == 0) {
 		out.println("There is no waiting customer");
@@ -318,6 +372,35 @@ public class Functions extends HttpServlet {
 	    }
 	    
 	}
+    }
+
+    public Operation callAMI(String command, String url) {
+       
+        JSONObject obj = new JSONObject();
+        obj.put("command", command);
+        String requestText = obj.toJSONString();
+        JSONObject resObj;
+        Operation op = new Operation();
+        try {
+            String resultText = General.restCallURL(url + "Command", requestText);
+            JSONParser parser = new JSONParser();
+            resObj = (JSONObject) parser.parse(resultText);
+            if (Boolean.valueOf(resObj.get("success").toString())) {
+                op.success = true;
+                op.errorCode = 0;
+            } else {
+                op.success = false;
+                op.errorCode = 1;
+            }
+            op.message = resObj.get("result").toString();
+                
+        } catch (Exception ex) {
+            op.success = false;
+            op.errorCode = 5;
+            op.message = ex.toString();
+
+        }
+        return op;
     }
     
   
