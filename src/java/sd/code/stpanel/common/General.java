@@ -37,7 +37,7 @@ import sd.code.stpanel.types.Operation;
  */
 final public class General {
     
-    public static final String VERSION = "1.0.40";
+    public static final String VERSION = "1.0.42";
     
     public static void writeEvent(String eventText){
         
@@ -234,8 +234,8 @@ final public class General {
     
         URL url = new URL(methodURL);
         URLConnection conn = url.openConnection();
-        conn.setConnectTimeout(12 * 1000);            
-        conn.setReadTimeout(12 * 1000);  
+        conn.setConnectTimeout(60 * 1000);            
+        conn.setReadTimeout(60 * 1000);  
         conn.setRequestProperty("Content-Type", "text/json");
         conn.setDoOutput(true);
         String outputText = "";
