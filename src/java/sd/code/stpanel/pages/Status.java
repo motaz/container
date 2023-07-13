@@ -59,7 +59,7 @@ public class Status extends HttpServlet {
                 if (command != null) {
 
                     if (command.equals("channels")){
-                            commandLine = "core show channels";
+                            commandLine = "core show channels verbose";
                             chColor = selectedColor;
                     }
                     else if (command.equals("peers")){
