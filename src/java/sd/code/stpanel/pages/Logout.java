@@ -33,11 +33,11 @@ public class Logout extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-            Cookie coo = new Cookie("user", null);
+            Cookie coo = new Cookie("st-user", null);
             coo.setMaxAge(0);
             response.addCookie(coo);
             
-            Cookie coo2 = new Cookie("spices", null);
+            Cookie coo2 = new Cookie("st-spices", null);
             coo2.setMaxAge(0);
             response.addCookie(coo2);
             

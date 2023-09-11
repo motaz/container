@@ -39,7 +39,7 @@ public class Monitor extends HttpServlet {
 	
         PrintWriter out = response.getWriter();
         try {
-            String user = Web.getCookieValue(request, "user");
+            String user = Web.getCookieValue(request, "st-user");
             String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
             String url = General.getConfigurationParameter("url", "", pbxfile);	      
             if (Web.checkSession(request, user)) {

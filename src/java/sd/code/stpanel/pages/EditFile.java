@@ -36,7 +36,7 @@ public class EditFile extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-            String user = Web.getCookieValue(request, "user");
+            String user = Web.getCookieValue(request, "st-user");
             String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
             try {
                 String fileName = request.getParameter("filename");

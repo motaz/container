@@ -38,7 +38,7 @@ public class UploadSound extends HttpServlet {
         
 	response.setContentType("text/html;charset=UTF-8");
 	try (PrintWriter out = response.getWriter()) {
-	    String user = Web.getCookieValue(request, "user");
+	    String user = Web.getCookieValue(request, "st-user");
 	    try {
 		if (Web.checkSession(request, user)) {
 		    Web.setHeader(true, request, response, out, "advanced", "tools");

@@ -37,7 +37,7 @@ public class ChangePassword extends HttpServlet {
         PrintWriter out = response.getWriter();
             Web.setHeader(true, request, response, out, "myadmin", "");
             
-            String user = Web.getCookieValue(request, "user");
+            String user = Web.getCookieValue(request, "st-user");
 
             if (Web.checkSession(request, user)){
                 // Web.displayConfigTabs(out, "ChangePassword", userID);

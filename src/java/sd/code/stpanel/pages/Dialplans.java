@@ -38,7 +38,7 @@ public class Dialplans extends HttpServlet {
 	       
                 Web.setHeader(true, request, response, out, "pbx", "dialplans");
             
-                String user = Web.getCookieValue(request, "user");
+                String user = Web.getCookieValue(request, "st-user");
             
 	        String action = request.getParameter("action");
 	        if (action == null){

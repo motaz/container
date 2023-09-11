@@ -34,7 +34,7 @@ public class AddUser extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        String user = Web.getCookieValue(request, "user");
+        String user = Web.getCookieValue(request, "st-user");
 
         if (Web.checkSession(request, user)) {
             Web.setHeader(true, request, response, out, "", "");

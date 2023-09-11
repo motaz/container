@@ -37,7 +37,7 @@ public class Terminal extends HttpServlet {
 	
         PrintWriter out = response.getWriter();
         try {
-            String user = Web.getCookieValue(request, "user");
+            String user = Web.getCookieValue(request, "st-user");
             String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
             if (Web.checkSession(request, user)) {
                 Web.setHeader(true, request, response, out, "advanced", "terminal");

@@ -39,7 +39,7 @@ public class EditPBX extends HttpServlet {
 	try (PrintWriter out = response.getWriter()) {
 	     Web.setHeader(true, request, response, out, "", "");
 	    
-	     String user = Web.getCookieValue(request, "user");
+	     String user = Web.getCookieValue(request, "st-user");
 	     String selectedFileName = request.getParameter("pbx");
 	    
 	     if (Web.checkSession(request, user)){

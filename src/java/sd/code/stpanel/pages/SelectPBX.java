@@ -36,7 +36,7 @@ public class SelectPBX extends HttpServlet {
         PrintWriter out = response.getWriter();
         Web.setHeader(true, request, response, out, "home", "");
 
-        String user = Web.getCookieValue(request, "user");
+        String user = Web.getCookieValue(request, "st-user");
 
         if (Web.checkSession(request, user)){
             Cookie co = new Cookie("file", request.getParameter("pbx"));

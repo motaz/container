@@ -36,7 +36,7 @@ public class PlaySound extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
 	response.setContentType("text/html;charset=UTF-8");
-	String user = Web.getCookieValue(request, "user");
+	String user = Web.getCookieValue(request, "st-user");
 	try {
 	    if (Web.checkSession(request, user)) {
 	       String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");

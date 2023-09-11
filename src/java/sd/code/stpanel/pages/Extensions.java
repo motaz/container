@@ -55,7 +55,7 @@ public class Extensions extends HttpServlet {
                 }
                 Web.setHeader(true, request, response, out, "pbx", type);
 
-                String user = Web.getCookieValue(request, "user");
+                String user = Web.getCookieValue(request, "st-user");
 
 
                 String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");

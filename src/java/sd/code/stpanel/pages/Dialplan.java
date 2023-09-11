@@ -34,7 +34,7 @@ public class Dialplan extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
             try {
-              String user = Web.getCookieValue(request, "user");
+              String user = Web.getCookieValue(request, "st-user");
               
                 if (Web.checkSession(request, user)) {
                     Web.setHeader(true, request, response, out, "advanced", "dialplan");

@@ -78,7 +78,7 @@ public class Login extends HttpServlet {
             
             if (valid) {
                 
-                Cookie coo = new Cookie("user", configUser);
+                Cookie coo = new Cookie("st-user", configUser);
                 if (rememberMe) {
                     coo.setMaxAge(60 * 60 * 24 * 30);
                 }
@@ -89,7 +89,7 @@ public class Login extends HttpServlet {
                 spices = General.getMD5(General.getMD5(userAgent + "7n1" +
                         General.getMD5(password) + "77") + "0066");
                 
-                Cookie coo2 = new Cookie("spices", spices);
+                Cookie coo2 = new Cookie("st-spices", spices);
                 if (rememberMe) {
                     coo2.setMaxAge(60 * 60 * 24 * 30);
                 }

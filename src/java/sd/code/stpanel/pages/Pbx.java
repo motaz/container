@@ -37,7 +37,7 @@ public class Pbx extends HttpServlet {
                 String page= request.getParameter("page");
                 Web.setHeader(true, request, response, out, "pbx", page);
             
-                String user = Web.getCookieValue(request, "user");
+                String user = Web.getCookieValue(request, "st-user");
 
                 if (Web.checkSession(request, user)){
 

@@ -25,7 +25,7 @@ public class Web {
     public static void setHeader(boolean displayTabs, HttpServletRequest request, HttpServletResponse response, 
             PrintWriter out, String parent, String page){
         
-        String user = getCookieValue(request, "user");
+        String user = getCookieValue(request, "st-user");
         if (page == null){
             page = "";
         }
@@ -205,7 +205,7 @@ public class Web {
         
         boolean result;
         
-        String spices = getCookieValue(request, "spices");
+        String spices = getCookieValue(request, "st-spices");
         String userAgent = request.getHeader("user-agent");
         String password = General.getConfigurationParameter("pass", "", null);
         

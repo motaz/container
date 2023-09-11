@@ -29,7 +29,7 @@ public class CreateFile  extends HttpServlet {
         
         
         try (PrintWriter out = response.getWriter()){
-            String user = Web.getCookieValue(request, "user");
+            String user = Web.getCookieValue(request, "st-user");
             String pbxfile = General.getPBXsDir()  + Web.getCookieValue(request, "file");
             
             try {
