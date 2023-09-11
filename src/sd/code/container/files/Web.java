@@ -8,8 +8,10 @@ package sd.code.container.files;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URLDecoder;
 import sd.code.container.types.OperationResult;
 import sd.code.container.url.CodeURL;
+
 
 /**
  *
@@ -73,5 +75,19 @@ public class Web {
         return data;
     }
     
+    public static String readClient(BufferedReader reader) throws IOException {
+        
+        String jsonText = "";
+        if (reader.ready()){
+            String line;
+            while ((line = reader.readLine()) != null){
+                jsonText = jsonText + line;
+            }
+         //   if (jsonText == null || jsonText.isEmpty()){
+           //     jsonText = URLDecoder.decode(request.getQueryString(), "UTF-8");
+           // }
+        }
+        return jsonText;
+    }   
     
 }
