@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import sd.code.stpanel.types.AMIResult;
 
 /**
  *
@@ -55,34 +56,16 @@ public class AMI extends HttpServlet {
                 out.println("</form>");
 
                 if ( request.getParameter("execute") != null) {
-                    String url = General.getConfigurationParameter("url", "", pbxfile);
-                    JSONObject obj = new JSONObject();
-                    String username = General.getConfigurationParameter("amiuser", "", pbxfile);
-                    String secret = General.getConfigurationParameter("amipass", "", pbxfile);
-                    obj.put("username", username);
-                    obj.put("secret", secret);
-                    obj.put("command", request.getParameter("command"));
-           
-                    String requestText = obj.toJSONString();
-                 
-
-                    String resultText = General.restCallURL(url + "CallAMI", requestText);
-                    try{
-                        JSONParser parser = new JSONParser();
-                        JSONObject resObj = (JSONObject) parser.parse(resultText);
-
-                        String content = resObj.get("message").toString();
+                    AMIResult result = callAMI(pbxfile, command);
+                    if (result.success) {
                         Date now = new Date();
-                        if (content != null){
-                            out.println("<pre>" + now.toString() + "\n" + content + "</pre>");
+                        if (result.result != null){
+                            out.println("<pre>" + now.toString() + "\n" + result.result + "</pre>");
                         }
+                    } else {
+                        out.println("<p class=errormessage>" +  result.errorMessage );
+               
                     }
-                    catch (Exception ex){
-                        out.println("<p class=errormessage>" +  ex.toString() +
-                            "<br/>" + resultText + "</p>");
-                      
-                    }
-
 
                 }
                 Web.setFooter(request, response);
@@ -97,6 +80,40 @@ public class AMI extends HttpServlet {
         }
 
         
+    }
+
+    public static AMIResult callAMICommand(String pbxfile, String command) throws IOException {
+        
+        command = "action:command\ncommand:" + command;
+        return callAMI(pbxfile, command);
+    }
+
+    public static AMIResult callAMI(String pbxfile, String command) throws IOException {
+        
+        AMIResult result = new AMIResult();
+        String url = General.getConfigurationParameter("url", "", pbxfile);
+        JSONObject obj = new JSONObject();
+        String username = General.getConfigurationParameter("amiuser", "", pbxfile);
+        String secret = General.getConfigurationParameter("amipass", "", pbxfile);
+        obj.put("username", username);
+        obj.put("secret", secret);
+        obj.put("command", command);
+        String requestText = obj.toJSONString();
+        String resultText = General.restCallURL(url + "CallAMI", requestText);
+        try{
+            JSONParser parser = new JSONParser();
+            JSONObject resObj = (JSONObject) parser.parse(resultText);
+            
+            result.result = resObj.get("message").toString();
+            result.success = true;
+            
+        }
+        catch (Exception ex){
+            result.success = false;
+            result.errorMessage = ex.toString();
+            
+        }
+        return result;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

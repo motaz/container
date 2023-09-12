@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import sd.code.stpanel.types.AMIResult;
 
 /**
  *
@@ -107,21 +108,12 @@ public class Status extends HttpServlet {
                     out.println("<input type=submit value=Refresh class=btn />");
                     out.println("</form>");
 
-                    JSONObject obj = new JSONObject();
-                    obj.put("command", commandLine);
-                    String requestText = obj.toJSONString();
-
-                    String url = General.getConfigurationParameter("url", "", pbxfile);
-
-                    String resultText = General.restCallURL(url + "Command", requestText);
-                    JSONParser parser = new JSONParser();
-                    JSONObject resObj = (JSONObject) parser.parse(resultText);
-                    if (Boolean.valueOf(resObj.get("success").toString())) {
-                        String text = resObj.get("result").toString();
-                        out.println("<pre>" + text + "</pre>");
+                    AMIResult result =  AMI.callAMICommand(pbxfile, commandLine);
+                    if (result.success){
+                        out.println("<pre>" + result.result + "</pre>");
                     }
                     else {
-                       out.println("<p class=errormessage>" + resObj.get("message") + "</p>");
+                       out.println("<p class=errormessage>" + result.errorMessage + "</p>");
                     }
                 }
 

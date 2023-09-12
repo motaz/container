@@ -19,6 +19,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import sd.code.stpanel.common.General;
 import sd.code.stpanel.common.Web;
+import sd.code.stpanel.types.AMIResult;
 import sd.code.stpanel.types.CallInfoType;
 import sd.code.stpanel.types.Operation;
 
@@ -46,7 +47,6 @@ public class Functions extends HttpServlet {
             try {
                 if (Web.checkSession(request, user)) {
                     Web.setHeader(true, request, response, out, "pbx", "functions");
-                    String url = General.getConfigurationParameter("url", "", pbxfile);
 
                     out.println("<h2>Queues</h2>");
 		    String function = request.getParameter("function");
@@ -89,19 +89,19 @@ public class Functions extends HttpServlet {
                     switch (function) {
                         case "paused":
                             out.println("<h2>Paused</h2>");
-                            displayStatusOf(url, out, true, "paused");
+                            displayStatusOf(pbxfile, out, true, "paused");
                             break;
                         case "active":
                             out.println("<h2>Active</h2>");
-                            displayStatusOf(url, out, false, "paused");
+                            displayStatusOf(pbxfile, out, false, "paused");
                             break;
                         case "talk":
                             out.println("<h2>Talking/Waiting</h2>");
                             out.println("<table><tr>");
                             out.println("<td>");
-                            displayStatusOf(url, out, true, "Busy");
+                            displayStatusOf(pbxfile, out, true, "Busy");
                             out.println("</td><td>");
-                            displayWaiting(pbxfile, url, out);
+                            displayWaiting(pbxfile, out);
                             out.println("</td><tr></table>");
                             break;
                         default:
@@ -117,22 +117,18 @@ public class Functions extends HttpServlet {
 	}
     }
 
-    private void displayStatusOf(String url, final PrintWriter out, boolean has, String keyword) throws IOException, ParseException {
-	
-	JSONObject obj = new JSONObject();
-	obj.put("command", "queue show");
-	String requestText = obj.toJSONString();
+    private void displayStatusOf(String pbxfile, final PrintWriter out, boolean has, String keyword) throws IOException, ParseException {	
+
 	boolean isBusy  = keyword.equals("Busy");
  
 	if (isBusy){
 	    out.println("<h3>Talking</h3>");
 	}
-	
-	String resultText = General.restCallURL(url + "Command", requestText);
-	JSONParser parser = new JSONParser();
-	JSONObject resObj = (JSONObject) parser.parse(resultText);
-	if (Boolean.valueOf(resObj.get("success").toString())) {
-	    String text = resObj.get("result").toString();
+
+        AMIResult result =  AMI.callAMICommand(pbxfile, "queue show");
+
+	if (result.success) {
+	    String text = result.result;
 	    out.println("<font color=green><b><label id=count></label></b></font> Members");
 	    out.println("<table class=tform>");
 	    out.println("<tr  bgcolor=#eeeecc><th>Queue</th><th>Agent</th><th>Caller ID</th>");
@@ -204,10 +200,10 @@ public class Functions extends HttpServlet {
 		    CallInfoType callInfo = new CallInfoType();
                     callInfo.callerID = "-";
                     callInfo.time = "-";
-                    ArrayList<String> channelIDs = getChannelID(url, queue, member);
+                    ArrayList<String> channelIDs = getChannelID(pbxfile, queue, member);
                     if (!channelIDs.isEmpty()){
                         for (String channelID: channelIDs) {
-                             CallInfoType call = getCallInfo(url, channelID); 
+                             CallInfoType call = getCallInfo(pbxfile, channelID); 
                              if (call.callerID.length() > callInfo.callerID.length()){
                                  callInfo = call;
                              }
@@ -253,11 +249,11 @@ public class Functions extends HttpServlet {
 	}
     }
     
-    private CallInfoType getCallInfo(String url, String channel){
+    private CallInfoType getCallInfo(String pbxfile, String channel){
 
         CallInfoType callInfo = new CallInfoType();
         callInfo.callerID = "";
-        Operation op = callAMI("core show channel " + channel, url);
+        Operation op = callAMI("core show channel " + channel, pbxfile);
    	if (op.success) {
  	    String lines[] = op.message.split("\n");
             for (String line: lines) {
@@ -284,10 +280,10 @@ public class Functions extends HttpServlet {
 
     }
     
-    private ArrayList<String> getChannelID(String url, String queue, String agent){
+    private ArrayList<String> getChannelID(String pbxfile, String queue, String agent){
 
         ArrayList<String> channelIDs = new ArrayList<>();
-        Operation op = callAMI("core show channels concise", url);
+        Operation op = callAMI("core show channels concise", pbxfile);
    	if (op.success) {
  	    String lines[] = op.message.split("\n");
             for (String line: lines) {
@@ -301,9 +297,9 @@ public class Functions extends HttpServlet {
 
     }
         
-    private void displayWaiting(String pbxfile, String url, final PrintWriter out) throws IOException, ParseException {
+    private void displayWaiting(String pbxfile, final PrintWriter out) throws IOException, ParseException {
 	
-	Operation op = callAMI("queue show", url);
+	Operation op = callAMI("queue show", pbxfile);
 	if (op.success) {
 	    String text = op.message;
 	    out.println("<h3>Waiting</h3>");
@@ -345,7 +341,7 @@ public class Functions extends HttpServlet {
                     lastQueue = queue;
                     out.println("<td>" + channel + "</td>");
                     
-                    CallInfoType caller = getCallInfo(url, channel);
+                    CallInfoType caller = getCallInfo(pbxfile, channel);
                     out.println("<td>" + caller.callerID + "</td>");
                     line = line.substring(line.indexOf("("), line.length());
                     out.println("<td>" + caller.application + "</td>");
@@ -374,25 +370,22 @@ public class Functions extends HttpServlet {
 	}
     }
 
-    public Operation callAMI(String command, String url) {
+    public Operation callAMI(String command, String pbxfile) {
        
         JSONObject obj = new JSONObject();
         obj.put("command", command);
-        String requestText = obj.toJSONString();
-        JSONObject resObj;
+
         Operation op = new Operation();
         try {
-            String resultText = General.restCallURL(url + "Command", requestText);
-            JSONParser parser = new JSONParser();
-            resObj = (JSONObject) parser.parse(resultText);
-            if (Boolean.valueOf(resObj.get("success").toString())) {
+            AMIResult result = AMI.callAMICommand(pbxfile, command);
+            if (result.success) {
                 op.success = true;
                 op.errorCode = 0;
             } else {
                 op.success = false;
                 op.errorCode = 1;
             }
-            op.message = resObj.get("result").toString();
+            op.message = result.result;
                 
         } catch (Exception ex) {
             op.success = false;
@@ -402,28 +395,7 @@ public class Functions extends HttpServlet {
         }
         return op;
     }
-    
-  
-    
-    private void pauseUnpause(HttpServletRequest request, String url, final PrintWriter out) throws IOException, ServletException {
-	
-        String command = null;
-        if (request.getParameter("unpause") != null) {
-  	  command = "unpause";
-        }
-        else if (request.getParameter("pause") != null) {
-	    command = "pause";
-        }
-      
-        if (command != null){
-	    String memb = request.getParameter("member");
-	    JSONObject obj = new JSONObject();
-	    obj.put("command", "queue " + command + " member " + memb);
-	    String requestText = obj.toJSONString();
-	    String resultText = General.restCallURL(url + "Command", requestText);
-	    out.println("<p class=infomessage>"  + resultText + "</p>");
-	}
-    }
+   
     
     
 
