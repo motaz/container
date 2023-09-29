@@ -112,8 +112,13 @@ public class Commands extends HttpServlet {
                             out.println("<h3>" + command + "</h3>");
                         }
                         
-                        AMIResult result =  AMI.callAMICommand(pbxfile, commandLine);
-
+                        AMIResult result;
+                        if (commandLine.contains("reload")) {
+                           result = callCLI(pbxfile, commandLine);
+   
+                        } else {
+                           result = AMI.callAMICommand(pbxfile, commandLine);
+                        }
                         if (result.success) {
                             out.println("<pre>" + result.result + "</pre>");
                         }
@@ -135,6 +140,33 @@ public class Commands extends HttpServlet {
                 out.println(ex.toString());
             }
         
+    }
+    
+    private AMIResult callCLI(String pbxfile, String command) {
+        
+        AMIResult amiResult = new AMIResult();
+                                
+        JSONObject obj = new JSONObject();
+        obj.put("command", command);
+        String requestText = obj.toJSONString();
+
+        String url = General.getConfigurationParameter("url", "", pbxfile);
+        try {
+            String resultText = General.restCallURL(url + "Command", requestText);
+            JSONParser parser = new JSONParser();
+            JSONObject resObj = (JSONObject) parser.parse(resultText);
+            amiResult.success = Boolean.parseBoolean(resObj.get("success").toString());
+            if (amiResult.success) {
+                amiResult.result  = resObj.get("result").toString();
+            } else {
+                amiResult.errorMessage =  resObj.get("message").toString();
+            }
+        } catch (Exception ex){
+            
+            amiResult.success = false;
+            amiResult.errorMessage = ex.toString();
+        }
+        return amiResult;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
