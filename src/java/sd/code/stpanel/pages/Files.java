@@ -71,6 +71,7 @@ public class Files extends HttpServlet {
 
     public void displayFilesMenu(String fileName, PrintWriter out) {
         
+        String asteriskColor =  "";
         String sipColor =  "";
         String extensionsColor = "";
         String queuesColor = "";
@@ -78,6 +79,9 @@ public class Files extends HttpServlet {
         String rtpColor = "";
         String cdrColor = "";
         String cdr_customColor = "";
+        String managerColor =  "";
+        String httpColor =  "";
+
         String allFilesColor = "";
         
         String selectedColor = "bgcolor=#FFFFcc";
@@ -105,13 +109,23 @@ public class Files extends HttpServlet {
             case "cdr_custom.conf":
                 cdr_customColor = selectedColor;
                 break;
-            case "all":
+            case "http.conf":
+                httpColor = selectedColor;
+                break;     
+            case "asterisk.conf":
+                asteriskColor = selectedColor;
+                break;      
+            case "manager.conf":
+                managerColor = selectedColor;
+                break;
+                case "all":
                 allFilesColor = selectedColor;
                 break;
             default:
                 break;
         }
         out.println("<table><tr bgcolor=#eeeecc>");
+        out.println("<td " + asteriskColor + "><a href='Files?file=asterisk.conf'>asterisk.conf</a></td>");
         out.println("<td " + sipColor + "><a href='Files?file=sip.conf'>sip.conf</a></td>");
         out.println("<td " + extensionsColor + "><a href='Files?file=extensions.conf'>extensions.conf</a></td>");
         out.println("<td " + queuesColor + "><a href='Files?file=queues.conf'>queues.conf</a></td>");
@@ -119,6 +133,8 @@ public class Files extends HttpServlet {
         out.println("<td " + rtpColor + "><a href='Files?file=rtp.conf'>rtp.conf</a></td>");
         out.println("<td " + cdrColor + "><a href='Files?file=cdr.conf'>cdr.conf</a></td>");
         out.println("<td " + cdr_customColor + "><a href='Files?file=cdr_custom.conf'>cdr_custom.conf</a></td>");
+        out.println("<td " + managerColor + "><a href='Files?file=manager.conf'>manager.conf</a></td>");
+        out.println("<td " + httpColor + "><a href='Files?file=http.conf'>http.conf</a></td>");
         out.println("<td " + allFilesColor + "><a href='Files?file=all'>All Files</a></td>");
         out.println("</tr></table>");
     }
